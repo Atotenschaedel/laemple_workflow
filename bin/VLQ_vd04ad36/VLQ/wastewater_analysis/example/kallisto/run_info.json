@@ -1,0 +1,13 @@
+{
+	"n_targets": 4,
+	"n_bootstraps": 0,
+	"n_processed": 1600,
+	"n_pseudoaligned": 1599,
+	"n_unique": 1599,
+	"p_pseudoaligned": 99.9,
+	"p_unique": 99.9,
+	"kallisto_version": "0.46.2",
+	"index_version": 10,
+	"start_time": "Sun Jul  2 19:38:42 2023",
+	"call": "kallisto quant -t 20 -b 0 -i reference_set/sequences.kallisto_idx -o kallisto -t 1 input_1.fastq input_2.fastq"
+}

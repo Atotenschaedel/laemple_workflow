@@ -1,0 +1,7 @@
+## evaluating kallisto/abundance.tsv
+## ../pipeline/output_abundances.py --metadata metadata.tsv -o kallisto/predictions.tsv kallisto/abundance.tsv
+# variant	tpm	freq(%)	adj_freq(%)
+SARS-CoV-2	1000000	100.00	100.00
+MERS-CoV	0	0.00	0.00
+SARS-CoV	0	0.00	0.00
+Bat-RaTG13	0	0.00	0.00

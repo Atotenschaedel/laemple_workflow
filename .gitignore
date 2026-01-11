@@ -1,0 +1,9 @@
+.snakemake/
+bin/SWAMPy
+logs
+experiments
+bin/custom_scripts/__pycache__/
+bin/SWAMPy/
+reference/indices_for_BWA/
+reference/RefSeq_sequence_Wuhan-Hu1.fa.fai
+reference/SequenceDictionaries/

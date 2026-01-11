@@ -1,0 +1,15 @@
+
+VCFtools - 0.1.16
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--gzvcf MERS-CoV_merged.vcf.gz
+	--freq
+	--out MERS-CoV_merged
+
+Using zlib version: 1.2.13
+After filtering, kept 1 out of 1 Individuals
+Outputting Frequency Statistics...
+After filtering, kept 0 out of a possible 0 Sites
+File does not contain any sites
+Run Time = 0.00 seconds

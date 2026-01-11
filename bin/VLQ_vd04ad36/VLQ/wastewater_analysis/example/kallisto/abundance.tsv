@@ -1,0 +1,5 @@
+target_id	length	eff_length	est_counts	tpm
+MN996532.2|2020-01-01|2020-01-01_Bat_coronavirus_RaTG13,_complete_genome	29855	29605.9	0	0
+JX869059.2|2020-01-01|2020-01-01	30119	29869.9	0	0
+NC_045512.2|2020-01-01|2020-01-01_Severe_acute_respiratory_syndrome_coronavirus_2_isolate_Wuhan-Hu-1,_complete_genome	29903	29653.9	1599	1e+06
+GU553363.1|2020-01-01|2020-01-01_SARS_coronavirus_HKU-39849_isolate_TCVSP-HARROD-00001,_complete_genome	29644	29394.9	0	0

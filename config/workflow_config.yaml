@@ -1,0 +1,122 @@
+APP:
+  SEED: 152
+CORES_AVAILABLE: 20
+CURRENT_SET: SET_01
+EXPERIMENT_NAME: Ex03_02_minimal_example
+POSTPRED:
+  LABELS:
+  - key: minimal_example
+    value: Minimal Example
+  LINEAGE_MIN_THRESHOLD: 0.01
+  MIN_READ_COUNT: 100
+REFERENCES:
+  PRIMER_SET: reference/primer_schemes/nCoV-2019_V4/artic_v4.bed
+  REF_GENOME: reference/RefSeq_sequence_Wuhan-Hu1.fa
+  REF_HUMAN: reference/dummy.fa
+  CONS_SEQUENCES: reference/consensus_sequences/data/pango-consensus-sequences_summary.json
+SIMULATION:
+  AMPLICON_DISTRIBUTION: dirichlet_1
+  AMPLICON_PSEUDOCOUNTS: 10
+  DATASET:
+    SET_01:
+      CONSTANT_VARIANT_ABUNDANCE: 0.02
+      EXPERIMENT_NO_START: 1
+      FORM_PARA:
+        growth_rate: 0.2
+        init_cases: 1
+        max_cases: 1000000
+      MAX_TIMEPOINTS: 365
+      NAME: minimal_example
+      START_DATE: '2023-01-01'
+      TIMECOURSE_DATA: ''
+      USE_REAL_TIMECOURSE: false
+      VARIANTS:
+        variant_1:
+        - 0
+        - B.1.1.7
+        variant_2:
+        - 30
+        - B.1.351
+        variant_3:
+        - 230
+        - B.1.617.2
+        variant_4:
+        - 128
+        - P.1
+  N_READS: 100000
+  N_SEED: 2
+  PRIMER_SET: a4
+  QUALITY_SCORES:
+  - 400
+  - 50
+  - 10
+  READ_LENGTH: 250
+  REFERENCES_SEQUENCES:
+  - reference/minimal_example/others.fasta
+  - reference/minimal_example/B.1.1.7.fasta
+  - reference/minimal_example/B.1.351.fasta
+  - reference/minimal_example/B.1.617.2.fasta
+  - reference/minimal_example/P.1.fasta
+  SAMPLE_COLLECTION:
+    NUMBER: 10
+    SAMPLE_MODE: even
+  SEQ_SYS: MSv3
+TOOLS:
+  FREYJA_01:
+    COLOUR_IN_REPORT: '#3A9AB2'
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: Freyja v.1.4.3
+    TOOL_NAME: freyja_v1.4.3
+  FREYJA_02:
+    COLOUR_IN_REPORT: '#77d1ea'
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: Freyja v.1.5.3
+    TOOL_NAME: freyja_v1.5.3
+  FREYJA_03:
+    COLOUR_IN_REPORT: '#c1faff'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: Freyja v.2.0.0
+    TOOL_NAME: freyja_v2.0.0
+  LCS_01:
+    COLOUR_IN_REPORT: '#d771e3'
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: LCS vcfc2f02
+    TOOL_NAME: LCS_vcfc2f02
+  LOLLIPOP_01:
+    COLOUR_IN_REPORT: '#E3B710'
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: Lollipop v0.3.0
+    TOOL_NAME: lollipop_v0.3.0
+  QUAID_01:
+    COLOUR_IN_REPORT: '#f3831a'
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: QuaID vaec47270
+    TOOL_NAME: QuaID_vaec47270
+  VAQUERO_01:
+    COLOUR_IN_REPORT: '#4d9e6f'
+    DESCRIPTION: current github version
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: VaQuERo v24d9211
+    TOOL_NAME: vaquero_v24d9211
+  VAQUERO_02:
+    COLOUR_IN_REPORT: '#8cc67d'
+    DESCRIPTION: current github version with old reference set
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: VaQuERo v24d9211 oldRef
+    TOOL_NAME: vaquero_v24d9211_oldREF
+  VAQUERO_03:
+    COLOUR_IN_REPORT: '#d2ed8d'
+    DESCRIPTION: old github version
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: VaQuERo v93e7db3
+    TOOL_NAME: vaquero_v93e7db3
+  VIRPOOL_01:
+    COLOUR_IN_REPORT: '#dba053'
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: Virpool v763c212
+    TOOL_NAME: virpool_v763c212
+  VLQ_01:
+    COLOUR_IN_REPORT: '#F11B00'
+    INCLUDE_IN_ANALYSIS: false
+    TOOL_LABEL: VLQ vd04ad36
+    TOOL_NAME: VLQ_vd04ad36

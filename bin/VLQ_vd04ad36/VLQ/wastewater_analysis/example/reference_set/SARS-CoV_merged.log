@@ -1,0 +1,14 @@
+
+VCFtools - 0.1.16
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--gzvcf SARS-CoV_merged.vcf.gz
+	--freq
+	--out SARS-CoV_merged
+
+Using zlib version: 1.2.13
+After filtering, kept 1 out of 1 Individuals
+Outputting Frequency Statistics...
+After filtering, kept 1684 out of a possible 1684 Sites
+Run Time = 0.00 seconds

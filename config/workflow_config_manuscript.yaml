@@ -1,0 +1,196 @@
+APP:
+  SEED: 465
+CURRENT_SET: SET_03
+EXPERIMENT_NAME: Ex21_03_nearQual
+POSTPRED:
+  LABELS:
+  - key: WideQual
+    value: VOC time-course
+  - key: nearQual
+    value: Omicron time-course
+  - key: realTimecourse
+    value: Vienna time-course
+  LINEAGE_MIN_THRESHOLD: 0.01
+  MIN_READ_COUNT: 100
+REFERENCES:
+  GISAID:
+    METADATA: metadata_tsv_2023_07_01
+    SEQUENCES: sequences_fasta_2023_07_01
+  PRIMER_SET:
+  - articV4
+  - reference/primer_schemes/nCoV-2019_V4/artic_v4_primers.fasta
+  - reference/primer_schemes/nCoV-2019_V4/artic_v4.bed
+  REF_GENOME:
+  - reference/RefSeq_sequence_Wuhan-Hu1.fa
+  - reference/SequenceDictionaries/RefSeq_sequence_Wuhan-Hu1.dict
+  - reference/indices_for_BWA/RefSeq_sequence_Wuhan-Hu1.fa
+  REF_GENOME_COMB:
+  - reference/indices_for_BWA/hg38_sars_cov2.fa
+SIMULATION:
+  AMPLICON_DISTRIBUTION: dirichlet_1
+  AMPLICON_PSEUDOCOUNTS: 1
+  DATASET:
+    SET_01:
+      CONSTANT_VARIANT_ABUNDANCE: 0.02
+      EXPERIMENT_NO_START: 1
+      FORM_PARA:
+        growth_rate: 0.2
+        init_cases: 1
+        max_cases: 1000000
+      MAX_TIMEPOINTS: 365
+      NAME: WideQual
+      START_DATE: '2023-01-01'
+      TIMECOURSE_DATA: ''
+      USE_REAL_TIMECOURSE: false
+      VARIANTS:
+        variant_1:
+        - 0
+        - B.1.1.7
+        variant_2:
+        - 30
+        - B.1.351
+        variant_3:
+        - 230
+        - B.1.617.2
+        variant_4:
+        - 128
+        - P.1
+    SET_02:
+      CONSTANT_VARIANT_ABUNDANCE: ''
+      EXPERIMENT_NO_START: 23
+      FORM_PARA:
+        growth_rate: ''
+        init_cases: ''
+        max_cases: ''
+      MAX_TIMEPOINTS: ''
+      NAME: realTimecourse
+      START_DATE: '2023-01-01'
+      TIMECOURSE_DATA: reference/pandemic_timecourses/timecourse_table_selected_lineages.csv
+      USE_REAL_TIMECOURSE: true
+      VARIANTS: ''
+    SET_03:
+      CONSTANT_VARIANT_ABUNDANCE: 0.02
+      EXPERIMENT_NO_START: 23
+      FORM_PARA:
+        growth_rate: 0.2
+        init_cases: 1
+        max_cases: 1000000
+      MAX_TIMEPOINTS: 365
+      NAME: nearQual
+      START_DATE: '2023-01-01'
+      TIMECOURSE_DATA: ''
+      USE_REAL_TIMECOURSE: false
+      VARIANTS:
+        variant_1:
+        - 0
+        - XBB.1.9
+        variant_2:
+        - 30
+        - XBB.1.5
+        variant_3:
+        - 230
+        - XBB.1.16
+        variant_4:
+        - 128
+        - XBB.2.3
+  N_READS: 100000
+  N_SEED: 3
+  PRIMER_SET: a4
+  QUALITY_SCORES:
+  - 400
+  - 130
+  - 90
+  - 50
+  - 30
+  - 10
+  - 1
+  READ_LENGTH: 250
+  REFERENCES_SEQUENCES:
+  - reference/pango-sequences/data/pango-consensus-sequences_genome-nuc.fasta
+  - reference/custom_consensus_sequences/others.fasta
+  - reference/custom_consensus_sequences/B.1.1.529.fasta
+  SAMPLE_COLLECTION:
+    NUMBER: 25
+    SAMPLE_MODE: even
+  SEQ_SYS: MSv3
+TOOLS:
+  FREYJA_01:
+    COLOUR_IN_REPORT: '#3A9AB2'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'Freyja
+
+      v.1.4.3'
+    TOOL_NAME: freyja_v1.4.3
+  FREYJA_02:
+    COLOUR_IN_REPORT: '#77d1ea'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'Freyja
+
+      v.1.5.3'
+    TOOL_NAME: freyja_v1.5.3
+  FREYJA_03:
+    COLOUR_IN_REPORT: '#c1faff'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'Freyja
+
+      v.2.0.0'
+    TOOL_NAME: freyja_v2.0.0
+  LCS_01:
+    COLOUR_IN_REPORT: '#d771e3'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'LCS
+
+      vcfc2f02'
+    TOOL_NAME: LCS_vcfc2f02
+  LOLLIPOP_01:
+    COLOUR_IN_REPORT: '#E3B710'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'Lollipop
+
+      v0.3.0'
+    TOOL_NAME: lollipop_v0.3.0
+  QUAID_01:
+    COLOUR_IN_REPORT: '#f3831a'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'QuaID
+
+      vaec47270'
+    TOOL_NAME: QuaID_vaec47270
+  VAQUERO_01:
+    COLOUR_IN_REPORT: '#4d9e6f'
+    DESCRIPTION: current github version
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'VaQuERo
+
+      v24d9211'
+    TOOL_NAME: vaquero_v24d9211
+  VAQUERO_02:
+    COLOUR_IN_REPORT: '#8cc67d'
+    DESCRIPTION: current github version with old reference set
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'VaQuERo
+
+      v24d9211 oldRef'
+    TOOL_NAME: vaquero_v24d9211_oldREF
+  VAQUERO_03:
+    COLOUR_IN_REPORT: '#d2ed8d'
+    DESCRIPTION: old github version
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'VaQuERo
+
+      v93e7db3'
+    TOOL_NAME: vaquero_v93e7db3
+  VIRPOOL_01:
+    COLOUR_IN_REPORT: '#dba053'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'Virpool
+
+      v763c212'
+    TOOL_NAME: virpool_v763c212
+  VLQ_01:
+    COLOUR_IN_REPORT: '#F11B00'
+    INCLUDE_IN_ANALYSIS: true
+    TOOL_LABEL: 'VLQ
+
+      vd04ad36'
+    TOOL_NAME: VLQ_vd04ad36

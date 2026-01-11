@@ -1,0 +1,794 @@
+2023-06-24 14:57:01,821 [INFO] Primer set: Artic v1
+2023-06-24 14:57:01,821 [INFO] Number of reads: 100000
+2023-06-24 14:57:01,821 [INFO] Random seed: 540676172
+2023-06-24 14:57:01,821 [INFO] Amplicon pseudocounts/ i.e. quality parameter: 200
+2023-06-24 14:57:01,826 [INFO] Spaces in the genomes and abundances files are processed as '_' characters if exist
+2023-06-24 14:57:01,827 [INFO] Total of relative abundance values is 100.0, not 1.
+2023-06-24 14:57:01,827 [INFO] Continuing, normalising total of genome abundances to 1.
+2023-06-24 14:57:01,849 [INFO] Working on genome 1 of 3
+2023-06-24 14:57:01,849 [INFO] Using bowtie2 to align primers to genome OA984024.1_Severe_acute_respiratory_syndrome_coronavirus_2_genome_assembly,_complete_genome:_monopartite
+2023-06-24 14:57:02,315 [INFO] Working on genome 2 of 3
+2023-06-24 14:57:02,316 [INFO] Using bowtie2 to align primers to genome OD929257.1_Severe_acute_respiratory_syndrome_coronavirus_2_genome_assembly,_complete_genome:_monopartite
+2023-06-24 14:57:02,632 [INFO] Working on genome 3 of 3
+2023-06-24 14:57:02,632 [INFO] Using bowtie2 to align primers to genome OM389144.1_Severe_acute_respiratory_syndrome_coronavirus_2_isolate_SARS-CoV-2/human/USA/GA-EHC-111G/2020,_complete_genome
+2023-06-24 14:57:02,966 [INFO] Total number of reads was 89594, when 100000 was expected.
+2023-06-24 14:57:02,967 [INFO] Introducing PCR errors
+2023-06-24 14:57:20,062 [INFO] All aimed PCR errros are written to "/home/asched85/mas_benchmark/bin/SWAMPy/src/example_PCR_errors.vcf"
+2023-06-24 14:57:20,108 [INFO] Generating reads using art_illumina, cycling through all genomes and remaining amplicons.
+2023-06-24 14:57:20,109 [INFO] Starting on file merged_amplicon_rcount_1.fasta with 1 reads
+2023-06-24 14:57:20,110 [INFO] Exiting sars-cov-2 metagenome simulator - tidying up.
+2023-06-24 15:04:23,922 [INFO] Primer set: Artic v1
+2023-06-24 15:04:23,922 [INFO] Number of reads: 100000
+2023-06-24 15:04:23,922 [INFO] Random seed: 331076259
+2023-06-24 15:04:23,922 [INFO] Amplicon pseudocounts/ i.e. quality parameter: 200
+2023-06-24 15:04:23,929 [INFO] Spaces in the genomes and abundances files are processed as '_' characters if exist
+2023-06-24 15:04:23,930 [INFO] Total of relative abundance values is 100.0, not 1.
+2023-06-24 15:04:23,930 [INFO] Continuing, normalising total of genome abundances to 1.
+2023-06-24 15:04:23,941 [INFO] Working on genome 1 of 3
+2023-06-24 15:04:23,941 [INFO] Using bowtie2 to align primers to genome OA984024.1_Severe_acute_respiratory_syndrome_coronavirus_2_genome_assembly,_complete_genome:_monopartite
+2023-06-24 15:04:24,315 [INFO] Working on genome 2 of 3
+2023-06-24 15:04:24,315 [INFO] Using bowtie2 to align primers to genome OD929257.1_Severe_acute_respiratory_syndrome_coronavirus_2_genome_assembly,_complete_genome:_monopartite
+2023-06-24 15:04:24,630 [INFO] Working on genome 3 of 3
+2023-06-24 15:04:24,631 [INFO] Using bowtie2 to align primers to genome OM389144.1_Severe_acute_respiratory_syndrome_coronavirus_2_isolate_SARS-CoV-2/human/USA/GA-EHC-111G/2020,_complete_genome
+2023-06-24 15:04:24,962 [INFO] Total number of reads was 85326, when 100000 was expected.
+2023-06-24 15:04:24,962 [INFO] Introducing PCR errors
+2023-06-24 15:04:43,968 [INFO] All aimed PCR errros are written to "/home/asched85/mas_benchmark/bin/SWAMPy/src/example_PCR_errors.vcf"
+2023-06-24 15:04:44,022 [INFO] Generating reads using art_illumina, cycling through all genomes and remaining amplicons.
+2023-06-24 15:04:44,022 [INFO] Starting on file merged_amplicon_rcount_1.fasta with 1 reads
+2023-06-24 15:04:44,023 [INFO] Exiting sars-cov-2 metagenome simulator - tidying up.
+2023-06-24 15:06:13,160 [INFO] Primer set: Artic v1
+2023-06-24 15:06:13,160 [INFO] Number of reads: 100000
+2023-06-24 15:06:13,160 [INFO] Random seed: 33508332
+2023-06-24 15:06:13,160 [INFO] Amplicon pseudocounts/ i.e. quality parameter: 200
+2023-06-24 15:06:13,165 [INFO] Spaces in the genomes and abundances files are processed as '_' characters if exist
+2023-06-24 15:06:13,166 [INFO] Total of relative abundance values is 100.0, not 1.
+2023-06-24 15:06:13,166 [INFO] Continuing, normalising total of genome abundances to 1.
+2023-06-24 15:06:13,175 [INFO] Working on genome 1 of 3
+2023-06-24 15:06:13,175 [INFO] Using bowtie2 to align primers to genome OA984024.1_Severe_acute_respiratory_syndrome_coronavirus_2_genome_assembly,_complete_genome:_monopartite
+2023-06-24 15:06:13,543 [INFO] Working on genome 2 of 3
+2023-06-24 15:06:13,544 [INFO] Using bowtie2 to align primers to genome OD929257.1_Severe_acute_respiratory_syndrome_coronavirus_2_genome_assembly,_complete_genome:_monopartite
+2023-06-24 15:06:13,892 [INFO] Working on genome 3 of 3
+2023-06-24 15:06:13,892 [INFO] Using bowtie2 to align primers to genome OM389144.1_Severe_acute_respiratory_syndrome_coronavirus_2_isolate_SARS-CoV-2/human/USA/GA-EHC-111G/2020,_complete_genome
+2023-06-24 15:06:14,230 [INFO] Total number of reads was 90797, when 100000 was expected.
+2023-06-24 15:06:14,230 [INFO] Introducing PCR errors
+2023-06-24 15:06:32,054 [INFO] All aimed PCR errros are written to "/home/asched85/mas_benchmark/bin/SWAMPy/src/example_PCR_errors.vcf"
+2023-06-24 15:06:32,111 [INFO] Generating reads using art_illumina, cycling through all genomes and remaining amplicons.
+2023-06-24 15:06:32,111 [INFO] Starting on file merged_amplicon_rcount_1.fasta with 1 reads
+2023-06-24 15:06:32,160 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1.1.fq
+2023-06-24 15:06:32,161 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1.2.fq
+2023-06-24 15:06:32,161 [INFO] Starting on file merged_amplicon_rcount_2.fasta with 2 reads
+2023-06-24 15:06:32,213 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_2.1.fq
+2023-06-24 15:06:32,213 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_2.2.fq
+2023-06-24 15:06:32,214 [INFO] Starting on file merged_amplicon_rcount_3.fasta with 3 reads
+2023-06-24 15:06:32,292 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_3.1.fq
+2023-06-24 15:06:32,293 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_3.2.fq
+2023-06-24 15:06:32,293 [INFO] Starting on file merged_amplicon_rcount_4.fasta with 4 reads
+2023-06-24 15:06:32,353 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_4.1.fq
+2023-06-24 15:06:32,354 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_4.2.fq
+2023-06-24 15:06:32,354 [INFO] Starting on file merged_amplicon_rcount_5.fasta with 5 reads
+2023-06-24 15:06:32,393 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_5.1.fq
+2023-06-24 15:06:32,393 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_5.2.fq
+2023-06-24 15:06:32,393 [INFO] Starting on file merged_amplicon_rcount_6.fasta with 6 reads
+2023-06-24 15:06:32,441 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_6.1.fq
+2023-06-24 15:06:32,441 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_6.2.fq
+2023-06-24 15:06:32,441 [INFO] Starting on file merged_amplicon_rcount_513.fasta with 513 reads
+2023-06-24 15:06:32,526 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_513.1.fq
+2023-06-24 15:06:32,526 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_513.2.fq
+2023-06-24 15:06:32,526 [INFO] Starting on file merged_amplicon_rcount_7.fasta with 7 reads
+2023-06-24 15:06:32,586 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_7.1.fq
+2023-06-24 15:06:32,587 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_7.2.fq
+2023-06-24 15:06:32,587 [INFO] Starting on file merged_amplicon_rcount_516.fasta with 516 reads
+2023-06-24 15:06:32,705 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_516.1.fq
+2023-06-24 15:06:32,706 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_516.2.fq
+2023-06-24 15:06:32,706 [INFO] Starting on file merged_amplicon_rcount_10.fasta with 10 reads
+2023-06-24 15:06:32,782 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_10.1.fq
+2023-06-24 15:06:32,783 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_10.2.fq
+2023-06-24 15:06:32,783 [INFO] Starting on file merged_amplicon_rcount_11.fasta with 11 reads
+2023-06-24 15:06:32,819 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_11.1.fq
+2023-06-24 15:06:32,819 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_11.2.fq
+2023-06-24 15:06:32,819 [INFO] Starting on file merged_amplicon_rcount_12.fasta with 12 reads
+2023-06-24 15:06:32,882 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_12.1.fq
+2023-06-24 15:06:32,882 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_12.2.fq
+2023-06-24 15:06:32,882 [INFO] Starting on file merged_amplicon_rcount_13.fasta with 13 reads
+2023-06-24 15:06:32,940 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_13.1.fq
+2023-06-24 15:06:32,941 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_13.2.fq
+2023-06-24 15:06:32,941 [INFO] Starting on file merged_amplicon_rcount_14.fasta with 14 reads
+2023-06-24 15:06:32,980 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_14.1.fq
+2023-06-24 15:06:32,980 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_14.2.fq
+2023-06-24 15:06:32,980 [INFO] Starting on file merged_amplicon_rcount_8.fasta with 8 reads
+2023-06-24 15:06:33,020 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_8.1.fq
+2023-06-24 15:06:33,020 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_8.2.fq
+2023-06-24 15:06:33,020 [INFO] Starting on file merged_amplicon_rcount_16.fasta with 16 reads
+2023-06-24 15:06:33,057 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_16.1.fq
+2023-06-24 15:06:33,057 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_16.2.fq
+2023-06-24 15:06:33,057 [INFO] Starting on file merged_amplicon_rcount_17.fasta with 17 reads
+2023-06-24 15:06:33,101 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_17.1.fq
+2023-06-24 15:06:33,102 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_17.2.fq
+2023-06-24 15:06:33,102 [INFO] Starting on file merged_amplicon_rcount_18.fasta with 18 reads
+2023-06-24 15:06:33,163 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_18.1.fq
+2023-06-24 15:06:33,163 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_18.2.fq
+2023-06-24 15:06:33,163 [INFO] Starting on file merged_amplicon_rcount_19.fasta with 19 reads
+2023-06-24 15:06:33,268 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_19.1.fq
+2023-06-24 15:06:33,269 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_19.2.fq
+2023-06-24 15:06:33,269 [INFO] Starting on file merged_amplicon_rcount_1044.fasta with 1044 reads
+2023-06-24 15:06:33,412 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1044.1.fq
+2023-06-24 15:06:33,412 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1044.2.fq
+2023-06-24 15:06:33,412 [INFO] Starting on file merged_amplicon_rcount_21.fasta with 21 reads
+2023-06-24 15:06:33,472 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_21.1.fq
+2023-06-24 15:06:33,472 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_21.2.fq
+2023-06-24 15:06:33,473 [INFO] Starting on file merged_amplicon_rcount_1557.fasta with 1557 reads
+2023-06-24 15:06:33,715 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1557.1.fq
+2023-06-24 15:06:33,716 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1557.2.fq
+2023-06-24 15:06:33,716 [INFO] Starting on file merged_amplicon_rcount_22.fasta with 22 reads
+2023-06-24 15:06:33,756 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_22.1.fq
+2023-06-24 15:06:33,757 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_22.2.fq
+2023-06-24 15:06:33,757 [INFO] Starting on file merged_amplicon_rcount_23.fasta with 23 reads
+2023-06-24 15:06:33,845 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_23.1.fq
+2023-06-24 15:06:33,845 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_23.2.fq
+2023-06-24 15:06:33,846 [INFO] Starting on file merged_amplicon_rcount_20.fasta with 20 reads
+2023-06-24 15:06:33,887 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_20.1.fq
+2023-06-24 15:06:33,888 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_20.2.fq
+2023-06-24 15:06:33,888 [INFO] Starting on file merged_amplicon_rcount_26.fasta with 26 reads
+2023-06-24 15:06:33,924 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_26.1.fq
+2023-06-24 15:06:33,924 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_26.2.fq
+2023-06-24 15:06:33,924 [INFO] Starting on file merged_amplicon_rcount_27.fasta with 27 reads
+2023-06-24 15:06:33,958 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_27.1.fq
+2023-06-24 15:06:33,959 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_27.2.fq
+2023-06-24 15:06:33,959 [INFO] Starting on file merged_amplicon_rcount_28.fasta with 28 reads
+2023-06-24 15:06:34,004 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_28.1.fq
+2023-06-24 15:06:34,004 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_28.2.fq
+2023-06-24 15:06:34,004 [INFO] Starting on file merged_amplicon_rcount_29.fasta with 29 reads
+2023-06-24 15:06:34,041 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_29.1.fq
+2023-06-24 15:06:34,042 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_29.2.fq
+2023-06-24 15:06:34,042 [INFO] Starting on file merged_amplicon_rcount_24.fasta with 24 reads
+2023-06-24 15:06:34,099 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_24.1.fq
+2023-06-24 15:06:34,100 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_24.2.fq
+2023-06-24 15:06:34,100 [INFO] Starting on file merged_amplicon_rcount_31.fasta with 31 reads
+2023-06-24 15:06:34,136 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_31.1.fq
+2023-06-24 15:06:34,136 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_31.2.fq
+2023-06-24 15:06:34,136 [INFO] Starting on file merged_amplicon_rcount_32.fasta with 32 reads
+2023-06-24 15:06:34,184 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_32.1.fq
+2023-06-24 15:06:34,184 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_32.2.fq
+2023-06-24 15:06:34,184 [INFO] Starting on file merged_amplicon_rcount_33.fasta with 33 reads
+2023-06-24 15:06:34,220 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_33.1.fq
+2023-06-24 15:06:34,220 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_33.2.fq
+2023-06-24 15:06:34,220 [INFO] Starting on file merged_amplicon_rcount_34.fasta with 34 reads
+2023-06-24 15:06:34,262 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_34.1.fq
+2023-06-24 15:06:34,262 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_34.2.fq
+2023-06-24 15:06:34,262 [INFO] Starting on file merged_amplicon_rcount_35.fasta with 35 reads
+2023-06-24 15:06:34,312 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_35.1.fq
+2023-06-24 15:06:34,312 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_35.2.fq
+2023-06-24 15:06:34,313 [INFO] Starting on file merged_amplicon_rcount_36.fasta with 36 reads
+2023-06-24 15:06:34,355 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_36.1.fq
+2023-06-24 15:06:34,355 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_36.2.fq
+2023-06-24 15:06:34,355 [INFO] Starting on file merged_amplicon_rcount_548.fasta with 548 reads
+2023-06-24 15:06:34,442 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_548.1.fq
+2023-06-24 15:06:34,442 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_548.2.fq
+2023-06-24 15:06:34,442 [INFO] Starting on file merged_amplicon_rcount_38.fasta with 38 reads
+2023-06-24 15:06:34,505 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_38.1.fq
+2023-06-24 15:06:34,505 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_38.2.fq
+2023-06-24 15:06:34,506 [INFO] Starting on file merged_amplicon_rcount_39.fasta with 39 reads
+2023-06-24 15:06:34,556 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_39.1.fq
+2023-06-24 15:06:34,556 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_39.2.fq
+2023-06-24 15:06:34,556 [INFO] Starting on file merged_amplicon_rcount_552.fasta with 552 reads
+2023-06-24 15:06:34,646 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_552.1.fq
+2023-06-24 15:06:34,646 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_552.2.fq
+2023-06-24 15:06:34,646 [INFO] Starting on file merged_amplicon_rcount_41.fasta with 41 reads
+2023-06-24 15:06:34,688 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_41.1.fq
+2023-06-24 15:06:34,689 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_41.2.fq
+2023-06-24 15:06:34,689 [INFO] Starting on file merged_amplicon_rcount_42.fasta with 42 reads
+2023-06-24 15:06:34,756 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_42.1.fq
+2023-06-24 15:06:34,756 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_42.2.fq
+2023-06-24 15:06:34,756 [INFO] Starting on file merged_amplicon_rcount_1026.fasta with 1026 reads
+2023-06-24 15:06:34,920 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1026.1.fq
+2023-06-24 15:06:34,920 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1026.2.fq
+2023-06-24 15:06:34,921 [INFO] Starting on file merged_amplicon_rcount_44.fasta with 44 reads
+2023-06-24 15:06:35,003 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_44.1.fq
+2023-06-24 15:06:35,003 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_44.2.fq
+2023-06-24 15:06:35,003 [INFO] Starting on file merged_amplicon_rcount_45.fasta with 45 reads
+2023-06-24 15:06:35,060 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_45.1.fq
+2023-06-24 15:06:35,060 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_45.2.fq
+2023-06-24 15:06:35,060 [INFO] Starting on file merged_amplicon_rcount_9.fasta with 9 reads
+2023-06-24 15:06:35,091 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_9.1.fq
+2023-06-24 15:06:35,091 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_9.2.fq
+2023-06-24 15:06:35,091 [INFO] Starting on file merged_amplicon_rcount_559.fasta with 559 reads
+2023-06-24 15:06:35,175 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_559.1.fq
+2023-06-24 15:06:35,176 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_559.2.fq
+2023-06-24 15:06:35,176 [INFO] Starting on file merged_amplicon_rcount_48.fasta with 48 reads
+2023-06-24 15:06:35,213 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_48.1.fq
+2023-06-24 15:06:35,213 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_48.2.fq
+2023-06-24 15:06:35,213 [INFO] Starting on file merged_amplicon_rcount_561.fasta with 561 reads
+2023-06-24 15:06:35,348 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_561.1.fq
+2023-06-24 15:06:35,349 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_561.2.fq
+2023-06-24 15:06:35,349 [INFO] Starting on file merged_amplicon_rcount_49.fasta with 49 reads
+2023-06-24 15:06:35,381 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_49.1.fq
+2023-06-24 15:06:35,382 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_49.2.fq
+2023-06-24 15:06:35,382 [INFO] Starting on file merged_amplicon_rcount_51.fasta with 51 reads
+2023-06-24 15:06:35,414 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_51.1.fq
+2023-06-24 15:06:35,414 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_51.2.fq
+2023-06-24 15:06:35,414 [INFO] Starting on file merged_amplicon_rcount_46.fasta with 46 reads
+2023-06-24 15:06:35,454 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_46.1.fq
+2023-06-24 15:06:35,454 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_46.2.fq
+2023-06-24 15:06:35,455 [INFO] Starting on file merged_amplicon_rcount_53.fasta with 53 reads
+2023-06-24 15:06:35,504 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_53.1.fq
+2023-06-24 15:06:35,504 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_53.2.fq
+2023-06-24 15:06:35,504 [INFO] Starting on file merged_amplicon_rcount_54.fasta with 54 reads
+2023-06-24 15:06:35,554 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_54.1.fq
+2023-06-24 15:06:35,554 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_54.2.fq
+2023-06-24 15:06:35,555 [INFO] Starting on file merged_amplicon_rcount_55.fasta with 55 reads
+2023-06-24 15:06:35,587 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_55.1.fq
+2023-06-24 15:06:35,587 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_55.2.fq
+2023-06-24 15:06:35,587 [INFO] Starting on file merged_amplicon_rcount_56.fasta with 56 reads
+2023-06-24 15:06:35,631 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_56.1.fq
+2023-06-24 15:06:35,632 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_56.2.fq
+2023-06-24 15:06:35,632 [INFO] Starting on file merged_amplicon_rcount_57.fasta with 57 reads
+2023-06-24 15:06:35,666 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_57.1.fq
+2023-06-24 15:06:35,667 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_57.2.fq
+2023-06-24 15:06:35,667 [INFO] Starting on file merged_amplicon_rcount_570.fasta with 570 reads
+2023-06-24 15:06:35,756 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_570.1.fq
+2023-06-24 15:06:35,756 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_570.2.fq
+2023-06-24 15:06:35,756 [INFO] Starting on file merged_amplicon_rcount_59.fasta with 59 reads
+2023-06-24 15:06:35,820 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_59.1.fq
+2023-06-24 15:06:35,821 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_59.2.fq
+2023-06-24 15:06:35,821 [INFO] Starting on file merged_amplicon_rcount_60.fasta with 60 reads
+2023-06-24 15:06:35,874 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_60.1.fq
+2023-06-24 15:06:35,874 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_60.2.fq
+2023-06-24 15:06:35,874 [INFO] Starting on file merged_amplicon_rcount_1537.fasta with 1537 reads
+2023-06-24 15:06:36,048 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1537.1.fq
+2023-06-24 15:06:36,049 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1537.2.fq
+2023-06-24 15:06:36,049 [INFO] Starting on file merged_amplicon_rcount_61.fasta with 61 reads
+2023-06-24 15:06:36,099 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_61.1.fq
+2023-06-24 15:06:36,099 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_61.2.fq
+2023-06-24 15:06:36,099 [INFO] Starting on file merged_amplicon_rcount_63.fasta with 63 reads
+2023-06-24 15:06:36,149 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_63.1.fq
+2023-06-24 15:06:36,150 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_63.2.fq
+2023-06-24 15:06:36,150 [INFO] Starting on file merged_amplicon_rcount_64.fasta with 64 reads
+2023-06-24 15:06:36,206 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_64.1.fq
+2023-06-24 15:06:36,206 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_64.2.fq
+2023-06-24 15:06:36,206 [INFO] Starting on file merged_amplicon_rcount_1599.fasta with 1599 reads
+2023-06-24 15:06:36,424 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1599.1.fq
+2023-06-24 15:06:36,424 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1599.2.fq
+2023-06-24 15:06:36,425 [INFO] Starting on file merged_amplicon_rcount_65.fasta with 65 reads
+2023-06-24 15:06:36,474 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_65.1.fq
+2023-06-24 15:06:36,475 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_65.2.fq
+2023-06-24 15:06:36,475 [INFO] Starting on file merged_amplicon_rcount_67.fasta with 67 reads
+2023-06-24 15:06:36,510 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_67.1.fq
+2023-06-24 15:06:36,511 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_67.2.fq
+2023-06-24 15:06:36,511 [INFO] Starting on file merged_amplicon_rcount_68.fasta with 68 reads
+2023-06-24 15:06:36,543 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_68.1.fq
+2023-06-24 15:06:36,543 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_68.2.fq
+2023-06-24 15:06:36,543 [INFO] Starting on file merged_amplicon_rcount_69.fasta with 69 reads
+2023-06-24 15:06:36,618 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_69.1.fq
+2023-06-24 15:06:36,619 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_69.2.fq
+2023-06-24 15:06:36,619 [INFO] Starting on file merged_amplicon_rcount_70.fasta with 70 reads
+2023-06-24 15:06:36,651 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_70.1.fq
+2023-06-24 15:06:36,652 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_70.2.fq
+2023-06-24 15:06:36,652 [INFO] Starting on file merged_amplicon_rcount_72.fasta with 72 reads
+2023-06-24 15:06:36,758 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_72.1.fq
+2023-06-24 15:06:36,758 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_72.2.fq
+2023-06-24 15:06:36,758 [INFO] Starting on file merged_amplicon_rcount_73.fasta with 73 reads
+2023-06-24 15:06:36,807 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_73.1.fq
+2023-06-24 15:06:36,807 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_73.2.fq
+2023-06-24 15:06:36,807 [INFO] Starting on file merged_amplicon_rcount_1099.fasta with 1099 reads
+2023-06-24 15:06:36,953 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1099.1.fq
+2023-06-24 15:06:36,953 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1099.2.fq
+2023-06-24 15:06:36,953 [INFO] Starting on file merged_amplicon_rcount_15.fasta with 15 reads
+2023-06-24 15:06:36,997 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_15.1.fq
+2023-06-24 15:06:36,997 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_15.2.fq
+2023-06-24 15:06:36,997 [INFO] Starting on file merged_amplicon_rcount_77.fasta with 77 reads
+2023-06-24 15:06:37,035 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_77.1.fq
+2023-06-24 15:06:37,035 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_77.2.fq
+2023-06-24 15:06:37,035 [INFO] Starting on file merged_amplicon_rcount_78.fasta with 78 reads
+2023-06-24 15:06:37,094 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_78.1.fq
+2023-06-24 15:06:37,095 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_78.2.fq
+2023-06-24 15:06:37,095 [INFO] Starting on file merged_amplicon_rcount_79.fasta with 79 reads
+2023-06-24 15:06:37,150 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_79.1.fq
+2023-06-24 15:06:37,151 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_79.2.fq
+2023-06-24 15:06:37,151 [INFO] Starting on file merged_amplicon_rcount_80.fasta with 80 reads
+2023-06-24 15:06:37,187 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_80.1.fq
+2023-06-24 15:06:37,187 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_80.2.fq
+2023-06-24 15:06:37,187 [INFO] Starting on file merged_amplicon_rcount_76.fasta with 76 reads
+2023-06-24 15:06:37,222 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_76.1.fq
+2023-06-24 15:06:37,222 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_76.2.fq
+2023-06-24 15:06:37,222 [INFO] Starting on file merged_amplicon_rcount_594.fasta with 594 reads
+2023-06-24 15:06:37,309 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_594.1.fq
+2023-06-24 15:06:37,310 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_594.2.fq
+2023-06-24 15:06:37,310 [INFO] Starting on file merged_amplicon_rcount_525.fasta with 525 reads
+2023-06-24 15:06:37,428 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_525.1.fq
+2023-06-24 15:06:37,429 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_525.2.fq
+2023-06-24 15:06:37,429 [INFO] Starting on file merged_amplicon_rcount_84.fasta with 84 reads
+2023-06-24 15:06:37,503 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_84.1.fq
+2023-06-24 15:06:37,503 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_84.2.fq
+2023-06-24 15:06:37,503 [INFO] Starting on file merged_amplicon_rcount_85.fasta with 85 reads
+2023-06-24 15:06:37,591 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_85.1.fq
+2023-06-24 15:06:37,591 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_85.2.fq
+2023-06-24 15:06:37,591 [INFO] Starting on file merged_amplicon_rcount_598.fasta with 598 reads
+2023-06-24 15:06:37,718 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_598.1.fq
+2023-06-24 15:06:37,718 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_598.2.fq
+2023-06-24 15:06:37,718 [INFO] Starting on file merged_amplicon_rcount_87.fasta with 87 reads
+2023-06-24 15:06:37,760 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_87.1.fq
+2023-06-24 15:06:37,760 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_87.2.fq
+2023-06-24 15:06:37,760 [INFO] Starting on file merged_amplicon_rcount_88.fasta with 88 reads
+2023-06-24 15:06:37,837 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_88.1.fq
+2023-06-24 15:06:37,837 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_88.2.fq
+2023-06-24 15:06:37,837 [INFO] Starting on file merged_amplicon_rcount_89.fasta with 89 reads
+2023-06-24 15:06:37,881 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_89.1.fq
+2023-06-24 15:06:37,881 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_89.2.fq
+2023-06-24 15:06:37,882 [INFO] Starting on file merged_amplicon_rcount_90.fasta with 90 reads
+2023-06-24 15:06:37,936 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_90.1.fq
+2023-06-24 15:06:37,937 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_90.2.fq
+2023-06-24 15:06:37,937 [INFO] Starting on file merged_amplicon_rcount_86.fasta with 86 reads
+2023-06-24 15:06:37,976 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_86.1.fq
+2023-06-24 15:06:37,977 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_86.2.fq
+2023-06-24 15:06:37,977 [INFO] Starting on file merged_amplicon_rcount_92.fasta with 92 reads
+2023-06-24 15:06:38,011 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_92.1.fq
+2023-06-24 15:06:38,012 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_92.2.fq
+2023-06-24 15:06:38,012 [INFO] Starting on file merged_amplicon_rcount_91.fasta with 91 reads
+2023-06-24 15:06:38,048 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_91.1.fq
+2023-06-24 15:06:38,048 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_91.2.fq
+2023-06-24 15:06:38,048 [INFO] Starting on file merged_amplicon_rcount_606.fasta with 606 reads
+2023-06-24 15:06:38,134 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_606.1.fq
+2023-06-24 15:06:38,134 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_606.2.fq
+2023-06-24 15:06:38,134 [INFO] Starting on file merged_amplicon_rcount_95.fasta with 95 reads
+2023-06-24 15:06:38,197 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_95.1.fq
+2023-06-24 15:06:38,197 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_95.2.fq
+2023-06-24 15:06:38,198 [INFO] Starting on file merged_amplicon_rcount_94.fasta with 94 reads
+2023-06-24 15:06:38,247 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_94.1.fq
+2023-06-24 15:06:38,248 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_94.2.fq
+2023-06-24 15:06:38,248 [INFO] Starting on file merged_amplicon_rcount_97.fasta with 97 reads
+2023-06-24 15:06:38,282 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_97.1.fq
+2023-06-24 15:06:38,282 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_97.2.fq
+2023-06-24 15:06:38,283 [INFO] Starting on file merged_amplicon_rcount_1633.fasta with 1633 reads
+2023-06-24 15:06:38,463 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1633.1.fq
+2023-06-24 15:06:38,464 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1633.2.fq
+2023-06-24 15:06:38,464 [INFO] Starting on file merged_amplicon_rcount_100.fasta with 100 reads
+2023-06-24 15:06:38,511 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_100.1.fq
+2023-06-24 15:06:38,512 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_100.2.fq
+2023-06-24 15:06:38,512 [INFO] Starting on file merged_amplicon_rcount_101.fasta with 101 reads
+2023-06-24 15:06:38,559 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_101.1.fq
+2023-06-24 15:06:38,559 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_101.2.fq
+2023-06-24 15:06:38,559 [INFO] Starting on file merged_amplicon_rcount_102.fasta with 102 reads
+2023-06-24 15:06:38,603 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_102.1.fq
+2023-06-24 15:06:38,604 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_102.2.fq
+2023-06-24 15:06:38,604 [INFO] Starting on file merged_amplicon_rcount_104.fasta with 104 reads
+2023-06-24 15:06:38,692 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_104.1.fq
+2023-06-24 15:06:38,693 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_104.2.fq
+2023-06-24 15:06:38,693 [INFO] Starting on file merged_amplicon_rcount_617.fasta with 617 reads
+2023-06-24 15:06:38,784 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_617.1.fq
+2023-06-24 15:06:38,784 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_617.2.fq
+2023-06-24 15:06:38,784 [INFO] Starting on file merged_amplicon_rcount_106.fasta with 106 reads
+2023-06-24 15:06:38,831 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_106.1.fq
+2023-06-24 15:06:38,831 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_106.2.fq
+2023-06-24 15:06:38,832 [INFO] Starting on file merged_amplicon_rcount_108.fasta with 108 reads
+2023-06-24 15:06:38,892 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_108.1.fq
+2023-06-24 15:06:38,892 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_108.2.fq
+2023-06-24 15:06:38,892 [INFO] Starting on file merged_amplicon_rcount_109.fasta with 109 reads
+2023-06-24 15:06:38,966 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_109.1.fq
+2023-06-24 15:06:38,967 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_109.2.fq
+2023-06-24 15:06:38,967 [INFO] Starting on file merged_amplicon_rcount_110.fasta with 110 reads
+2023-06-24 15:06:39,005 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_110.1.fq
+2023-06-24 15:06:39,005 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_110.2.fq
+2023-06-24 15:06:39,005 [INFO] Starting on file merged_amplicon_rcount_623.fasta with 623 reads
+2023-06-24 15:06:39,095 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_623.1.fq
+2023-06-24 15:06:39,095 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_623.2.fq
+2023-06-24 15:06:39,095 [INFO] Starting on file merged_amplicon_rcount_112.fasta with 112 reads
+2023-06-24 15:06:39,192 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_112.1.fq
+2023-06-24 15:06:39,192 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_112.2.fq
+2023-06-24 15:06:39,192 [INFO] Starting on file merged_amplicon_rcount_111.fasta with 111 reads
+2023-06-24 15:06:39,252 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_111.1.fq
+2023-06-24 15:06:39,252 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_111.2.fq
+2023-06-24 15:06:39,252 [INFO] Starting on file merged_amplicon_rcount_114.fasta with 114 reads
+2023-06-24 15:06:39,327 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_114.1.fq
+2023-06-24 15:06:39,328 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_114.2.fq
+2023-06-24 15:06:39,328 [INFO] Starting on file merged_amplicon_rcount_115.fasta with 115 reads
+2023-06-24 15:06:39,381 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_115.1.fq
+2023-06-24 15:06:39,382 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_115.2.fq
+2023-06-24 15:06:39,382 [INFO] Starting on file merged_amplicon_rcount_116.fasta with 116 reads
+2023-06-24 15:06:39,449 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_116.1.fq
+2023-06-24 15:06:39,449 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_116.2.fq
+2023-06-24 15:06:39,449 [INFO] Starting on file merged_amplicon_rcount_118.fasta with 118 reads
+2023-06-24 15:06:39,488 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_118.1.fq
+2023-06-24 15:06:39,489 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_118.2.fq
+2023-06-24 15:06:39,489 [INFO] Starting on file merged_amplicon_rcount_120.fasta with 120 reads
+2023-06-24 15:06:39,526 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_120.1.fq
+2023-06-24 15:06:39,527 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_120.2.fq
+2023-06-24 15:06:39,527 [INFO] Starting on file merged_amplicon_rcount_121.fasta with 121 reads
+2023-06-24 15:06:39,631 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_121.1.fq
+2023-06-24 15:06:39,631 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_121.2.fq
+2023-06-24 15:06:39,631 [INFO] Starting on file merged_amplicon_rcount_123.fasta with 123 reads
+2023-06-24 15:06:39,674 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_123.1.fq
+2023-06-24 15:06:39,674 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_123.2.fq
+2023-06-24 15:06:39,675 [INFO] Starting on file merged_amplicon_rcount_1151.fasta with 1151 reads
+2023-06-24 15:06:39,824 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1151.1.fq
+2023-06-24 15:06:39,825 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1151.2.fq
+2023-06-24 15:06:39,825 [INFO] Starting on file merged_amplicon_rcount_129.fasta with 129 reads
+2023-06-24 15:06:39,893 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_129.1.fq
+2023-06-24 15:06:39,894 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_129.2.fq
+2023-06-24 15:06:39,894 [INFO] Starting on file merged_amplicon_rcount_131.fasta with 131 reads
+2023-06-24 15:06:39,946 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_131.1.fq
+2023-06-24 15:06:39,946 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_131.2.fq
+2023-06-24 15:06:39,946 [INFO] Starting on file merged_amplicon_rcount_644.fasta with 644 reads
+2023-06-24 15:06:40,077 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_644.1.fq
+2023-06-24 15:06:40,077 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_644.2.fq
+2023-06-24 15:06:40,077 [INFO] Starting on file merged_amplicon_rcount_133.fasta with 133 reads
+2023-06-24 15:06:40,118 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_133.1.fq
+2023-06-24 15:06:40,119 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_133.2.fq
+2023-06-24 15:06:40,119 [INFO] Starting on file merged_amplicon_rcount_135.fasta with 135 reads
+2023-06-24 15:06:40,186 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_135.1.fq
+2023-06-24 15:06:40,187 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_135.2.fq
+2023-06-24 15:06:40,187 [INFO] Starting on file merged_amplicon_rcount_137.fasta with 137 reads
+2023-06-24 15:06:40,239 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_137.1.fq
+2023-06-24 15:06:40,239 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_137.2.fq
+2023-06-24 15:06:40,239 [INFO] Starting on file merged_amplicon_rcount_139.fasta with 139 reads
+2023-06-24 15:06:40,280 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_139.1.fq
+2023-06-24 15:06:40,281 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_139.2.fq
+2023-06-24 15:06:40,281 [INFO] Starting on file merged_amplicon_rcount_140.fasta with 140 reads
+2023-06-24 15:06:40,322 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_140.1.fq
+2023-06-24 15:06:40,322 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_140.2.fq
+2023-06-24 15:06:40,323 [INFO] Starting on file merged_amplicon_rcount_141.fasta with 141 reads
+2023-06-24 15:06:40,365 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_141.1.fq
+2023-06-24 15:06:40,365 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_141.2.fq
+2023-06-24 15:06:40,365 [INFO] Starting on file merged_amplicon_rcount_144.fasta with 144 reads
+2023-06-24 15:06:40,426 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_144.1.fq
+2023-06-24 15:06:40,426 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_144.2.fq
+2023-06-24 15:06:40,426 [INFO] Starting on file merged_amplicon_rcount_146.fasta with 146 reads
+2023-06-24 15:06:40,470 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_146.1.fq
+2023-06-24 15:06:40,470 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_146.2.fq
+2023-06-24 15:06:40,471 [INFO] Starting on file merged_amplicon_rcount_1171.fasta with 1171 reads
+2023-06-24 15:06:40,615 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1171.1.fq
+2023-06-24 15:06:40,616 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1171.2.fq
+2023-06-24 15:06:40,616 [INFO] Starting on file merged_amplicon_rcount_155.fasta with 155 reads
+2023-06-24 15:06:40,705 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_155.1.fq
+2023-06-24 15:06:40,706 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_155.2.fq
+2023-06-24 15:06:40,706 [INFO] Starting on file merged_amplicon_rcount_156.fasta with 156 reads
+2023-06-24 15:06:40,796 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_156.1.fq
+2023-06-24 15:06:40,797 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_156.2.fq
+2023-06-24 15:06:40,797 [INFO] Starting on file merged_amplicon_rcount_157.fasta with 157 reads
+2023-06-24 15:06:40,886 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_157.1.fq
+2023-06-24 15:06:40,886 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_157.2.fq
+2023-06-24 15:06:40,886 [INFO] Starting on file merged_amplicon_rcount_159.fasta with 159 reads
+2023-06-24 15:06:40,964 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_159.1.fq
+2023-06-24 15:06:40,964 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_159.2.fq
+2023-06-24 15:06:40,965 [INFO] Starting on file merged_amplicon_rcount_161.fasta with 161 reads
+2023-06-24 15:06:41,010 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_161.1.fq
+2023-06-24 15:06:41,010 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_161.2.fq
+2023-06-24 15:06:41,011 [INFO] Starting on file merged_amplicon_rcount_162.fasta with 162 reads
+2023-06-24 15:06:41,072 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_162.1.fq
+2023-06-24 15:06:41,072 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_162.2.fq
+2023-06-24 15:06:41,072 [INFO] Starting on file merged_amplicon_rcount_163.fasta with 163 reads
+2023-06-24 15:06:41,116 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_163.1.fq
+2023-06-24 15:06:41,116 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_163.2.fq
+2023-06-24 15:06:41,116 [INFO] Starting on file merged_amplicon_rcount_165.fasta with 165 reads
+2023-06-24 15:06:41,178 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_165.1.fq
+2023-06-24 15:06:41,179 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_165.2.fq
+2023-06-24 15:06:41,179 [INFO] Starting on file merged_amplicon_rcount_166.fasta with 166 reads
+2023-06-24 15:06:41,226 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_166.1.fq
+2023-06-24 15:06:41,226 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_166.2.fq
+2023-06-24 15:06:41,226 [INFO] Starting on file merged_amplicon_rcount_172.fasta with 172 reads
+2023-06-24 15:06:41,274 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_172.1.fq
+2023-06-24 15:06:41,275 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_172.2.fq
+2023-06-24 15:06:41,275 [INFO] Starting on file merged_amplicon_rcount_174.fasta with 174 reads
+2023-06-24 15:06:41,326 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_174.1.fq
+2023-06-24 15:06:41,327 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_174.2.fq
+2023-06-24 15:06:41,327 [INFO] Starting on file merged_amplicon_rcount_179.fasta with 179 reads
+2023-06-24 15:06:41,377 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_179.1.fq
+2023-06-24 15:06:41,377 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_179.2.fq
+2023-06-24 15:06:41,378 [INFO] Starting on file merged_amplicon_rcount_180.fasta with 180 reads
+2023-06-24 15:06:41,432 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_180.1.fq
+2023-06-24 15:06:41,433 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_180.2.fq
+2023-06-24 15:06:41,433 [INFO] Starting on file merged_amplicon_rcount_182.fasta with 182 reads
+2023-06-24 15:06:41,479 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_182.1.fq
+2023-06-24 15:06:41,479 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_182.2.fq
+2023-06-24 15:06:41,480 [INFO] Starting on file merged_amplicon_rcount_183.fasta with 183 reads
+2023-06-24 15:06:41,534 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_183.1.fq
+2023-06-24 15:06:41,534 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_183.2.fq
+2023-06-24 15:06:41,534 [INFO] Starting on file merged_amplicon_rcount_184.fasta with 184 reads
+2023-06-24 15:06:41,611 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_184.1.fq
+2023-06-24 15:06:41,611 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_184.2.fq
+2023-06-24 15:06:41,612 [INFO] Starting on file merged_amplicon_rcount_186.fasta with 186 reads
+2023-06-24 15:06:41,662 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_186.1.fq
+2023-06-24 15:06:41,662 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_186.2.fq
+2023-06-24 15:06:41,662 [INFO] Starting on file merged_amplicon_rcount_189.fasta with 189 reads
+2023-06-24 15:06:41,751 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_189.1.fq
+2023-06-24 15:06:41,751 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_189.2.fq
+2023-06-24 15:06:41,751 [INFO] Starting on file merged_amplicon_rcount_191.fasta with 191 reads
+2023-06-24 15:06:41,822 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_191.1.fq
+2023-06-24 15:06:41,822 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_191.2.fq
+2023-06-24 15:06:41,822 [INFO] Starting on file merged_amplicon_rcount_1218.fasta with 1218 reads
+2023-06-24 15:06:42,008 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1218.1.fq
+2023-06-24 15:06:42,008 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1218.2.fq
+2023-06-24 15:06:42,008 [INFO] Starting on file merged_amplicon_rcount_196.fasta with 196 reads
+2023-06-24 15:06:42,112 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_196.1.fq
+2023-06-24 15:06:42,113 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_196.2.fq
+2023-06-24 15:06:42,113 [INFO] Starting on file merged_amplicon_rcount_198.fasta with 198 reads
+2023-06-24 15:06:42,182 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_198.1.fq
+2023-06-24 15:06:42,182 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_198.2.fq
+2023-06-24 15:06:42,183 [INFO] Starting on file merged_amplicon_rcount_711.fasta with 711 reads
+2023-06-24 15:06:42,322 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_711.1.fq
+2023-06-24 15:06:42,322 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_711.2.fq
+2023-06-24 15:06:42,322 [INFO] Starting on file merged_amplicon_rcount_200.fasta with 200 reads
+2023-06-24 15:06:42,384 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_200.1.fq
+2023-06-24 15:06:42,385 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_200.2.fq
+2023-06-24 15:06:42,385 [INFO] Starting on file merged_amplicon_rcount_201.fasta with 201 reads
+2023-06-24 15:06:42,433 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_201.1.fq
+2023-06-24 15:06:42,433 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_201.2.fq
+2023-06-24 15:06:42,433 [INFO] Starting on file merged_amplicon_rcount_199.fasta with 199 reads
+2023-06-24 15:06:42,479 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_199.1.fq
+2023-06-24 15:06:42,479 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_199.2.fq
+2023-06-24 15:06:42,479 [INFO] Starting on file merged_amplicon_rcount_203.fasta with 203 reads
+2023-06-24 15:06:42,527 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_203.1.fq
+2023-06-24 15:06:42,527 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_203.2.fq
+2023-06-24 15:06:42,527 [INFO] Starting on file merged_amplicon_rcount_716.fasta with 716 reads
+2023-06-24 15:06:42,626 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_716.1.fq
+2023-06-24 15:06:42,626 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_716.2.fq
+2023-06-24 15:06:42,626 [INFO] Starting on file merged_amplicon_rcount_205.fasta with 205 reads
+2023-06-24 15:06:42,707 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_205.1.fq
+2023-06-24 15:06:42,707 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_205.2.fq
+2023-06-24 15:06:42,707 [INFO] Starting on file merged_amplicon_rcount_207.fasta with 207 reads
+2023-06-24 15:06:42,755 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_207.1.fq
+2023-06-24 15:06:42,755 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_207.2.fq
+2023-06-24 15:06:42,755 [INFO] Starting on file merged_amplicon_rcount_210.fasta with 210 reads
+2023-06-24 15:06:42,818 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_210.1.fq
+2023-06-24 15:06:42,818 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_210.2.fq
+2023-06-24 15:06:42,818 [INFO] Starting on file merged_amplicon_rcount_729.fasta with 729 reads
+2023-06-24 15:06:42,921 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_729.1.fq
+2023-06-24 15:06:42,922 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_729.2.fq
+2023-06-24 15:06:42,922 [INFO] Starting on file merged_amplicon_rcount_43.fasta with 43 reads
+2023-06-24 15:06:42,966 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_43.1.fq
+2023-06-24 15:06:42,967 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_43.2.fq
+2023-06-24 15:06:42,967 [INFO] Starting on file merged_amplicon_rcount_219.fasta with 219 reads
+2023-06-24 15:06:43,052 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_219.1.fq
+2023-06-24 15:06:43,053 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_219.2.fq
+2023-06-24 15:06:43,053 [INFO] Starting on file merged_amplicon_rcount_220.fasta with 220 reads
+2023-06-24 15:06:43,117 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_220.1.fq
+2023-06-24 15:06:43,118 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_220.2.fq
+2023-06-24 15:06:43,118 [INFO] Starting on file merged_amplicon_rcount_225.fasta with 225 reads
+2023-06-24 15:06:43,177 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_225.1.fq
+2023-06-24 15:06:43,177 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_225.2.fq
+2023-06-24 15:06:43,178 [INFO] Starting on file merged_amplicon_rcount_226.fasta with 226 reads
+2023-06-24 15:06:43,226 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_226.1.fq
+2023-06-24 15:06:43,226 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_226.2.fq
+2023-06-24 15:06:43,227 [INFO] Starting on file merged_amplicon_rcount_227.fasta with 227 reads
+2023-06-24 15:06:43,287 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_227.1.fq
+2023-06-24 15:06:43,288 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_227.2.fq
+2023-06-24 15:06:43,288 [INFO] Starting on file merged_amplicon_rcount_229.fasta with 229 reads
+2023-06-24 15:06:43,346 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_229.1.fq
+2023-06-24 15:06:43,346 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_229.2.fq
+2023-06-24 15:06:43,346 [INFO] Starting on file merged_amplicon_rcount_231.fasta with 231 reads
+2023-06-24 15:06:43,396 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_231.1.fq
+2023-06-24 15:06:43,397 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_231.2.fq
+2023-06-24 15:06:43,397 [INFO] Starting on file merged_amplicon_rcount_234.fasta with 234 reads
+2023-06-24 15:06:43,446 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_234.1.fq
+2023-06-24 15:06:43,446 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_234.2.fq
+2023-06-24 15:06:43,446 [INFO] Starting on file merged_amplicon_rcount_237.fasta with 237 reads
+2023-06-24 15:06:43,495 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_237.1.fq
+2023-06-24 15:06:43,495 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_237.2.fq
+2023-06-24 15:06:43,496 [INFO] Starting on file merged_amplicon_rcount_751.fasta with 751 reads
+2023-06-24 15:06:43,597 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_751.1.fq
+2023-06-24 15:06:43,597 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_751.2.fq
+2023-06-24 15:06:43,597 [INFO] Starting on file merged_amplicon_rcount_242.fasta with 242 reads
+2023-06-24 15:06:43,674 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_242.1.fq
+2023-06-24 15:06:43,674 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_242.2.fq
+2023-06-24 15:06:43,674 [INFO] Starting on file merged_amplicon_rcount_243.fasta with 243 reads
+2023-06-24 15:06:43,765 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_243.1.fq
+2023-06-24 15:06:43,765 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_243.2.fq
+2023-06-24 15:06:43,765 [INFO] Starting on file merged_amplicon_rcount_756.fasta with 756 reads
+2023-06-24 15:06:43,867 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_756.1.fq
+2023-06-24 15:06:43,868 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_756.2.fq
+2023-06-24 15:06:43,868 [INFO] Starting on file merged_amplicon_rcount_245.fasta with 245 reads
+2023-06-24 15:06:43,940 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_245.1.fq
+2023-06-24 15:06:43,940 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_245.2.fq
+2023-06-24 15:06:43,940 [INFO] Starting on file merged_amplicon_rcount_1271.fasta with 1271 reads
+2023-06-24 15:06:44,127 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1271.1.fq
+2023-06-24 15:06:44,127 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1271.2.fq
+2023-06-24 15:06:44,127 [INFO] Starting on file merged_amplicon_rcount_760.fasta with 760 reads
+2023-06-24 15:06:44,269 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_760.1.fq
+2023-06-24 15:06:44,269 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_760.2.fq
+2023-06-24 15:06:44,269 [INFO] Starting on file merged_amplicon_rcount_247.fasta with 247 reads
+2023-06-24 15:06:44,345 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_247.1.fq
+2023-06-24 15:06:44,346 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_247.2.fq
+2023-06-24 15:06:44,346 [INFO] Starting on file merged_amplicon_rcount_259.fasta with 259 reads
+2023-06-24 15:06:44,398 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_259.1.fq
+2023-06-24 15:06:44,399 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_259.2.fq
+2023-06-24 15:06:44,399 [INFO] Starting on file merged_amplicon_rcount_265.fasta with 265 reads
+2023-06-24 15:06:44,498 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_265.1.fq
+2023-06-24 15:06:44,498 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_265.2.fq
+2023-06-24 15:06:44,498 [INFO] Starting on file merged_amplicon_rcount_267.fasta with 267 reads
+2023-06-24 15:06:44,581 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_267.1.fq
+2023-06-24 15:06:44,581 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_267.2.fq
+2023-06-24 15:06:44,581 [INFO] Starting on file merged_amplicon_rcount_268.fasta with 268 reads
+2023-06-24 15:06:44,664 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_268.1.fq
+2023-06-24 15:06:44,665 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_268.2.fq
+2023-06-24 15:06:44,665 [INFO] Starting on file merged_amplicon_rcount_269.fasta with 269 reads
+2023-06-24 15:06:44,748 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_269.1.fq
+2023-06-24 15:06:44,748 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_269.2.fq
+2023-06-24 15:06:44,748 [INFO] Starting on file merged_amplicon_rcount_274.fasta with 274 reads
+2023-06-24 15:06:44,832 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_274.1.fq
+2023-06-24 15:06:44,832 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_274.2.fq
+2023-06-24 15:06:44,832 [INFO] Starting on file merged_amplicon_rcount_788.fasta with 788 reads
+2023-06-24 15:06:44,972 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_788.1.fq
+2023-06-24 15:06:44,973 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_788.2.fq
+2023-06-24 15:06:44,973 [INFO] Starting on file merged_amplicon_rcount_792.fasta with 792 reads
+2023-06-24 15:06:45,127 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_792.1.fq
+2023-06-24 15:06:45,127 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_792.2.fq
+2023-06-24 15:06:45,127 [INFO] Starting on file merged_amplicon_rcount_289.fasta with 289 reads
+2023-06-24 15:06:45,183 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_289.1.fq
+2023-06-24 15:06:45,184 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_289.2.fq
+2023-06-24 15:06:45,184 [INFO] Starting on file merged_amplicon_rcount_306.fasta with 306 reads
+2023-06-24 15:06:45,246 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_306.1.fq
+2023-06-24 15:06:45,246 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_306.2.fq
+2023-06-24 15:06:45,246 [INFO] Starting on file merged_amplicon_rcount_311.fasta with 311 reads
+2023-06-24 15:06:45,305 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_311.1.fq
+2023-06-24 15:06:45,306 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_311.2.fq
+2023-06-24 15:06:45,306 [INFO] Starting on file merged_amplicon_rcount_314.fasta with 314 reads
+2023-06-24 15:06:45,367 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_314.1.fq
+2023-06-24 15:06:45,368 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_314.2.fq
+2023-06-24 15:06:45,368 [INFO] Starting on file merged_amplicon_rcount_827.fasta with 827 reads
+2023-06-24 15:06:45,483 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_827.1.fq
+2023-06-24 15:06:45,484 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_827.2.fq
+2023-06-24 15:06:45,484 [INFO] Starting on file merged_amplicon_rcount_316.fasta with 316 reads
+2023-06-24 15:06:45,578 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_316.1.fq
+2023-06-24 15:06:45,578 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_316.2.fq
+2023-06-24 15:06:45,578 [INFO] Starting on file merged_amplicon_rcount_1348.fasta with 1348 reads
+2023-06-24 15:06:45,778 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1348.1.fq
+2023-06-24 15:06:45,778 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1348.2.fq
+2023-06-24 15:06:45,778 [INFO] Starting on file merged_amplicon_rcount_325.fasta with 325 reads
+2023-06-24 15:06:45,915 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_325.1.fq
+2023-06-24 15:06:45,915 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_325.2.fq
+2023-06-24 15:06:45,915 [INFO] Starting on file merged_amplicon_rcount_324.fasta with 324 reads
+2023-06-24 15:06:45,981 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_324.1.fq
+2023-06-24 15:06:45,981 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_324.2.fq
+2023-06-24 15:06:45,981 [INFO] Starting on file merged_amplicon_rcount_331.fasta with 331 reads
+2023-06-24 15:06:46,042 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_331.1.fq
+2023-06-24 15:06:46,042 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_331.2.fq
+2023-06-24 15:06:46,042 [INFO] Starting on file merged_amplicon_rcount_336.fasta with 336 reads
+2023-06-24 15:06:46,142 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_336.1.fq
+2023-06-24 15:06:46,142 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_336.2.fq
+2023-06-24 15:06:46,143 [INFO] Starting on file merged_amplicon_rcount_337.fasta with 337 reads
+2023-06-24 15:06:46,204 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_337.1.fq
+2023-06-24 15:06:46,205 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_337.2.fq
+2023-06-24 15:06:46,205 [INFO] Starting on file merged_amplicon_rcount_339.fasta with 339 reads
+2023-06-24 15:06:46,267 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_339.1.fq
+2023-06-24 15:06:46,268 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_339.2.fq
+2023-06-24 15:06:46,268 [INFO] Starting on file merged_amplicon_rcount_342.fasta with 342 reads
+2023-06-24 15:06:46,332 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_342.1.fq
+2023-06-24 15:06:46,332 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_342.2.fq
+2023-06-24 15:06:46,332 [INFO] Starting on file merged_amplicon_rcount_864.fasta with 864 reads
+2023-06-24 15:06:46,493 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_864.1.fq
+2023-06-24 15:06:46,494 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_864.2.fq
+2023-06-24 15:06:46,494 [INFO] Starting on file merged_amplicon_rcount_360.fasta with 360 reads
+2023-06-24 15:06:46,593 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_360.1.fq
+2023-06-24 15:06:46,594 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_360.2.fq
+2023-06-24 15:06:46,594 [INFO] Starting on file merged_amplicon_rcount_361.fasta with 361 reads
+2023-06-24 15:06:46,659 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_361.1.fq
+2023-06-24 15:06:46,660 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_361.2.fq
+2023-06-24 15:06:46,660 [INFO] Starting on file merged_amplicon_rcount_877.fasta with 877 reads
+2023-06-24 15:06:46,815 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_877.1.fq
+2023-06-24 15:06:46,815 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_877.2.fq
+2023-06-24 15:06:46,816 [INFO] Starting on file merged_amplicon_rcount_367.fasta with 367 reads
+2023-06-24 15:06:46,914 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_367.1.fq
+2023-06-24 15:06:46,915 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_367.2.fq
+2023-06-24 15:06:46,915 [INFO] Starting on file merged_amplicon_rcount_370.fasta with 370 reads
+2023-06-24 15:06:46,981 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_370.1.fq
+2023-06-24 15:06:46,981 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_370.2.fq
+2023-06-24 15:06:46,981 [INFO] Starting on file merged_amplicon_rcount_883.fasta with 883 reads
+2023-06-24 15:06:47,132 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_883.1.fq
+2023-06-24 15:06:47,132 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_883.2.fq
+2023-06-24 15:06:47,132 [INFO] Starting on file merged_amplicon_rcount_1398.fasta with 1398 reads
+2023-06-24 15:06:47,348 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1398.1.fq
+2023-06-24 15:06:47,348 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1398.2.fq
+2023-06-24 15:06:47,349 [INFO] Starting on file merged_amplicon_rcount_380.fasta with 380 reads
+2023-06-24 15:06:47,452 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_380.1.fq
+2023-06-24 15:06:47,453 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_380.2.fq
+2023-06-24 15:06:47,453 [INFO] Starting on file merged_amplicon_rcount_893.fasta with 893 reads
+2023-06-24 15:06:47,608 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_893.1.fq
+2023-06-24 15:06:47,609 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_893.2.fq
+2023-06-24 15:06:47,609 [INFO] Starting on file merged_amplicon_rcount_382.fasta with 382 reads
+2023-06-24 15:06:47,711 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_382.1.fq
+2023-06-24 15:06:47,712 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_382.2.fq
+2023-06-24 15:06:47,712 [INFO] Starting on file merged_amplicon_rcount_1406.fasta with 1406 reads
+2023-06-24 15:06:47,872 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1406.1.fq
+2023-06-24 15:06:47,872 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1406.2.fq
+2023-06-24 15:06:47,872 [INFO] Starting on file merged_amplicon_rcount_385.fasta with 385 reads
+2023-06-24 15:06:47,980 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_385.1.fq
+2023-06-24 15:06:47,981 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_385.2.fq
+2023-06-24 15:06:47,981 [INFO] Starting on file merged_amplicon_rcount_902.fasta with 902 reads
+2023-06-24 15:06:48,151 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_902.1.fq
+2023-06-24 15:06:48,151 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_902.2.fq
+2023-06-24 15:06:48,151 [INFO] Starting on file merged_amplicon_rcount_394.fasta with 394 reads
+2023-06-24 15:06:48,256 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_394.1.fq
+2023-06-24 15:06:48,256 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_394.2.fq
+2023-06-24 15:06:48,256 [INFO] Starting on file merged_amplicon_rcount_910.fasta with 910 reads
+2023-06-24 15:06:48,379 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_910.1.fq
+2023-06-24 15:06:48,380 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_910.2.fq
+2023-06-24 15:06:48,380 [INFO] Starting on file merged_amplicon_rcount_398.fasta with 398 reads
+2023-06-24 15:06:48,481 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_398.1.fq
+2023-06-24 15:06:48,481 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_398.2.fq
+2023-06-24 15:06:48,481 [INFO] Starting on file merged_amplicon_rcount_400.fasta with 400 reads
+2023-06-24 15:06:48,586 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_400.1.fq
+2023-06-24 15:06:48,586 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_400.2.fq
+2023-06-24 15:06:48,586 [INFO] Starting on file merged_amplicon_rcount_412.fasta with 412 reads
+2023-06-24 15:06:48,654 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_412.1.fq
+2023-06-24 15:06:48,654 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_412.2.fq
+2023-06-24 15:06:48,655 [INFO] Starting on file merged_amplicon_rcount_82.fasta with 82 reads
+2023-06-24 15:06:48,695 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_82.1.fq
+2023-06-24 15:06:48,695 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_82.2.fq
+2023-06-24 15:06:48,695 [INFO] Starting on file merged_amplicon_rcount_928.fasta with 928 reads
+2023-06-24 15:06:48,831 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_928.1.fq
+2023-06-24 15:06:48,831 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_928.2.fq
+2023-06-24 15:06:48,831 [INFO] Starting on file merged_amplicon_rcount_416.fasta with 416 reads
+2023-06-24 15:06:48,941 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_416.1.fq
+2023-06-24 15:06:48,941 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_416.2.fq
+2023-06-24 15:06:48,941 [INFO] Starting on file merged_amplicon_rcount_418.fasta with 418 reads
+2023-06-24 15:06:49,009 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_418.1.fq
+2023-06-24 15:06:49,010 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_418.2.fq
+2023-06-24 15:06:49,010 [INFO] Starting on file merged_amplicon_rcount_83.fasta with 83 reads
+2023-06-24 15:06:49,065 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_83.1.fq
+2023-06-24 15:06:49,066 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_83.2.fq
+2023-06-24 15:06:49,066 [INFO] Starting on file merged_amplicon_rcount_932.fasta with 932 reads
+2023-06-24 15:06:49,223 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_932.1.fq
+2023-06-24 15:06:49,223 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_932.2.fq
+2023-06-24 15:06:49,223 [INFO] Starting on file merged_amplicon_rcount_1445.fasta with 1445 reads
+2023-06-24 15:06:49,426 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1445.1.fq
+2023-06-24 15:06:49,426 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1445.2.fq
+2023-06-24 15:06:49,426 [INFO] Starting on file merged_amplicon_rcount_938.fasta with 938 reads
+2023-06-24 15:06:49,583 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_938.1.fq
+2023-06-24 15:06:49,583 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_938.2.fq
+2023-06-24 15:06:49,583 [INFO] Starting on file merged_amplicon_rcount_435.fasta with 435 reads
+2023-06-24 15:06:49,694 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_435.1.fq
+2023-06-24 15:06:49,695 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_435.2.fq
+2023-06-24 15:06:49,695 [INFO] Starting on file merged_amplicon_rcount_440.fasta with 440 reads
+2023-06-24 15:06:49,800 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_440.1.fq
+2023-06-24 15:06:49,801 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_440.2.fq
+2023-06-24 15:06:49,801 [INFO] Starting on file merged_amplicon_rcount_445.fasta with 445 reads
+2023-06-24 15:06:49,873 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_445.1.fq
+2023-06-24 15:06:49,873 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_445.2.fq
+2023-06-24 15:06:49,873 [INFO] Starting on file merged_amplicon_rcount_448.fasta with 448 reads
+2023-06-24 15:06:49,987 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_448.1.fq
+2023-06-24 15:06:49,987 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_448.2.fq
+2023-06-24 15:06:49,987 [INFO] Starting on file merged_amplicon_rcount_450.fasta with 450 reads
+2023-06-24 15:06:50,061 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_450.1.fq
+2023-06-24 15:06:50,062 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_450.2.fq
+2023-06-24 15:06:50,062 [INFO] Starting on file merged_amplicon_rcount_963.fasta with 963 reads
+2023-06-24 15:06:50,222 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_963.1.fq
+2023-06-24 15:06:50,223 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_963.2.fq
+2023-06-24 15:06:50,223 [INFO] Starting on file merged_amplicon_rcount_452.fasta with 452 reads
+2023-06-24 15:06:50,337 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_452.1.fq
+2023-06-24 15:06:50,338 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_452.2.fq
+2023-06-24 15:06:50,338 [INFO] Starting on file merged_amplicon_rcount_969.fasta with 969 reads
+2023-06-24 15:06:50,482 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_969.1.fq
+2023-06-24 15:06:50,482 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_969.2.fq
+2023-06-24 15:06:50,482 [INFO] Starting on file merged_amplicon_rcount_457.fasta with 457 reads
+2023-06-24 15:06:50,608 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_457.1.fq
+2023-06-24 15:06:50,608 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_457.2.fq
+2023-06-24 15:06:50,609 [INFO] Starting on file merged_amplicon_rcount_970.fasta with 970 reads
+2023-06-24 15:06:50,782 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_970.1.fq
+2023-06-24 15:06:50,782 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_970.2.fq
+2023-06-24 15:06:50,782 [INFO] Starting on file merged_amplicon_rcount_1999.fasta with 1999 reads
+2023-06-24 15:06:51,034 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1999.1.fq
+2023-06-24 15:06:51,035 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_1999.2.fq
+2023-06-24 15:06:51,035 [INFO] Starting on file merged_amplicon_rcount_981.fasta with 981 reads
+2023-06-24 15:06:51,196 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_981.1.fq
+2023-06-24 15:06:51,196 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_981.2.fq
+2023-06-24 15:06:51,196 [INFO] Starting on file merged_amplicon_rcount_481.fasta with 481 reads
+2023-06-24 15:06:51,315 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_481.1.fq
+2023-06-24 15:06:51,315 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_481.2.fq
+2023-06-24 15:06:51,315 [INFO] Starting on file merged_amplicon_rcount_493.fasta with 493 reads
+2023-06-24 15:06:51,433 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_493.1.fq
+2023-06-24 15:06:51,433 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_493.2.fq
+2023-06-24 15:06:51,433 [INFO] Starting on file merged_amplicon_rcount_498.fasta with 498 reads
+2023-06-24 15:06:51,554 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_498.1.fq
+2023-06-24 15:06:51,554 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_498.2.fq
+2023-06-24 15:06:51,554 [INFO] Starting on file merged_amplicon_rcount_507.fasta with 507 reads
+2023-06-24 15:06:51,634 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_507.1.fq
+2023-06-24 15:06:51,634 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_507.2.fq
+2023-06-24 15:06:51,635 [INFO] Starting on file merged_amplicon_rcount_511.fasta with 511 reads
+2023-06-24 15:06:51,761 [INFO] art_illumina: 	 the 1st reads: ../example/temp/tmp.sms.merged_amplicon_rcount_511.1.fq
+2023-06-24 15:06:51,761 [INFO] art_illumina: 	 the 2nd reads: ../example/temp/tmp.sms.merged_amplicon_rcount_511.2.fq
+2023-06-24 15:06:52,006 [INFO] Creating random data for shuffle.
+2023-06-24 15:06:53,967 [INFO] Shuffling /home/asched85/mas_benchmark/bin/SWAMPy/src/example_R1.fastq
+2023-06-24 15:06:54,357 [INFO] Shuffling /home/asched85/mas_benchmark/bin/SWAMPy/src/example_R2.fastq
+2023-06-24 15:06:54,774 [INFO] Exiting sars-cov-2 metagenome simulator - tidying up.
+2023-06-24 15:06:54,846 [INFO] Removing all files in ../example/temp/genomes
+2023-06-24 15:06:54,848 [INFO] Removing all files in ../example/temp/amplicons
+2023-06-24 15:06:54,902 [INFO] Removing all files in ../example/temp/indices

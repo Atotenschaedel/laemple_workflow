@@ -1,0 +1,22 @@
+[M::mm_idx_gen::0.002*1.63] collected minimizers
+[M::mm_idx_gen::0.005*3.90] sorted minimizers
+[M::main::0.005*3.89] loaded/built the index for 1 target sequence(s)
+[M::mm_mapopt_update::0.006*3.66] mid_occ = 100
+[M::mm_idx_stat] kmer size: 19; skip: 10; is_hpc: 0; #seq: 1
+[M::mm_idx_stat::0.006*3.53] distinct minimizers: 5470 (99.98% are singletons); average occurrences: 1.003; average spacing: 5.453
+[M::worker_pipeline::0.008*3.01] mapped 1 sequences
+[M::main] Version: 2.17-r941
+[M::main] CMD: minimap2 -c -x asm20 --end-bonus 100 -t 20 --cs /home/asched85/mas_benchmark/bin/VLQ/wastewater_analysis/example/SARS-CoV-2-NC_045513.fasta ref9.fa
+[M::main] Real time: 0.009 sec; CPU: 0.026 sec; Peak RSS: 0.008 GB
+0 reference bases covered by exactly one contig
+0 substitutions; ts/tv = NaN
+0 1bp deletions
+0 1bp insertions
+0 2bp deletions
+0 2bp insertions
+0 [3,50) deletions
+0 [3,50) insertions
+0 [50,1000) deletions
+0 [50,1000) insertions
+0 >=1000 deletions
+0 >=1000 insertions
