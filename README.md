@@ -253,3 +253,9 @@ Render `PostPredict_plots.Rmd` to visualize and interpret benchmarking outcomes.
 - Tools can be enabled or disabled via configuration
 - No changes to core workflows are required to add new tools
 - Do not run multiple instances of main.py simultaneously
+
+# Credits and third-party software
+
+This repository includes third-party software developed by other authors, which is incorporated to enable the execution of the tool presented here and to support the reproduction of previously published results.
+
+Detailed attribution, licensing information, commit identifiers, and references to the original publications are provided in the [CREDITS](CREDITS) file. Users are encouraged to cite the original works when making use of these components.
