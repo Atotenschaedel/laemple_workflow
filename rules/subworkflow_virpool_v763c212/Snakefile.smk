@@ -1,3 +1,7 @@
+"""
+Deprecated: in order for this script to run, additional code and configs need to be added for tool: virpool_v763c212. see README for additional information.
+virpool can be installed in bin folder following instructions by the orginal authors: https://github.com/fmfi-compbio/virpool, script is based on commit ID: 763c212.
+"""
 # snakemake workflow
 include: "common.smk"
 

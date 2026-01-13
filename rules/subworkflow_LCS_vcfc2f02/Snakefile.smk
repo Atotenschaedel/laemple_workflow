@@ -1,3 +1,7 @@
+"""
+Deprecated: in order for this script to run, additional code and configs need to be added for tool: LCS_vcfc2f02. see README for additional information.
+LCS can be installed in bin folder following instructions by the orginal authors: https://github.com/rvalieris/LCS, script is based on commit ID: cfc2f02.
+"""
 # snakemake workflow
 include: "common.smk"
 

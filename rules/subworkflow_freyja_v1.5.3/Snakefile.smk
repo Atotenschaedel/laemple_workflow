@@ -1,3 +1,7 @@
+"""
+Deprecated: in order for this script to run, additional configs need to be added for tool: freyja_v1.5.3. see README for additional information.
+Freyja v.1.5.3 will be installed using conda package, see env/freyja_v1.5.3.yaml
+"""
 # snakemake workflow
 include: "common.smk"
 

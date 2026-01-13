@@ -1,3 +1,8 @@
+"""
+Deprecated: in order for this script to run, additional code and configs need to be added for tool: vaquero_v6afe417. see README for additional information.
+VaQuERo can be installed in bin folder following instructions by the orginal authors: https://github.com/fabou-uobaf/VaQuERo, script is based on commit ID: 6afe417.
+"""
+
 # snakemake workflow
 include: "common.smk"
 

@@ -1,3 +1,7 @@
+"""
+Deprecated: in order for this script to run, additional code and configs need to be added for tool: lollipop_v0.3.0. see README for additional information.
+LolliPop can be installed in bin folder following instructions by the orginal authors: https://github.com/cbg-ethz/LolliPop, script is based on version v0.3.0.
+"""
 # snakemake workflow
 include: "common.smk"
 

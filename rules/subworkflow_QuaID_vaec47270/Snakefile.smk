@@ -1,3 +1,7 @@
+"""
+Deprecated: in order for this script to run, additional code and configs need to be added for tool: QuaID_vaec47270. see README for additional information.
+QuaID can be installed in bin folder following instructions by the orginal authors: https://gitlab.com/treangenlab/quaid, script is based on commit ID: aec47270.
+"""
 # snakemake workflow
 include: "common.smk"
 
