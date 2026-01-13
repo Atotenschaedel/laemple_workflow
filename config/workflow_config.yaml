@@ -13,7 +13,6 @@ REFERENCES:
   PRIMER_SET: reference/primer_schemes/nCoV-2019_V4/artic_v4.bed
   REF_GENOME: reference/RefSeq_sequence_Wuhan-Hu1.fa
   REF_HUMAN: reference/dummy.fa
-  CONS_SEQUENCES: reference/consensus_sequences/data/pango-consensus-sequences_summary.json
 SIMULATION:
   AMPLICON_DISTRIBUTION: dirichlet_1
   AMPLICON_PSEUDOCOUNTS: 10

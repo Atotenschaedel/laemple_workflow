@@ -93,7 +93,7 @@ colScale <- scale_colour_manual(values = tool_list)
 fillScale <- scale_fill_manual(values=tool_list)
 
 #set up json data
-json.data <- fromJSON(file=paste(getwd(), "/", config$REFERENCES$CONS_SEQUENCES, sep=""))
+json.data <- fromJSON(file=paste(getwd(), "/", "reference/pango-sequences/data/pango-consensus-sequences_summary.json", sep=""))
 
 #clean up
 rm(label, tool)
