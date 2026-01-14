@@ -1,11 +1,14 @@
 # Readme
 
-# Laemple Workflow
+---
 
-**a Benchmarking Framework for Virus Lineage Deconvolution Tools for SARS-CoV-2 from Wastewater**
+# Læmple Workflow
 
-This repository contains a reproducible benchmarking pipeline for evaluating SARS-CoV-2 lineage deconvolution tools from wastewater sequencing data.. It is designed to simulate sequencing data, perform variant calling, apply lineage deconvolution methods, and assess their performance against known ground truth. The pipeline is implemented using **Snakemake**, with configuration-driven execution and downstream analysis in **R**.
+#### A Benchmarking Framework for Virus Lineage Deconvolution Tools for SARS-CoV-2 from Wastewater
 
+This repository contains a reproducible benchmarking pipeline for evaluating SARS-CoV-2 lineage deconvolution tools from wastewater sequencing data. It is designed to simulate sequencing data, perform variant calling, apply lineage deconvolution methods, and assess their performance against known ground truth. The pipeline is implemented using **Snakemake** (version ≥9.5.1) and **conda** (version ≥24.7.1), with configuration-driven execution and downstream analysis in **R**.
+
+---
 
 ## Overview
 
@@ -19,6 +22,7 @@ Wastewater sequencing is increasingly used to monitor viral diversity in populat
 
 The modular design allows individual components of the pipeline to be adapted or extended as new tools and methods become available.
 
+---
 
 ## Project Structure
 
@@ -35,29 +39,39 @@ Project
 │   ├── simulation.smk                  Snakemake Workflow for Input Data Simulation
 │   ├── variantCalling.smk              Snakemake Workflow for Mutation Calling
 │   ├── lineage_deconvolution.smk       Snakemake Workflow to call tool specific subworfklows
-│   ├── subworkflow_TOOL NAME           tool specific subworkflow
-│   │   ├── Snakefile.smk               tool specific Snakemake workflow
-│   │   ├── common.smk                  tool specific config file for subworkflow
-│   └── └── prepareSummary.py           Python script to convert tool specfic output to standard output format
-└──main.py                 main script to start complete project
-
-# additional folders that will be created after workflow completion:
-
-├── logs
-├── experiments
-│   ├── EXPERIMENT NAME           
-│   │   ├── data                        contains simulated sequencing data in fastq format 
-│   │   ├── results                     Python script to convert tool
-│   │   │   ├── postPrediction          contains standardized output files from tool specific workflows
-│   │   │   ├── variantCall             contains all results from mutation calling pipeline
-│   │   │   └──TOOL NAME               tool specific output files 
-│   │   ├── simulation                  Python script to convert tool
-│   │   │   ├── abundances              abundances per samples in tsv format
-│   │   │   ├── QualityControl          QC report per sample
-│   │   │   ├── EXPERIMENT_NAME_data.csv        simulated abundances data over complete timecourse
-│   │   │   ├── EXPERIMENT_NAME_metadata.tsv    simulated metadata per sample 
-└── └── └── └── EXPERIMENT_NAME_plot.png        Plot of simulated timecourse      
+│   └── subworkflow_TOOL NAME           tool specific subworkflow
+│       ├── Snakefile.smk               tool specific Snakemake workflow
+│       ├── common.smk                  tool specific config file for subworkflow
+│       └── prepareSummary.py           Python script to convert tool specfic output to standard output format
+└──main.py              main script to start complete project
 ```
+
+Additional folders that will be created after workflow completion:
+
+```
+├── logs
+└── experiments
+    ├── EXPERIMENT NAME 1               Format: <experiment name>_<replica number>_<timecourse name>
+    │   ├── data                        contains simulated sequencing data in fastq format 
+    │   ├── results                     
+    │   │   ├── postPrediction          contains standardized output files from tool specific workflows
+    │   │   ├── variantCall             contains all results from mutation calling pipeline
+    │   │   └──TOOL NAME                tool specific output files 
+    │   ├── simulation                  
+    │   │   ├── abundances              abundances per samples in tsv format
+    │   │   ├── QualityControl          QC report per sample
+    │   │   ├── EXPERIMENT_NAME_data.csv        simulated abundances data over complete timecourse
+    │   │   ├── EXPERIMENT_NAME_metadata.tsv    simulated metadata per sample 
+    │   └── └── EXPERIMENT_NAME_plot.png        Plot of simulated timecourse      
+    ├── EXPERIMENT NAME 2               
+    │   ├── ...
+    |   ┊
+    ├── EXPERIMENT NAME 2               
+    │   ├── ...
+    |   ┊
+    └── ...
+```
+---
 # Installation
 
 This project consist of two separate installation layers:
@@ -69,47 +83,59 @@ The pipeline is designed to be modular: new tools can be added without modifiyin
 
 ## Overall pipeline installation
 
-1. **Clone the Repository**
-2. **Install Snakemake** using `conda`
+#### Clone the Repository
+
+```
+git clone https://github.com/Atotenschaedel/Laemple_workflow.git
+cd Laemple_workflow/
+```
+
+#### Install Snakemake using `conda`
     ```
     conda env create -f envs/snakemake.yaml
     ```
-3. **Configuration**
+#### Configuration
     All pipeline parameters are defined in `config/worfklow_config.yaml`. 
-    This file controls datasets, simulation parameters, seeds, enabled tools and reporting behavior. No code changes are required to modify experimental setups. 
+This file controls datasets, simulation parameters, seeds, enabled tools and reporting behavior. 
+No code changes are required to modify experimental setups.
+The base version of Læmple comes with two configuration files 
 
-## Minimal Example
+a. **workflow_config.yaml:** a minimal example running out of the box (see below)
+b. **workflow_config_manuscript.yaml:** the config files for the analysis as presented in the manuscript. For this analysis to run, individual tools which are considered in the analysis need to be installed in `./bin`.
 
-The default workflow is configured to include a minimal example of the complete workflow which includes only tools Freyja (https://anaconda.org/channels/bioconda/packages/freyja/overview) and VaQuERo (https://github.com/fabou-uobaf/VaQuERo.git) and uses additional reference sequences from https://github.com/corneliusroemer/pango-sequences.git as well as SWAMPy for simulation of sequence data from wastewater samples (https://github.com/goldman-gp-ebi/SWAMPy). It can be started by activating by:
+## Running the Minimal Example
+
+For demonstration purpose, the default workflow is configured to include a minimal example of the complete workflow which includes only tools Freyja (https://anaconda.org/channels/bioconda/packages/freyja/overview) and VaQuERo (https://github.com/fabou-uobaf/VaQuERo.git) and uses additional reference sequences from https://github.com/corneliusroemer/pango-sequences.git as well as SWAMPy for simulation of sequence data from wastewater samples (https://github.com/goldman-gp-ebi/SWAMPy). It can be started by activating by:
     
     ```
     conda activate snakemake
     python main.py
+Rscript -e "rmarkdown::render('PostPredict_report.Rmd')"
     ```
 
-It should end with 6 new experiments with each having three result files in the resultfolder: `freyja_v2.0.0_summary.csv`, `vaquero_v24d9211_summary.csv` and `vaquero_v24d9211_summary.csv`. Final Report can be rendered using `PostPredict_plots_all.Rmd`
+It should end with 6 new simulated experiments with each having two result files in the respective result folders: `freyja_v2.0.0_summary.csv`, and `vaquero_v24d9211_summary.csv`. Final Report can be rendered using `PostPredict_report.Rmd`
 
-It is recommended to update reference sequences when working with newer data.
+Initial expected run time, including generation of required `conda` environments for the minimal example is <2 hours.
 
-## Tool-specific installation
+## Composing customized workflows
 
-Each lineage deconvolution tool is installed independently and integrated into the pipeline in a standardized way. Freyja will be installed 
+To compose a customized workflow, serving specific needs with respect to which tools/parameters should be compared, each lineage deconvolution tool needs to be installed independently and integrated into the pipeline in a standardized way.
 
-### General rules for adding a new tool
+To this end, the following components need to be set in place for each tool to be included:
 
-For a tool named `TOOLNAME`, the following components are required:
-1. Conda environment
-2. Source code
-3. Snakemake subworkflow
-4. Output standardization script
-5. Configuration entry
+1. Install/provide executables in `./bin`
+2. Define `conda` environment
+3. Compose Snakemake subworkflow
+4. Compose output standardization script
+5. Add configuration entry
 
 ### Install the tool itself
-Follow the official installation instruction of the tools (e.g. GitHub README, documentation).
 
-### Create a Conda environment
+Follow the official installation instruction of the tools (e.g. GitHub README, documentation). Provide the scripts and executable of the tool encapsulated in a dedicated subdirectory under `./bin`.
 
-Create a conda yaml file named:  `envs/TOOLNAME.yaml`, which contains the tool, all it dependencies and any required Python/R packages
+#### Create a Conda environment
+
+Create a conda yaml file named:  `envs/TOOLNAME.yaml`, which contains the tool (if applicable), all it dependencies and any required Python/R packages.
 
 Example:
 ```
@@ -123,7 +149,7 @@ dependencies:
   - numpy
 ```
 
-### Add tool source code
+#### Add tool source code
 
 If required, place the tool's source code in: `bin/TOOLNAME`. this may include any wrapper scripts, helper utilities and configuration templates.
 
@@ -162,18 +188,19 @@ default = {
 
 #### prepareSummary.py
 
-This script should refprmat the tool's output into a standardized post-prediction format used across the pipeline. 
+This script should reformat the tool's output into a standardized post-prediction format used across the pipeline. 
 
-The output table **must contain the flowwoing columns:**
+The output table **must contain the following columns:**
 - timepoint
 - lineage 1
 - lineage 2
 - ...
+- lineage N
 - others
 - sample_name
 - tool_name
 
-#### Register the tool in the configuration
+### Register the tool in the configuration
 
 Finally, add the tool to `config/workflow_config.yaml` under the `TOOLS` section:
 
@@ -183,7 +210,7 @@ TOOLS:
     COLOUR_IN_REPORT: '#123456'
     INCLUDE_IN_ANALYSIS: true
     TOOL_NAME: toolname
-    TOOL_LABEL: "ToolName\nv.X.Y.Z"
+    TOOL_LABEL: "ToolName version add.info"
 ```
 **Configuration Fields**
 - `COLOUR_IN_REPORT` Color used in plots and reports
@@ -191,7 +218,9 @@ TOOLS:
 - `TOOL_NAME` Internal identifier (used by the pipeline)
 - `TOOL_LABEL` Human-readable name for plots and tables
 
-# How to run
+---
+
+# How to perform an analysis
 
 `main.py` is the top-level controller script for this project. It automates the execution of multiple Snakemake workflows by iterating over simulation parameters defined in `config/workflow_config.yaml` and launching complete pipeline for each experiment.
 
@@ -202,11 +231,12 @@ Instead of manually running each Snakemake workflow, `main.py`:
 - Executes simulation, variant calling and lineage deconvolution workflows sequentially. 
 
 ## Experiment Naming Scheme
-Experiments are automaiticall named using the format: 
-**Ex<*experiment_number*>_<*seed_index*>_<*dataset_name*>**
 
-# Step-by-step guide
-## Configure Workflow Parameter
+Experiments are automatically named using the format:  Ex<*experiment_number*>\_<*seed_index*>\_<*dataset_name*>
+
+## Step-by-step guide
+
+### Configure Workflow Parameter
 
 Edit `config/workflow_config.yaml`to define:
 - Datasets to be simulated
@@ -214,7 +244,7 @@ Edit `config/workflow_config.yaml`to define:
 - Number of random seeds
 - Reference paths and tool settings
 
-## Run the Pipeline
+### Run the Pipeline
 
 From the project root directory:
 
@@ -244,8 +274,13 @@ snakemake --snakefile lineage_deconvolution.smk \
 
 ## Analyze Results
 
-Render `PostPredict_plots.Rmd` to visualize and interpret benchmarking outcomes.
+Knit the comparative report using `PostPredict_report.Rmd` for result visualization and interpretation. To this end, either use `Rstudio` or render the report directly from the command line using 
 
+```
+Rscript -e "rmarkdown::render('PostPredict_report.Rmd')"
+```
+
+---
 
 # Notes & Best Practices
 
@@ -253,6 +288,17 @@ Render `PostPredict_plots.Rmd` to visualize and interpret benchmarking outcomes.
 - Tools can be enabled or disabled via configuration
 - No changes to core workflows are required to add new tools
 - Do not run multiple instances of main.py simultaneously
+---
+
+# Trouble shooting
+
+* In case the individual conda environments can not be initiation 
+   * make sure that the minimal version requirements for Snakemake (version ≥9.5.1) make and conda (version ≥24.7.1) are met.
+   * disable the channel priority configuration for conda by specifying `conda config --set channel_priority disabled`
+* In case you experience issues with the PostPredict_report.Rmd script, make sure that all required R packages are installed. Most conveniently, this can be done by open the script in Rstudio and allow Rstudio to make the required installations.
+
+
+---
 
 # Credits and third-party software
 
