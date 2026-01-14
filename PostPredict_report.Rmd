@@ -1,0 +1,1634 @@
+---
+title: 'Læmple: Virus Lineage Deconvolution Benchmarking'
+author: "Anna Schedl"
+date: "`r Sys.time()`"
+output:
+  html_document:
+    code_folding: hide
+    toc: yes
+    toc_float: yes
+    toc_depth: 6
+    theme: flatly
+    self_contained: true
+  pdf_document:
+    toc: yes
+    toc_depth: '6'
+subtitle: Comprehensive Report
+params:
+  config_file: config/workflow_config.yaml
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo=FALSE,
+  message=FALSE, 
+  warning=FALSE, 
+  cache=TRUE, 
+  fig.align="center",
+  dpi = 90,
+  fig.retina = 1
+)
+
+#Inline code output formatting
+knitr::knit_hooks$set(inline = function(x) {
+  if(is.numeric(x)&str_detect(x,"\\.")){
+      x <- format(round(x,3),big.mark=",",nsmall = 3)
+  }else{
+    x <- format(x,big.mark=",")
+  }
+}) 
+
+library(yaml)
+library(DT)
+#library(rjson)
+library(jsonlite)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(reshape2)
+library(ggpubr)
+library(ggVennDiagram)
+library(lsa)
+library(ggridges)
+library(stringi)
+library(RColorBrewer)
+library(rjson)
+
+
+currWorkingDir = getwd()
+if(interactive()){
+  params$config_file <- paste0(currWorkingDir, "config/workflow_config.yaml")
+}
+```
+
+
+```{r config, warning=FALSE, message=TRUE, echo=TRUE}
+# Read config file from params
+config <- yaml::read_yaml(params$config_file)
+
+# color for simulation data
+tool_list <- c("simulation"="#D5695DFF")
+
+# additional labels
+label.legend <- c("simulation" = "simulation",
+                  "P"="Real Positive", "N"="Real Negative", 
+                  "PP"="Predicted Positive", "TP"="True Positive", "FP"="False Positive", "FN" = "False Negative", 
+                  "RMSE"="Root Mean Square Error", 
+                  "TPR"="True Positive Rate", 
+                  "FNR"="False Negative Rate", "PPV"="Positive Predictive Value", "FDR"="False Discovery Rate", 
+                  "jaccard_index"="Jaccard Index", "F1_score"="F1 score", "count_lineage"="Number of lineages", 
+                  "uniformity_wg_per"="Percent, genome min coverage",
+                  "different branch" = "different branch", "parent"="parent", "child"="child",
+                  "Overall" = "Overall"
+                  )
+
+for (label in config$POSTPRED$LABELS){
+  label.legend[label$key] <- label$value
+}
+
+for (tool in config$TOOLS){
+  if (tool$INCLUDE_IN_ANALYSIS){
+    tool_list[tool$TOOL_NAME] <- tool$COLOUR_IN_REPORT
+    label.legend[tool$TOOL_NAME] <- tool$TOOL_LABEL
+  }
+}
+
+# safe_labeller function, returns original value if not found in label.legends
+safe_labeller <- function(x) {
+  if (is.data.frame(x)) {
+    out <- lapply(x, function(col) {
+      mapped <- label.legend[as.character(col)]
+      mapped[is.na(mapped)] <- as.character(col)[is.na(mapped)]
+      mapped
+    })
+    return(as.data.frame(out, stringsAsFactors = FALSE))
+  }
+
+  mapped <- label.legend[as.character(x)]
+  mapped[is.na(mapped)] <- as.character(x)[is.na(mapped)]
+  mapped
+}
+
+#set colors
+colScale <- scale_colour_manual(values = tool_list)
+fillScale <- scale_fill_manual(values=tool_list)
+
+#set up json data
+url <- "https://raw.githubusercontent.com/corneliusroemer/pango-sequences/refs/heads/main/data/pango-consensus-sequences_summary.json"
+file = paste(currWorkingDir, "/reference/consensus_sequences/data/pango-consensus-sequences_summary.json", sep="")
+json.data <- jsonlite::fromJSON(url)
+
+#clean up
+rm(label, tool)
+```
+
+
+# Introduction
+
+Graphical overview of the benchmarking results of the current [Læmple](https://github.com/Atotenschaedel/laemple_workflow) analysis. 
+
+Læmple simulates a time course with a sequence of changing virus lineage abundances, from which a predefined number of time points are samples and used to simulate whole genome tiling amplicon sequencing data, using a third party tool named [SWAMPy](https://github.com/goldman-gp-ebi/SWAMPy). The sequencing quality can vary between different experiments, and be used as an additional covariate of the analysis. Each experiment is performed in a predefined number of replicas. 
+
+On these simulated reads virus variant deconvolution tools are applied. 
+
+In the following report, the results of these tools --with each other, and to the simulated ground truth-- are compared. Thereby qualitative measures (e.g. False Negative Rate, Positive Predictive Value, Jaccard Index) and quantitative measures (e.g. rooted mean squared error of relative abundance) are deduced to assess individual tool performance. Additionally, the observed errors, in particular false positive classifications, are further evaluated with respect to the closest true positive, to assess the severity of mis-classification calls.
+
+----
+
+## Settings & Sample Overview
+
+List included Tools: 
+
+```{r tool-list-all, echo=TRUE}
+knitr::kable(data.frame(Tools = names(tool_list)) %>% rowwise() %>% mutate(`Tool name` = unlist(str_split(Tools, "_"))[1], Version = unlist(str_split(Tools, "_"))[2], Additional_Information = unlist(str_split(Tools, "_"))[3]) %>% dplyr::select(-Tools)  )
+```
+
+
+
+----
+
+
+```{r sample-list-all, echo=TRUE}
+experiment_list <- list.dirs(path=paste0(currWorkingDir, "/experiments"), full.names=FALSE, recursive=FALSE)
+experiment_list <- experiment_list[!grepl("^##", experiment_list)]
+```
+
+```{r read-sim-data, warning=FALSE, message=FALSE, echo=FALSE}
+# get simulation data 
+for(i in 1:length(experiment_list)) {
+  f = paste(currWorkingDir, "/experiments/", experiment_list[i], "/results/postPrediction/simulation_summary.csv", sep="")
+  data.temp <- read.csv(f)
+  data.temp$experiment <- experiment_list[i]
+  if (i == 1) { 
+    data.sim <- data.temp
+  } else { 
+    common_cols <- intersect(colnames(data.sim), colnames(data.temp))
+    data.sim <- merge(x=data.sim, y=data.temp, by = common_cols, all=TRUE)
+  }
+}
+
+data.sim <- data.sim %>% 
+  rowwise() %>% 
+  mutate(
+    replicate = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[2], 
+    timecourse = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[3], 
+    experiment = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[1]
+  )
+
+# get all lineages that are part of simulation
+sim.lineages <- colnames(data.sim %>% dplyr::select(-c("timepoint", "sample_name", "tool_name", "sample", "sample_date", "experiment", "coverage_avg", "coverage_sd", "uniformity_wg_per", "MAPQ_avg", "replicate", "timecourse")))
+
+# create long format of simulation data
+data.sim.long <- data.sim %>% 
+  dplyr::select(c(sim.lineages, "timepoint", "experiment", "replicate", "timecourse","coverage_avg","coverage_sd","uniformity_wg_per", "MAPQ_avg")) %>% 
+  gather(key="lineage", value="rel_abun", -c("timecourse", "timepoint", "experiment", "replicate", "coverage_avg", "coverage_sd", "uniformity_wg_per", "MAPQ_avg")) %>%
+  filter(!is.na(rel_abun)) 
+
+#clean up
+rm(f, i, data.temp, common_cols)
+```
+
+
+```{r read-tool-data, warning=FALSE, message=FALSE, echo=FALSE}
+data.tool <- NULL
+for(i in 1:length(experiment_list)) {
+  for (j in 1:length(tool_list)) {
+    if(names(tool_list)[j] == "simulation") {next}
+    else {
+      f = paste(currWorkingDir, "/experiments/", experiment_list[i], "/results/postPrediction/", names(tool_list)[j], "_summary.csv", sep="")
+      data.temp <- tryCatch(read.csv(f), error=function(e) NULL)
+      if (is.null(data.temp)) {
+        data.temp <- data.frame(timepoint = unique(data.sim$timepoint))
+        }
+      else {
+        data.temp <-  data.temp %>% dplyr::select(-c("sample_name"))
+        }
+    
+      data.temp <- data.temp %>%
+        mutate(experiment = experiment_list[i], tool_name = names(tool_list)[j]) %>%
+        filter(!if_all(everything(), is.na))
+      
+      if (i == 1 & j == 1) {data.tool <- data.temp} 
+      else { 
+      data.tool <- merge(x=data.tool, y=data.temp, by = intersect(colnames(data.tool), colnames(data.temp)), all=TRUE)
+      }
+    }
+  }
+}
+
+data.tool <-  data.tool %>%
+  rowwise() %>% 
+  mutate(
+    replicate = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[2], 
+    timecourse = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[3], 
+    experiment = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[1]
+  )
+
+# add simulation data to tool data as theoretical perfect tool
+data.tool <-  merge(x=data.tool, y=data.sim %>% 
+  dplyr::select(c(sim.lineages, "timepoint", "experiment", "replicate", "timecourse", "tool_name")),
+  by = intersect(colnames(data.tool), c(sim.lineages, "timepoint", "experiment", "replicate", "timecourse", "tool_name")), all=TRUE
+  )
+
+
+# create long format of tools data
+data.tool.long <- data.tool %>%
+  gather(key="lineage", value="rel_abun", -c("timecourse", "timepoint", "experiment", "replicate", "tool_name")) %>%
+  filter(!is.na(rel_abun)) %>%
+  mutate(rel_abun = as.numeric(rel_abun)) %>%
+  unique()
+
+# add "uniformity_wg_per" column from simulation data
+data.tool.long <- left_join(data.tool.long, 
+                            dplyr::select(data.sim, c("experiment", "replicate","timepoint", "uniformity_wg_per")), 
+                            by = c("experiment", "replicate", "timepoint"))
+
+#clean up
+rm(f, i, j, data.temp)
+```
+
+
+**Analysis in numbers:** 
+
+
+* Number of time courses considered: `r length(table(data.tool$timecourse))`
+
+* Number of time point(s) considered: `r length(table(data.tool$timepoint))`
+
+* Number of tool(s) considered: `r sum(names(table(data.tool$tool_name)) != "simulation")`
+
+* Number of experiment(s) considered: `r length(table(data.tool$experiment))`
+
+* Number of replicate(s) considered: `r length(table(data.tool$replicate))`
+
+
+
+```{r def-confusionMatrix-func, warning=FALSE, message=FALSE, echo=FALSE}
+calculateConfusionMatrix <- function(data.long, sim.data.long, grouping = TRUE) {
+  data.metrics <- list()
+  
+  for (exp in unique(data.long$experiment)) {
+    for (rep in unique(data.long$replicate)) {
+      for (tp in unique(data.long$timepoint)) {
+        for (tool in unique(data.long$tool_name)) {
+          tool_df <- filter(data.long,
+                            experiment == exp,
+                            replicate == rep,
+                            timepoint == tp,
+                            tool_name == tool) %>%
+            distinct(timecourse, lineage, .keep_all = TRUE)
+          
+          sim_df <- filter(sim.data.long,
+                           experiment == exp,
+                           replicate == rep,
+                           timepoint == tp) %>%
+            distinct(timecourse, lineage, .keep_all = TRUE)
+          
+          joined <- full_join(
+            tool_df,
+            sim_df,
+            by = c("timecourse", "timepoint", "lineage", "experiment", "replicate"),
+            suffix = c("", "_sim")
+          )
+          
+          # now create flags
+          joined <- joined %>%
+            mutate(
+              P  = !is.na(rel_abun_sim),
+              PP = !is.na(rel_abun),
+              TP = !is.na(rel_abun) & !is.na(rel_abun_sim),
+              FP = !is.na(rel_abun) &  is.na(rel_abun_sim),
+              FN =  is.na(rel_abun) & !is.na(rel_abun_sim),
+              Error = if_else(!is.na(rel_abun_sim),
+                              (coalesce(rel_abun, 0) - rel_abun_sim),
+                              NA_real_)
+            )
+          
+          if (grouping) {
+            summary <- joined %>%
+              group_by(timecourse, timepoint, experiment, replicate) %>%
+              summarise(
+                P  = sum(P, na.rm = TRUE),
+                PP = sum(PP, na.rm = TRUE),
+                TP = sum(TP, na.rm = TRUE),
+                FP = sum(FP, na.rm = TRUE),
+                FN = sum(FN, na.rm = TRUE),
+                RMSE = sqrt(mean(Error^2, na.rm = TRUE)),
+                tool_name = tool,
+                .groups = "drop"
+              )
+            data.metrics[[length(data.metrics) + 1]] <- summary
+          } else {
+            # or keep joined as-is
+            if(dim(joined)[1] >0){
+              joined$tool_name <- tool
+              data.metrics[[length(data.metrics) + 1]] <- joined
+            }
+          }
+        }
+      }
+    }
+  }
+  return(bind_rows(data.metrics))
+}
+```
+
+
+```{r calc-confusionMatrix, message=FALSE, echo=TRUE}
+data.metrics <- calculateConfusionMatrix(data.tool.long, data.sim.long) 
+```
+
+```{r def-calculateMetrics-func, warning=FALSE, message=FALSE, echo=FALSE}
+getLookUP <- function(data.tool, sim.lineages, json.data, level) {
+  json_data <- NULL
+  json_data <- data.frame(lineage = sim.lineages, ancestor = sim.lineages, unaliased = NA)
+  descendant <- NULL
+  
+  for (l in sim.lineages) {
+    if (l != "others"){
+      ancestor <- l
+      descendant <- NULL
+      
+      curr_nodes <- l
+      # get children (level 1 or grandchildren level 2 ect...
+      for (i in 1:level){
+        next_node <- NULL
+        
+        for (node in curr_nodes) {
+          children <- json.data[[node]]$children
+          descendant <- c(descendant, children)
+          next_node <- c(next_node, children)
+        }
+        curr_nodes <- next_node
+      }
+    }
+    
+    if(length(descendant) == 0) {}
+    else {
+      temp <- data.frame(lineage = unlist(descendant, use.names=FALSE), ancestor=ancestor, unaliased=json.data[[ancestor]]$unaliased)
+      json_data <- rbind(json_data, temp)
+      
+    }
+  }
+  
+  json_clean <- json_data %>% group_by(lineage) %>% filter(n() == 1)
+  json_unclear <- json_data %>% group_by(lineage) %>% filter(n() > 1)
+  
+  if (nrow(json_unclear) > 0)  {
+    for (lin in unique(json_unclear$lineage)) {
+      z <- filter(json_unclear, lineage==lin) %>%
+        rowwise() %>% mutate(n = nchar(unaliased)) %>%
+        mutate(n = coalesce(n, 0)) %>%
+        unique() %>% ungroup() %>% 
+        slice_min(n=1, n) %>% dplyr::select(-c("n"))
+      json_clean <- rbind(json_clean, z)
+    }
+  }
+
+  json_data <- json_clean %>% dplyr::select(-c("unaliased"))
+  return (json_data)
+}
+
+getAdjustedData <- function(data.long, sim.lineages, json.data, level) {
+  
+  json_data <- getLookUP(data.long, sim.lineages, json.data, level)
+
+  d <- data.long %>%
+    left_join(., y=json_data, by="lineage", multiple = "all") %>%
+    mutate(lineage = ifelse(!is.na(ancestor), ancestor, lineage)) %>% 
+    dplyr::select(-c("ancestor")) %>% group_by(timepoint, experiment, replicate, timecourse, tool_name, lineage) %>%
+    summarise(rel_abun=sum(rel_abun),
+              uniformity_wg_per=mean(uniformity_wg_per), .groups="drop")
+
+  return(d)
+}
+
+calculateMetrics <- function(data.metrics){
+  data.metrics$TPR <- data.metrics$TP / (data.metrics$TP + data.metrics$FN)
+  data.metrics$FNR <- data.metrics$FN / data.metrics$P
+  data.metrics$PPV <- data.metrics$TP / data.metrics$PP #precision
+  data.metrics$FDR <- data.metrics$FP / data.metrics$PP
+  data.metrics$jaccard_index <- data.metrics$TP / (data.metrics$TP + data.metrics$FP + data.metrics$FN)
+  data.metrics$F1_score <- (data.metrics$TP*2) / (data.metrics$TP*2 + data.metrics$FP + data.metrics$FN)
+  return(data.metrics)
+}
+```
+
+**Calculate metrics for different ambiguity level modes**
+
+```{r set_levels}
+levels <- c(0)
+```
+
+For the calculation of true classification different levels of ambiguity are allowed --`r writeLines(paste("ambiguity level(s):", paste(levels, collapse = ", ")))` -- The ambiguity level defines how many sub-levels of a truely simulated lineage is still considered a true hit. E.g., at level 1 a detection of "B.1.1" would still be a true classification if "B.1" was in the set of simulated lineages. But lineage "B", or lineage "B.1.1.1" would not. The latter would still be a true hit at the ambiguity level 2.
+
+
+```{r calc-calculateMetrics-loop, results='asis'}
+# loop over unique ID
+
+
+for (i in levels){
+  if (i == 0) {
+    data.metrics <- calculateMetrics(data.metrics) %>%
+      merge(data.sim.long %>% 
+              dplyr::select(timecourse, timepoint, lineage) %>% 
+              unique %>% group_by(timecourse, timepoint) %>% 
+              summarise(count_lineage = n(), .groups="drop"), by=c("timecourse", "timepoint")) %>%
+      merge(data.sim.long %>% 
+              dplyr::select(timecourse, timepoint, experiment, replicate, uniformity_wg_per), by=c("timecourse", "timepoint", "experiment", "replicate"))
+  } 
+  else {
+    assign(paste0("data.tool.long.level.", i), getAdjustedData(data.tool.long, sim.lineages, json.data, level=i))
+    
+    assign(paste0("data.metrics.level.", i), 
+           calculateConfusionMatrix(get(paste0("data.tool.long.level.", i)), data.sim.long) %>% 
+             merge(dplyr::select(data.tool, c("timepoint", "experiment", "replicate")), 
+                   by=c("timepoint", "experiment", "replicate")) %>% unique() %>%
+             merge(data.sim.long %>% dplyr::select(timepoint, lineage) %>% unique %>% group_by(timepoint) %>% summarise(count_lineage = n()), by="timepoint") %>%
+             merge(data.sim.long %>% 
+              dplyr::select(timecourse, timepoint, experiment, replicate, uniformity_wg_per), by=c("timecourse", "timepoint", "experiment", "replicate"))
+           )
+    
+    assign(paste0("data.metrics.level.", i), calculateMetrics(get(paste0("data.metrics.level.", i))))
+  }
+}
+
+#clean up
+rm(i)
+```
+
+
+```{r}
+# define number of tabs
+tabs <- c(unique(data.sim.long$timecourse), "Overall")
+
+tabs.dict <- list()
+for(tc in tabs){
+  if( tc == "Overall"){
+    tabs.dict[[tc]] <- tc
+  } else{
+    tabs.dict[[tc]] <- as.character(unlist(config$POSTPRED$LABELS)[which(grepl(tc, unlist(config$POSTPRED$LABELS)))+1])
+  }
+}
+
+```
+
+
+# Simulated Data
+
+## Simulated Lineage Abundance {.tabset}
+
+Visualisation of the simulated relative lineage abundances per time course.
+
+
+```{r def-timecourse_plot-func, warning=FALSE, message=FALSE, echo=FALSE}
+timecourse_plot <- function(timecourse_name, sim.data.long){
+  sim.lineages <- sim.data.long %>% 
+    filter(timecourse == timecourse_name) %>% dplyr::select(lineage) %>% unique()
+  
+  p <- ggplot(filter(sim.data.long, timecourse == timecourse_name) %>% group_by(timepoint, timecourse, lineage) %>% summarize(rel_abun = mean(rel_abun, na.rm = TRUE)), aes(x=timepoint, y=rel_abun*100, color=lineage)) +
+    geom_vline(aes(xintercept=timepoint), linetype="dotted", size=0.2) +
+    geom_point() +
+    geom_line() +
+    labs(
+        title="Simulated Lineage Dynamic",
+        y="Relative Abundance [%]",
+        x="Timepoint") +
+    theme_classic() + guides(col = guide_legend(ncol = 3))
+  
+  return(p)  
+}
+```
+
+
+```{r, plot-timecourse_plot-loop, warning=FALSE, message=FALSE, echo=FALSE, , results='asis', fig.width=10, fig.height=5}
+cat("\n\n")
+for (timecourse_name in tabs){
+  
+  if (timecourse_name == "Overall"){
+    next
+  }
+  
+  else {
+    #cat("### ", timecourse_name, "\n")
+    cat("### ", tabs.dict[[timecourse_name]], "\n")
+    p <- timecourse_plot(timecourse_name, data.sim.long) 
+  }
+  
+  print(p)
+    
+  cat("\n\n")    
+}
+
+#clean up
+rm(p)
+```
+
+
+## Simulated Coverage {.tabset}
+
+Distribution of genome coverage for each of the simulated experiments, as a proxy for overall sequencing quality.
+
+```{r plot-simulation-coverage-loop, results='asis', warning=FALSE, fig.width=10, fig.height=5}
+cat("\n\n")
+
+for (timecourse_name in tabs){
+  
+  if (timecourse_name == "Overall"){
+    next
+  }
+  
+  else {
+    
+    #cat("\n### ", timecourse_name, "{.tabset} \n")
+    cat("### ", tabs.dict[[timecourse_name]], " {.tabset} \n")
+
+    d <- NULL
+    
+    for (exp in unique(filter(data.sim, timecourse==timecourse_name)$experiment)){
+      
+      #cat("#### ", paste0(exp, "_", timecourse_name), "\n")
+      #d <- NULL
+      
+      for (rep in unique(filter(data.sim, timecourse==timecourse_name)$replicate)){
+        for (s_name in unique(filter(data.sim, timecourse==timecourse_name & experiment==exp & replicate==rep)$sample)){
+          
+          file.cov <- paste0(currWorkingDir, "/experiments/")
+          file.cov <- paste0(file.cov,exp,"_",rep,"_",timecourse_name,"/results/variantCall/00_stats/",s_name,"/",s_name,"_max_cov_10000.tsv")
+          data.cov <- read.csv(file.cov, sep="\t")
+          data.cov$coverage <- data.cov[,3]
+          data.cov$timepoint  <- unique(filter(data.sim, timecourse==timecourse_name & experiment==exp & replicate==rep & sample==s_name)$timepoint)
+          data.cov$timepoint_string <- paste("Timepoint ",data.cov$timepoint)
+          data.cov$sample <- s_name
+          data.cov$replicate <- rep
+          data.cov$experiment <- exp
+          d <- rbind(d, dplyr::select(data.cov, c("POS", "coverage", "sample", "experiment", "replicate", "timepoint", "timepoint_string")))
+          
+          rm(file.cov, data.cov)
+        }
+      }
+    }
+
+    print(
+      ggplot(data = d, aes(x = experiment, y = coverage)) + geom_boxplot() + theme_bw() + xlab("Experiments") + ylab("Genome coverage") + ggtitle(paste("Genome coverage distribution:", timecourse_name)) + scale_y_log10()
+    )
+    rm(d)
+    cat("\n\n")
+  }
+}
+```
+
+
+
+----
+
+# Results
+
+## Comparing replicates {.tabset}
+
+### Venn Diagrams {.tabset}
+
+Comparing the proportion of shared true classifications between the replicas of the same time course.
+
+```{r}
+vennDiagramReplicates <- function(data.long) {
+  names <- NULL
+  for (i in (1:length(unique(data.long$replicate)))) {
+    names <- c(names, paste("Replicate", unique(data.long$replicate)[i]))
+  }
+  rp <- data.long %>% dplyr::select(c("lineage", "replicate")) %>% unstack(lineage ~ replicate)
+  
+  ggVennDiagram(rp, label_size= 3, label_alpha = 0, category.names = paste0("R", unique(data.long$replicate)), set_size = 4) + 
+    scale_fill_gradient(low = "#F4FAFE", high = "#3A9AB2") +
+    theme(legend.position = "none", plot.title=element_text(hjust=0.5))
+}
+```
+
+
+```{r replicate-comparision-Venn, results='asis', fig.width=10, fig.height=5}
+for (timecourse_name in tabs){
+  
+  #cat("#### ", timecourse_name, "\n")
+  cat("\n#### ", tabs.dict[[timecourse_name]], "\n")
+
+  if (timecourse_name == "Overall"){
+    d.long <- data.tool.long %>% dplyr::select(-c("timecourse"))
+  }
+  
+  else {
+    d.long <- filter(data.tool.long, timecourse==timecourse_name) %>% dplyr::select(-c("timecourse"))
+  }
+  
+  plots <- list()
+  
+  for (i in 1:length(tool_list)){
+    
+    if (names(tool_list)[i] == "simulation"){
+      # store plot in list
+      plots[[i]] <- vennDiagramReplicates(d.long) + 
+        labs(title="All tools", title.position = "center")
+    }
+    
+    else{
+      # store plot in list
+      plots[[i]] <- vennDiagramReplicates(filter(d.long, tool_name == names(tool_list)[i])) + 
+        labs(title=names(tool_list[i]), title.position = "center")
+      }
+  }
+
+  print(annotate_figure(
+    ggarrange(plotlist = plots), 
+    top = text_grob(paste0("Number of identified lineages between replicates - ",timecourse_name),
+                    face = "bold", size = 14)
+    )
+  )
+  cat("\n\n")
+}
+
+#clean up
+rm(timecourse_name, i, d.long, plots)
+```
+
+
+
+### Density Plots {.tabset}
+
+Comparing the distribution of performance metrics between the replicas of the same time course.
+
+
+```{r, results='asis', fig.width=10, fig.height=5}
+densityPlot <- function(data, x.value, group, Colors) {
+  ggplot(data, aes({{ x.value }}, color = {{ group }})) +
+    geom_density() +
+    scale_colour_manual(values = Colors)
+}
+```
+
+
+```{r replicate-comparison-densityPlot, results='asis', fig.width=10, fig.height=5, echo=FALSE, warning=FALSE}
+col <- brewer.pal(n = 4, name = 'YlOrRd')[-(1:1)]
+
+for (timecourse_name in tabs){
+
+  
+  if (timecourse_name == "Overall"){
+    #cat("#### ", timecourse_name, " {.tabset}\n")
+    cat("#### ", tabs.dict[[timecourse_name]], " {.tabset}\n")
+    data.metrics.noSim <- filter(data.metrics, tool_name != "simulation")
+  }
+  
+  else {
+    #cat("#### ", timecourse_name, " \n")
+    cat("\n#### ", tabs.dict[[timecourse_name]], " {.tabset}\n")
+
+    data.metrics.noSim <- filter(data.metrics, tool_name != "simulation") %>% filter(timecourse == timecourse_name)
+  }
+  
+  for (tool in names(tool_list)){
+    
+    if(tool == "simulation"){
+      next
+    }
+    
+    cat("\n##### ", tool, " \n")
+    
+    data.metrics.noSim.tool <- data.metrics.noSim %>% filter(tool_name == tool)
+    p <- annotate_figure(
+      ggarrange(
+        densityPlot(data.metrics.noSim.tool, RMSE, replicate, Colors=col),
+        densityPlot(data.metrics.noSim.tool, PP, replicate, Colors=col),
+        densityPlot(data.metrics.noSim.tool, TP, replicate, Colors=col),
+        densityPlot(data.metrics.noSim.tool, FP, replicate, Colors=col),
+        densityPlot(data.metrics.noSim.tool, FN, replicate, Colors=col),
+        densityPlot(data.metrics.noSim.tool, uniformity_wg_per, replicate, Colors=col)
+    ), top = text_grob("Metrics comparision between replicates", face = "bold", size = 14))
+  
+    print(p)
+    cat("\n\n")
+  }
+}
+
+
+#clean up
+rm(p, col)
+```
+
+----
+
+## Compare experiments w/ different quality settings {.tabset}
+
+Comparing the distribution of performance metrics between experiments w/ different quality settings.
+
+
+```{r experiments-comparision-densityPlots, echo=FALSE, results='asis', fig.width=10, fig.height=5}
+col <- brewer.pal(n = length(unique(data.tool.long$experiment))+2, name = 'PuRd')[-(1:2)]
+
+for (timecourse_name in tabs){
+  
+  if (timecourse_name == "Overall"){
+    next
+    #cat("### ", timecourse_name, " \n")
+    cat("\n### ", tabs.dict[[timecourse_name]], "\n")
+    
+    d.long <- data.tool.long %>% dplyr::select(-c("timecourse"))
+    data.metrics.noSim <- filter(data.metrics, tool_name != "simulation") %>% dplyr::select(-c("timecourse")) 
+  }
+  
+  else {
+    #cat("### ", timecourse_name, " \n")
+    cat("\n### ", tabs.dict[[timecourse_name]], "\n")
+    
+    d.long <- filter(data.tool.long, timecourse==get("timecourse_name")) %>% dplyr::select(-c("timecourse"))
+    data.metrics.noSim <- filter(data.metrics, timecourse==get("timecourse_name") & tool_name != "simulation") %>% 
+      dplyr::select(-c("timecourse")) 
+  }
+    
+ p <- annotate_figure(
+      ggarrange(
+        densityPlot(data.metrics.noSim, RMSE, experiment, Colors=col),
+        densityPlot(data.metrics.noSim, PP, experiment, Colors=col),
+        densityPlot(data.metrics.noSim, TP, experiment, Colors=col),
+        densityPlot(data.metrics.noSim, FP, experiment, Colors=col),
+        densityPlot(data.metrics.noSim, FN, experiment, Colors=col),
+        densityPlot(data.metrics.noSim, uniformity_wg_per, experiment, Colors=col)
+        ), 
+      top = text_grob(paste0("Metrics comparision between experiments -",timecourse_name), face = "bold", size = 14))
+  
+  print(p)
+  
+  cat("\n\n")
+}
+
+#clean up
+rm(p, d.long, col)
+```
+
+
+----
+
+## Predicted timecoures {.tabset}
+
+Predicted lineages and their abundance and comparision with true expected lineage abundance given the underlying simulations.
+
+```{r def-tool_timePlot-func, warning=FALSE, message=FALSE, echo=FALSE}
+tool_timepPlot <- function(data.long, sim.data.long, tool, timecourse_name, mode) {
+  caption <- "Errorbars are standard error over all experiments."
+  
+  data.tool <- data.long %>% filter(tool_name == tool) %>% dplyr::select("timepoint", "experiment", "replicate", "timecourse", "lineage", "rel_abun") %>% mutate(series = tool)
+  data.sim <- sim.data.long %>% dplyr::select("timepoint", "experiment", "replicate", "timecourse", "lineage", "rel_abun") %>% mutate(series = "simulation")
+  
+  # remove signals only observed in one timepoint
+  sim.lineages <- filter(data.sim, series=="simulation") %>% 
+    group_by(lineage) %>% 
+    summarise(count = n_distinct(timepoint)) %>% 
+    filter(count > 1) %>% pull(lineage)
+  
+  data.tool <- filter(data.tool, lineage %in% (data.tool %>% 
+                                                 group_by(lineage) %>% 
+                                                 summarise(count = n_distinct(timepoint)) %>% 
+                                                 filter(count > 1) %>% pull(lineage)))
+  
+  zero_count <- length(filter(data.sim, series=="simulation") %>% 
+                         group_by(lineage) %>% summarise(count = n_distinct(timepoint)) %>% 
+                         filter(count == 1) %>% pull(lineage))
+  if(zero_count != 0){
+    caption <- paste(caption,
+                     (paste0(zero_count," lineages only simulated in 1 Timepoint and removed from visualisation.")))
+  } else{}
+  
+  if (length(union(unique(data.tool$lineage), sim.lineages)) > 36) {
+    
+    # get top 36 lineage by relative abundance
+    top_lineages <- data.tool %>% 
+      group_by(lineage) %>% 
+      summarise(rel_abun = mean(rel_abun)) %>% 
+      arrange(desc(rel_abun)) %>%
+      slice_head(n=36) %>% 
+      pull(lineage)
+    
+    caption <- paste(caption, 
+                     paste0("Showing top ", length(top_lineages)," lineage of ", 
+                            length(unique(data.tool$lineage)),
+                            " lineages (top lineage according to mean of abundance over all timepoints and predicted at more then 1 timepoint.)"))
+    
+    data.tool <- data.tool %>% filter(lineage %in% top_lineages)
+    
+    
+    
+    # check for false negatives
+    if (length(sim.lineages) - length(intersect(top_lineages, sim.lineages)) > 0){
+      caption <- paste(caption, 
+                       length(sim.lineages) - length(intersect(top_lineages, sim.lineages)), " false negative signals.")
+      data.long <- rbind(data.tool, filter(data.sim, lineage %in%  intersect(top_lineages, sim.lineages)))
+    }
+    else {data.long <- rbind(data.tool, data.sim)}
+    
+  } 
+  else {
+    data.long <- rbind(data.tool, data.sim)
+  }
+  
+  d <- data.long %>% group_by(timepoint, lineage, series) %>% summarise_at(vars(rel_abun), list(sd=sd, mean=mean))
+  d <- merge(data.long, d, by=c("timepoint", "lineage", "series"))
+  
+  d$error_min <- d$mean - d$sd
+  d$error_max <- d$mean + d$sd
+  
+  d <- d %>% mutate("error_min" = case_when(error_min < 0 ~ 0, TRUE ~ error_min), 
+                    "error_max" = case_when(error_max > 1 ~ 1, TRUE ~ error_max))
+  
+  transparency <- 0.3
+  p <- ggplot(filter(d, series==tool), aes(x=timepoint, y=mean, color=series)) + 
+    geom_point(data=d %>% filter(series=="simulation", lineage %in% sim.lineages), aes(x=timepoint, y=mean), size=0.8) +
+    geom_smooth(data=d %>% filter(series=="simulation"), se=FALSE, size=0.8, alpha=transparency) +
+    geom_point() +
+    geom_errorbar(aes(ymin=error_min, ymax=error_max), width=.2) +
+    facet_wrap(~lineage, ncol=6, labeller = safe_labeller) +
+    labs(
+      title=paste0("Simulated Lineage Dynamic - ",tool, " - ", timecourse_name, " - ", mode),
+      y="Relative Abundance [%]",
+      x="Timepoint",
+      caption = caption
+    ) +
+    colScale +
+    theme_minimal()
+  
+  print(caption)
+  
+  return(p)
+}
+```
+
+
+```{r plots-tool_timePlot-loop, echo=FALSE, results='asis', fig.width=10, fig.height=5}
+for (timecourse_name in tabs){
+  
+ if (timecourse_name != "Overall"){
+    #cat("\n### ", timecourse_name, "{.tabset} \n") 
+    cat("\n### ", tabs.dict[[timecourse_name]], " {.tabset} \n")
+    
+    for (tool in names(tool_list)) {
+      if (tool == "simulation") {next}
+      
+      else{
+        cat(paste("#### ", tool, "\n"))
+        mode <- "Strict mode"
+        print(tool)
+        
+        p <- tool_timepPlot(data.tool.long %>% filter(timecourse==timecourse_name), 
+                            data.sim.long %>% filter(timecourse==timecourse_name), tool, timecourse_name, mode)
+        
+        print(p)
+        
+        cat("\n\n")
+      }
+      
+    cat("\n\n")
+    }
+  }
+}
+
+rm(p)
+```
+
+##
+
+----
+
+## Lineage identifcation {.tabset}
+
+Qualiative performance metrics for different time courses and different ambiguity levels.
+
+```{r}
+lineageIdentificationMetrics <- function(data.metrics){
+  data.temp <- data.metrics %>% 
+    dplyr::select(tool_name, PP, TP, FP, FN, TPR, FNR, PPV, FDR, jaccard_index, F1_score) %>% 
+    group_by(tool_name) %>% 
+    summarise(
+      PP = median(PP, na.rm = TRUE),
+      TP = median(TP, na.rm = TRUE),
+      FP = median(FP, na.rm = TRUE),
+      FN = median(FN, na.rm = TRUE),
+      TPR = median(TPR, na.rm = TRUE),
+      FNR = median(FNR, na.rm = TRUE),
+      PPV = median(PPV, na.rm = TRUE),
+      FDR = median(FDR, na.rm = TRUE),
+      jaccard_index = median(jaccard_index, na.rm = TRUE),
+      F1_score =  median(F1_score, na.rm = TRUE)) %>%
+    gather(key="metric", value="value", -c("tool_name"))
+  
+  ggarrange(
+    ggplot(filter(data.temp, metric %in% c("PP", "TP", "FP", "FN")), aes(x=tool_name, y=value, color=tool_name, text=paste0("Tool: ", tool_name,
+                                                                                                                    "\n", "Result: ", round(value, digits = 2)))) +
+      geom_point(aes(shape=metric, color=tool_name), size=4, stroke=1) +
+      theme_minimal() + ylab("") +
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      geom_vline(aes(xintercept="simulation"),linetype="dashed")  +
+      facet_wrap(~metric, labeller = safe_labeller) +
+      theme(
+        legend.position = "none") +
+      labs(x = "") +
+      colScale,
+    
+    ggplot(filter(data.temp, metric %in% c("TPR", "FNR", "PPV", "jaccard_index")), aes(x=tool_name, y=value, color=tool_name, text=paste0("Tool: ", tool_name,
+                                                                                                                     "\n", "Result: ", round(value, digits = 2)))) +
+      geom_point(aes(shape=metric, color=tool_name), size=4, stroke=1) +
+      theme_minimal() + ylab("") +
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      geom_vline(aes(xintercept="simulation"),linetype="dashed")  +
+      facet_wrap(~metric, labeller = safe_labeller) +
+      theme(
+        legend.position = "none") +
+      labs(x = "") +
+      colScale,
+    
+    ggplot(filter(data.temp, metric %in% c("FDR", "F1_score")), aes(x=tool_name, y=value, color=tool_name, text=paste0("Tool: ", tool_name,
+                                                                                                       "\n", "Result: ", round(value, digits = 2)))) +
+      geom_point(aes(shape=metric, color=tool_name), size=4, stroke=1) +
+      theme_minimal() + ylab("") +
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      geom_vline(aes(xintercept="simulation"),linetype="dashed")  +
+      facet_wrap(~metric, labeller = safe_labeller) +
+      theme(
+        legend.position = "none") +
+      labs(x = "") +
+      colScale
+    )
+}
+```
+
+
+```{r lineage-id-summary-loop, figh.with = 15, fig.height=10, results='asis', warning=FALSE}
+for (timecourse_name in tabs){
+  
+ if (timecourse_name == "Overall"){
+   #cat("### ", timecourse_name, "{.tabset} \n")
+   cat("\n### ", tabs.dict[[timecourse_name]], " {.tabset} \n")
+   
+   for (i in levels){
+  
+      if (i == 0) {
+        cat("#### Strict mode", "\n")
+        
+        mode <- "Strict mode"
+        
+        p <- annotate_figure(lineageIdentificationMetrics(data.metrics), 
+                    top = text_grob(cat("Metrics - ", timecourse_name, " - ", mode), 
+                    face = "bold"))
+    
+        print(p)
+        
+        cat("\n\n")
+        
+      }
+      else {
+        cat("#### Adj. ",i, " level", "\n")
+        
+        mode <- paste("Adj.", i)
+        
+        p <- annotate_figure(lineageIdentificationMetrics(get(paste0("data.metrics.level.",i))), 
+                    top = text_grob(cat("Metrics - ", timecourse_name, " - ", mode), 
+                    face = "bold"))
+    
+        print(p)
+        
+        cat("\n\n")
+      }
+    }
+   
+   cat("\n\n")
+ }
+  else {
+    #cat("### ", timecourse_name, "{.tabset} \n") 
+    cat("\n### ", tabs.dict[[timecourse_name]], " {.tabset} \n")
+    
+    
+    for (i in levels){
+  
+      if (i == 0) {
+        cat("#### Strict mode", "\n")
+        
+        mode <- "Strict mode"
+        
+        p <- annotate_figure(lineageIdentificationMetrics(data.metrics %>% filter(timecourse==timecourse_name)), 
+                    top = text_grob(cat("Metrics - ", mode), 
+                    face = "bold", size = 14))
+        print(p)
+        
+        cat("\n\n")
+        
+      }
+      else {
+        cat("#### Adj. ",i, " level", "\n")
+        
+        mode <- paste("Adj.", i)
+        
+        p <- annotate_figure(lineageIdentificationMetrics(get(paste0("data.metrics.level.",i))), 
+                    top = text_grob(cat("Metrics - ", timecourse_name, " - ", mode), 
+                    face = "bold", size = 14))
+    
+        print(p)
+        
+        cat("\n\n")
+      }
+    }
+    cat("\n\n")
+  }
+  
+cat("\n\n")
+}
+
+
+rm(p, i)
+```
+
+
+---
+
+## Library complexity and Sequencing quality  
+
+### Number of lineages per sample {.tabset}
+
+Key quality measures as a function of the number of simulated lineages.
+
+```{r}
+tool_metricsPer <- function(data.metrics, x_var) {
+  
+  # Convert quoted x_var to symbol
+  x_var_sym <- sym(x_var)
+  
+  long <- data.metrics %>%
+    gather(key = "metric", value = "value", -tool_name, -!!x_var_sym)
+
+  # Detect constant-value tool groups (y is identical)
+  const_groups <- long %>%
+    group_by(tool_name, metric) %>%
+    summarise(is_const = n_distinct(value) == 1, .groups = "drop")
+  
+  constant_df <- semi_join(long, const_groups %>% filter(is_const), 
+                                  by = c("tool_name", "metric"))
+  variable_df <- anti_join(long, const_groups %>% filter(is_const), 
+                                  by = c("tool_name", "metric"))
+  
+  p <- ggplot() +
+    geom_line(
+      data = constant_df,
+      aes(x = !!x_var_sym, y = value, color = tool_name),
+      size = 1
+    ) +
+    geom_smooth(
+      data = variable_df,
+      aes(x = !!x_var_sym, y = value, color = tool_name),
+      se = FALSE
+    ) +
+    facet_wrap(~ metric, ncol = 2, scales = "free_y") +
+    colScale +
+    coord_cartesian(ylim = c(0, 1)) +
+    theme_minimal()
+  
+  return(p)
+}
+
+```
+
+
+```{r metrics-timepoint-lineage-number-all, warning=FALSE, results='asis'}
+d <- data.metrics %>% group_by(tool_name, count_lineage) %>%
+      summarise("P" = sum(P),
+                "PP" = sum(PP),
+                "TP" = sum(TP),
+                "FP" = sum(FP),
+                "FN" = sum(FN),
+                "RMSE" = mean(RMSE), .groups = "drop")
+
+d <- calculateMetrics(d)
+
+d$PPV[is.nan(d$PPV)]<-0
+d$FDR[is.nan(d$FDR)]<-1
+
+p <- tool_metricsPer(dplyr::select(d, -c("FN", "FP", "P", "TP", "PP")), "count_lineage") +
+  labs(
+    x="Number of lineages in sample [1]",
+    y ="",
+    title = "Prediction metrics  per number of lineages per sample")
+
+print(p)
+```
+
+
+### Genomic coverage {.tabset}
+
+Key quality measures as a function of the simulated sequencing quality.
+
+
+```{r metrics-timepoint-coverage-all, warning=FALSE, results='asis'}
+d <- data.metrics %>% group_by(tool_name, uniformity_wg_per) %>%
+      summarise("P" = sum(P,  na.rm = TRUE),
+                "PP" = sum(PP,  na.rm = TRUE),
+                "TP" = sum(TP,  na.rm = TRUE),
+                "FP" = sum(FP,  na.rm = TRUE),
+                "FN" = sum(FN,  na.rm = TRUE),
+                "RMSE" = mean(RMSE,  na.rm = TRUE), .groups = "drop")
+
+d <- calculateMetrics(d)
+
+d$PPV[is.nan(d$PPV)]<-0
+d$FDR[is.nan(d$FDR)]<-1
+
+p <- tool_metricsPer(dplyr::select(d, -c("FN", "FP", "P", "TP", "PP")), "uniformity_wg_per") +
+  labs(
+    x="Whole genome coverage [%]",
+    y="",
+    title = "Prediction metrics per genomic coverage")
+
+
+print(p)
+#rm(p,d) 
+```
+
+
+### Abundance Estimation 
+
+Estimated lineage abundance as a function of simulated sequencing quality and simulated lineage abundance.
+
+```{r}
+data.error <- NULL
+
+for (exp in unique(data.tool.long$experiment)) {
+  for (rep in unique(data.tool.long$replicate)) {
+    for (tp in unique(data.tool.long$timepoint)) {
+      for (tool in unique(data.tool.long$tool_name)) {
+        data.temp <- full_join(
+          dplyr::select(filter(data.tool.long, experiment==exp, replicate==rep, tool_name==tool, timepoint==tp), 
+                 c("tool_name", "timecourse", "timepoint", "lineage", "experiment", "replicate", "rel_abun")), 
+          dplyr::select(filter(data.sim.long, experiment==exp, replicate==rep, timepoint==tp), 
+                 c("timecourse", "timepoint", "lineage", "experiment", "replicate", "rel_abun")), 
+          by=c("timecourse", "timepoint", "lineage", "experiment", "replicate"), 
+          suffix = c("","_sim")) %>%
+          #dplyr::select(c("timecourse", "experiment", "replicate", "timepoint", "tool_name", "rel_abun","rel_abun_sim")) %>%
+          mutate("P" = case_when(!is.na(rel_abun_sim) ~ 1)) %>%
+          mutate_at(c("rel_abun","rel_abun_sim", "P"), ~replace_na(.,0))
+        
+        if (nrow(data.temp) == 0) {next}
+        else {
+          data.temp$tool_name = tool
+          data.error <- bind_rows(data.error, data.temp)
+          }
+      }
+    }
+  }
+}
+
+rm(data.temp)
+```
+
+
+```{r fig.height=8}
+abundanceEstimationPlot <- function(data.error, data.long, title){
+  
+  data.plot <- data.error %>%
+    mutate("Error" = case_when(P == 1 ~ (rel_abun - rel_abun_sim))) %>%
+    filter(P == 1) %>%
+    dplyr::select(c("timecourse", "experiment", "replicate", "timepoint", "tool_name", "rel_abun","rel_abun_sim")) %>%
+    left_join(unique(dplyr::select(data.long, c("experiment", "replicate", "timepoint", "uniformity_wg_per"))), 
+              by=c("experiment", "replicate", "timepoint")) 
+  
+  
+  ggplot(filter(data.plot, tool_name != "simulation"), aes(x=rel_abun_sim, y=rel_abun)) +
+    geom_jitter(alpha=0.1, aes(color=uniformity_wg_per)) +
+    geom_abline(intercept = 0, slope = 1, linetype="longdash", alpha=0.2) +
+    #scale_color_gradient2(name = "[%] genomic\ncoverage", low = "red", mid = "grey", high = "blue") +
+    scale_color_viridis_c(name = "[%] genomic\ncoverage", direction = -1) +
+    facet_grid(tool_name ~ timecourse, labeller = safe_labeller) +
+    labs(title = "tool") +
+    theme(legend.position = "none") +
+    labs(
+      title=title,
+      y="Predicted Relative Abundance [1/1]",
+      x="Simulated Relative Abundance [1/1]",
+    ) +
+    theme_bw() +
+    theme(strip.text = element_text(size=8))
+  
+}
+
+
+abundanceEstimationPlot(data.error, data.tool.long, paste0("Relative abundance estimation per time-course"))
+```
+
+
+
+### Error Estimation {.tabset}
+
+Residual of estimated lineage abundance as a function of simulated lineage abundance.
+
+
+```{r} 
+# only plots error for true positives
+errorEstimationPlot <- function(data.error, title){
+  
+  data.plot <- data.error %>%
+    filter(rel_abun != 0.00 & rel_abun_sim != 0.00) %>%
+    mutate("Error" = rel_abun - rel_abun_sim) %>%
+    dplyr::select(c("timepoint", "experiment", "replicate", "lineage", "rel_abun_sim", "tool_name", "rel_abun", "Error"))
+  
+  
+    ggplot(data.plot, aes(x=rel_abun_sim, y=Error, fill=tool_name, color=tool_name)) +
+      geom_hline(yintercept=0, linetype="dashed") +
+      geom_point(shape=21, size=3, stroke=0.1, alpha=0.4) +
+      geom_line(stat="smooth", method="lm", se=TRUE, color = "darkgrey") +
+      xlim(0, 1) +
+      ylim(-1, 1) +
+      colScale +
+      fillScale +
+      facet_wrap(~tool_name, labeller = safe_labeller) +
+    labs(
+      x="True Abundance [1/1]",
+      y="Error",
+      title = title,
+      
+    ) +
+    theme_bw() +
+    theme(
+      legend.position = "none",
+      text = element_text(size=12)
+    )
+}
+```
+
+
+```{r errorEstimation-loop, warning=FALSE, results='asis', figh.with = 15}
+errorEstimationPlot(data.error, paste0("Relative abundance estimation - Residuals"))
+```
+
+----
+
+## False Positive - Phylogenetic Relationship  {.tabset}
+
+A characterisaton of all detected false positive lineages and their phylogenic relation and similiarity (based on shared mutations) to the closest true positive. Vertical line indicate the mean similarity for each tool and group.
+
+```{r}
+getDistance <- function(var1, var2, json.data){
+  
+  var1_nuc <- c(json.data[[var1]]$nucSubstitutions, json.data[[var1]]$nucDeletions)
+  var2_nuc <- c(json.data[[var2]]$nucSubstitutions, json.data[[var2]]$nucDeletions)
+  
+  if (length(var1_nuc) == 0 || length(var2_nuc) == 0){
+    return(Inf)
+  }
+  
+  else {
+    
+    if (var1 == "B" || var2 == "B"){
+      var1_nuc <- c(var1_nuc, "SARS_COV_2")
+      var2_nuc <- c(var2_nuc, "SARS_COV_2")
+    }
+    
+    var1_nuc <- gsub("-", "del", var1_nuc)
+    var2_nuc <- gsub("-", "del", var2_nuc)
+    
+    var1_nuc <- as.character(stri_remove_empty(var1_nuc, na_empty = FALSE))
+    var2_nuc <- as.character(stri_remove_empty(var2_nuc, na_empty = FALSE))
+    
+    percent_similarityPerIndex <- length(intersect(var1_nuc, var2_nuc)) / (length(union(var1_nuc, var2_nuc)))
+    return (percent_similarityPerIndex)
+  }
+}
+
+CheckDistanceMatrix <- function(lineages, update=FALSE) {
+  if (!(file.exists(paste0(currWorkingDir, "reference/distanceMatrix.csv"))) | update) {
+    distanceMatrix <- matrix()
+  }  else {
+    distanceMatrix <- read.csv(paste0(currWorkingDir, "reference/distanceMatrix.csv"))
+  }
+
+  for (i in 1:length(lineages)){
+    
+    #print(paste("Calculating lineage ", i, "of", length(lineages)))
+    
+    lineage <- lineages[i]
+    if(lineage != "others"){
+      if (lineage %in% colnames(distanceMatrix)) {
+        next
+      }
+      else {
+        if (length(colnames(distanceMatrix)) == 0){
+          
+          colnames(distanceMatrix) <- lineage
+          rownames(distanceMatrix) <- lineage
+        }
+        else {
+          distanceData <- NULL
+          
+          for (j in 1:length(colnames(distanceMatrix))){
+            distanceData <- append(distanceData, getDistance(lineage, colnames(distanceMatrix)[j], json.data))
+          }
+          
+          distanceMatrix <- cbind(distanceMatrix, matrix(data=distanceData, 
+                                                         ncol=1, nrow=nrow(distanceMatrix),
+                                                         dimnames=list(rownames(distanceData),
+                                                                       lineage)
+                                                         )
+                                  )
+          
+          
+          distanceMatrix <- rbind(distanceMatrix, matrix(data=NA, 
+                                                         ncol=ncol(distanceMatrix), nrow=1,
+                                                         dimnames = list(lineage, 
+                                                                         colnames(distanceMatrix))
+                                                         )
+                                  )
+          
+        }
+        index <- match(lineage, rownames(distanceMatrix))
+        distanceMatrix[index, index]  <- getDistance(lineage, lineage, json.data)
+        distanceMatrix <- round(distanceMatrix, 4)
+        #write.table(distanceMatrix, file=paste0(currWorkingDir, "reference/distanceMatrix.csv"), sep=",")
+      }
+    }
+  }
+  distanceMatrix[lower.tri(distanceMatrix)] <- t(distanceMatrix)[lower.tri(distanceMatrix)]
+  distanceMatrix <- as.data.frame(distanceMatrix)
+  return(distanceMatrix)
+}
+
+```
+
+
+```{r calculate-distance-matrix, results=FALSE}
+update = TRUE
+distanceMatrix <- CheckDistanceMatrix(unique(data.tool.long$lineage), update=update)
+
+# manual update for missing lineages
+if (update) {
+  json.data[["B.1.1.529"]] <- "B.1.1.529"
+  json.data[["B.1.1.529"]]$children <-  c("BA.1", "BA.2", "BA.3", "BA.4", "BA.5")
+  json.data[["B.1.1.529"]]$parent <- c("B.1.1")
+  json.data[["B.1.1.529"]]$nucDeletions <- c("6513-6516", "11283-11292")
+  json.data[["B.1.1.529"]]$nucSubstitutions <- c("C241T","C3037T","T5386G","T13195C","C15240T","C25000T","A27259C","C27807T")
+  
+  B.1.1.529_nuc <- c(json.data[["B.1.1.529"]]$nucDeletions, json.data[["B.1.1.529"]]$nucSubstitutions)
+  
+  for (i in (1:length(colnames(distanceMatrix)))) {
+    
+    var2 <- colnames(distanceMatrix)[i]
+    
+    var2_nuc <- c(json.data[[var2]]$nucSubstitutions, json.data[[var2]]$nucDeletions)
+    var2_nuc <- gsub("-", "del", var2_nuc)
+    
+    distance <- length(setdiff(B.1.1.529_nuc, var2_nuc)) / (length(B.1.1.529_nuc) + length(var2_nuc))
+    
+    distanceMatrix["B.1.1.529",colnames(distanceMatrix)[i]] <- distance
+    distanceMatrix[colnames(distanceMatrix)[i], "B.1.1.529"] <- distance
+  }
+  distanceMatrix <- as.data.frame(distanceMatrix)
+}
+
+rm(update, var2, var2_nuc, distance, i)
+
+## list missing lineages
+#distanceMatrix %>% dplyr::select("B.1.617.3") %>% filter(if_any(where(is.numeric), is.infinite))
+```
+
+
+```{r average-genomic-distance-sim}
+simDistance <- NULL
+
+for (l in sim.lineages){
+  if (l != "others") {
+    for (j in sim.lineages){
+      if (j != "others" & j != l) {
+        d <- distanceMatrix[l, j]
+        if (d != Inf){
+          simDistance <-  c(simDistance, d)
+        }
+      }
+    }
+  }
+}
+rm(l,j)
+```
+
+
+```{r}
+getminDistance <- function(lin, tp, sim.data.long) {
+  
+  df <- sim.data.long %>% 
+    filter(timepoint == tp) %>% dplyr::select("lineage") %>% filter(lineage !="others") %>% 
+    unique() %>% rowwise() %>%
+    mutate(similarity= distanceMatrix[lin, lineage])
+  
+  minDistance <- max(df$similarity)
+  closestRelative <- df$lineage[df$similarity==max(df$similarity)]
+  
+  return(c(minDistance, closestRelative))
+}
+
+check_direction <- function(json.data, var1, var2, direction, n){
+  # check json.data for parent or child lineage information
+  
+  # check upstream
+  if (direction=="up"){ 
+    var_parent = json.data[[var1]]$parent
+    
+    # end of search, found parent
+    if (var_parent==var2){ 
+      return = list(TRUE, n)
+    }
+    
+    # end of search, not a parent
+    else if(var_parent == ""){ 
+      return = list(FALSE, 0)
+    }
+    
+    else{
+      n <- n +1
+      check_direction(json.data, var_parent, var2, direction, n)
+    }
+  }
+  
+  # check downstream
+  else if (direction=="down"){ 
+    var_parent = json.data[[var2]]$parent
+    
+    # end of search, found child
+    if (var_parent==var1){ 
+      return = list(TRUE, n)
+    }
+    
+    # end of search, not a child
+    else if(var_parent == ""){ 
+      return = list(FALSE, 0)
+    }
+    
+    else{
+      n <- n +1
+      check_direction(json.data, var1, var_parent, direction, n)
+    }
+  }
+  else {print("direction needs to be either 'up' or 'down'")}
+}
+
+check_relationship <- function(json.data, sim.data.long, var1, var2) {
+  # check if variables are part of ref dataset
+  #stopifnot("One or more of the variables are not part of dataset"=!is.null(json.data[[var1]]), 
+  #          "One or more of the variables are not part of dataset"=!is.null(json.data[[var2]]))
+  
+  if (is.null(json.data[[var1]]) | is.null(json.data[[var2]])) {
+    return("not in dataset")
+  }
+  
+  # check upstream
+  res <- check_direction(json.data, var1, var2, "up", 1)
+  
+  if (res[[1]]){
+    # found lineage is child of simulated lineage
+    #print(paste("is child Number of levels:", res[[2]]))
+    #print(res[[2]])
+    return = "child"
+  }
+  else{
+    #check downstream
+    res <- check_direction(json.data, var1, var2, "down", 1)
+    if(res[[1]]){
+      # found lineage is parent of simulated lineage
+      
+      #print(paste("is parent Number of levels:", res[[2]]))
+      #print(-res[[2]])
+      return = "parent"
+    }
+    
+    # different branch
+    else{
+      #print("is on different branch")
+      #print(Inf)
+      retun ="different branch"
+    }
+  }
+}
+
+```
+
+
+```{r}
+fp <- calculateConfusionMatrix(data.tool.long, data.sim.long, grouping = FALSE)
+#fp <- calculateConfusionMatrix(data.tool.long, data.sim.long, grouping = TRUE)
+```
+
+
+```{r visualise-distance-all, warning=FALSE, results='asis'}
+
+for (timecourse_name in tabs){
+  cat("\n\n### ", tabs.dict[[timecourse_name]], " {.tabset} \n\n")
+  
+  if(timecourse_name == "Overall"){
+    fp_distance <- fp %>%
+      filter(FP == 1, lineage != "others") %>% 
+      group_by(tool_name, lineage, timepoint) %>% 
+      dplyr::select(c("tool_name", "lineage", "timepoint")) %>%
+      unique() %>% arrange(tool_name) %>% ungroup() %>% 
+      rowwise() %>% mutate(min_distance = as.numeric(getminDistance(lineage, timepoint, data.sim.long)[1]),
+                       closest_relative = getminDistance(lineage, timepoint, data.sim.long)[2],
+                       relationship = check_relationship(json.data, data.sim.long, lineage, closest_relative)
+                       ) %>% 
+      filter(!is.infinite(min_distance))
+  } else{
+    fp_distance <- fp %>%
+      filter(FP == 1, lineage != "others") %>% 
+      filter(timecourse ==  timecourse_name) %>% 
+      group_by(tool_name, lineage, timepoint) %>% 
+      dplyr::select(c("tool_name", "lineage", "timepoint")) %>%
+      unique() %>% arrange(tool_name) %>% ungroup() %>% 
+      rowwise() %>% mutate(min_distance = as.numeric(getminDistance(lineage, timepoint, data.sim.long)[1]),
+                       closest_relative = getminDistance(lineage, timepoint, data.sim.long)[2],
+                       relationship = check_relationship(json.data, data.sim.long, lineage, closest_relative)
+                       ) %>% 
+      filter(!is.infinite(min_distance))
+  }
+  
+  p <- ggplot(filter(fp_distance, relationship != "not in dataset"), aes(x=min_distance, color=tool_name, fill=tool_name)) +
+    geom_histogram(position = 'identity', alpha=0.9, boundary=0) +
+    geom_vline(data=. %>% group_by(relationship, tool_name) %>% summarize(x=mean(min_distance)), aes(xintercept=x), color="grey50") +
+    facet_grid(tool_name~relationship, scales = "free_y", labeller = safe_labeller) +
+    colScale +
+    fillScale +
+    scale_y_continuous(expand=expansion(mult = c(0,0.05))) +
+    theme_bw() +
+    theme(
+     legend.position = "none",
+     text = element_text(size=12),
+     strip.background = element_blank()
+    ) +
+    labs(x = "Similarity") +
+    NULL
+
+  print(p)
+  
+  q <- ggplot(filter(fp_distance, relationship != "not in dataset"), aes(x=min_distance, y=relationship, height=stat(density), color=tool_name, fill=tool_name)) +
+    geom_density_ridges(stat = "density", scale=1, alpha=0.8) +
+    facet_wrap(~tool_name, labeller = safe_labeller)+
+    colScale +
+    fillScale +
+    theme_bw() +
+    theme(
+      legend.position = "none",
+      text = element_text(size=12),
+      strip.background = element_blank()
+      ) +
+    theme(legend.position = "none")
+  print(q)
+  
+  rm(p)
+  rm(q)
+}
+
+#fp_distance %>% group_by(relationship) %>% summarize(mean(min_distance))
+```
+
+---- 
+
+
+# Summary: Jaccard index vs RMSE {.tabset}
+
+Aggregation plot summarizing the qualitative classification performance (Jaccard Index) and the quantitative inferrence performance (RMSE: root mean squared error) for each tool.
+
+```{r}
+tool_twoDimensionPlot <- function(data.metrics, colScale, title) {
+  data.filter <- data.metrics %>%
+    group_by(tool_name) %>%
+    summarise(jaccard_index = mean(jaccard_index, na.rm = TRUE),
+              relAb_RMSE = mean(RMSE, na.rm = TRUE), .groups="drop")
+  
+  ggplot(data.filter, aes(x=jaccard_index, y=relAb_RMSE)) +
+    #geom_point(aes(colour=tool_name), size = 3, shape=4, stroke=2) +
+    geom_jitter(aes(color=tool_name), size = 3, shape=4, stroke=2) +
+    #facet_grid(~timecourse, labeller = safe_labeller) + 
+    labs(
+      title=title,
+      y="Root Mean Squared Error - relative Abundance",
+      x="Jaccard Index") +
+    colScale +
+    theme_bw()
+}
+
+
+```
+
+
+```{r plot-VS-all, warning=FALSE, results='asis'}
+for (timecourse_name in tabs ){
+  #cat("\n##", timecoursei, "\n")
+  cat("\n## ", tabs.dict[[timecourse_name]], " \n")
+
+  if(timecourse_name == "Overall"){
+    p <- tool_twoDimensionPlot(data.metrics, colScale, paste("Quantitative & Qualitative performance:", timecourse_name))
+  } else{
+    p <- tool_twoDimensionPlot(filter(data.metrics, timecourse == timecourse_name ), colScale, paste("Quantitative & Qualitative performance:", timecourse_name))
+  }
+  
+  print(p)
+  cat("\n\n")
+}
+```
+
