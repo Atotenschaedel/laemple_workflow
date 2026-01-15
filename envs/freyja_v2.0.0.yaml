@@ -219,4 +219,3 @@ dependencies:
   - zlib=1.3.1=hb9d3cd8_2
   - zstandard=0.23.0=py311h9ecbd09_2
   - zstd=1.5.7=hb8e6e7a_2
-prefix: /opt/mambaforge_users/asched85/envs/freyja_v2.0.0

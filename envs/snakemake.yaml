@@ -242,4 +242,3 @@ dependencies:
   - zipp=3.23.0=pyhd8ed1ab_0
   - zstandard=0.23.0=py311h9ecbd09_2
   - zstd=1.5.7=hb8e6e7a_2
-prefix: /opt/mambaforge_users/asched85/envs/snakemake

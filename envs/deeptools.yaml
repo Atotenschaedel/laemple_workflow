@@ -71,4 +71,3 @@ dependencies:
   - xz=5.2.6=h166bdaf_0
   - zlib=1.2.13=h166bdaf_4
   - zstd=1.4.9=ha95c52a_0
-prefix: /opt/mambaforge_users/asched85/envs/deeptools

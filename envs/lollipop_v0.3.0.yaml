@@ -124,4 +124,3 @@ dependencies:
   - zlib-ng=2.0.7=h0b41bf4_0
   - zstandard=0.21.0=py310h1275a96_1
   - zstd=1.5.5=hfc55251_0
-prefix: /opt/mambaforge_users/asched85/envs/lollipop

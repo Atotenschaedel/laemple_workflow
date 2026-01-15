@@ -52,4 +52,3 @@ dependencies:
   - xz=5.4.2=h5eee18b_0
   - zlib=1.2.12=h5eee18b_3
   - zstd=1.5.2=ha4553b6_0
-prefix: /opt/mambaforge_users/asched85/envs/SWAMPy
