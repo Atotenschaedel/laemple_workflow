@@ -91,9 +91,11 @@ cd Laemple_workflow/
 ```
 
 #### Install Snakemake using `conda`
-    ```
-    conda env create -f envs/snakemake.yaml
-    ```
+
+```
+conda env create -f envs/snakemake.yaml
+```
+    
 #### Configuration
     All pipeline parameters are defined in `config/worfklow_config.yaml`. 
 This file controls datasets, simulation parameters, seeds, enabled tools and reporting behavior. 
@@ -107,11 +109,11 @@ b. **workflow_config_manuscript.yaml:** the config files for the analysis as pre
 
 For demonstration purpose, the default workflow is configured to include a minimal example of the complete workflow which includes only tools Freyja (https://anaconda.org/channels/bioconda/packages/freyja/overview) and VaQuERo (https://github.com/fabou-uobaf/VaQuERo.git) and uses additional reference sequences from https://github.com/corneliusroemer/pango-sequences.git as well as SWAMPy for simulation of sequence data from wastewater samples (https://github.com/goldman-gp-ebi/SWAMPy). It can be started by activating by:
     
-    ```
-    conda activate snakemake
-    python main.py
+```
+conda activate snakemake
+python main.py
 Rscript -e "rmarkdown::render('PostPredict_report.Rmd')"
-    ```
+```
 
 It should end with 6 new simulated experiments with each having two result files in the respective result folders: `freyja_v2.0.0_summary.csv`, and `vaquero_v24d9211_summary.csv`. Final Report can be rendered using `PostPredict_report.Rmd`
 
