@@ -18,7 +18,7 @@ configfile: "config/workflow_config.yaml"
 EXPERIMENT_NAME = config["EXPERIMENT_NAME"]
 
 p = Path.cwd() / "experiments" / EXPERIMENT_NAME / "data"
-SAMPLES = list(set([x.stem[:-3] for x in p.glob("*") if x.is_file()]))
+SAMPLES = list(set([x.stem[:-3] for x in p.glob("*.fastq") if x.is_file()]))
 
 rule all:
      input:

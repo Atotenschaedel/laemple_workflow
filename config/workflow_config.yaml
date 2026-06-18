@@ -3,6 +3,7 @@ APP:
 CORES_AVAILABLE: 20
 CURRENT_SET: SET_01
 EXPERIMENT_NAME: Ex01_01_minimal_example
+INCLUDE_SIMULATION_PIPELINE: true
 POSTPRED:
   LABELS:
   - key: minimal_example
@@ -76,5 +77,5 @@ TOOLS:
     COLOUR_IN_REPORT: '#D3BA68FF'
     DESCRIPTION: current github version with old reference set
     INCLUDE_IN_ANALYSIS: false
-    TOOL_LABEL: 'VaQuERo v24d9211 oldRef'
+    TOOL_LABEL: VaQuERo v24d9211 oldRef
     TOOL_NAME: vaquero_v24d9211_oldREF

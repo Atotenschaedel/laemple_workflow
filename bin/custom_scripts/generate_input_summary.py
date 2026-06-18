@@ -29,7 +29,8 @@ import PostPred_functions as func
 parser = argparse.ArgumentParser()
 
 # Add arguments
-parser.add_argument("-a", "--abundances_files", nargs="+", help="List of abundance file names")
+parser.add_argument("-s", "--samples", nargs="+", help="List of sample names")
+parser.add_argument("-d", "--data_file", type=str, help="data file")
 parser.add_argument("-c", "--coverage_files", nargs="+", help="List of coverage file names")
 parser.add_argument("-v", "--stat_files", nargs="+", help="List of stat file names")
 parser.add_argument("-m", "--meta_file", type=str, help="metadata file")
@@ -45,46 +46,37 @@ meta_df = pd.read_csv(args.meta_file, sep='\t')
 meta_df["timepoint"] = meta_df["timepoint"].astype(int)
 meta_df["sample_date"] = pd.to_datetime(meta_df["sample_date"], format='%Y-%m-%d')
 
-## read out sim data
-sim_df = pd.DataFrame({"timepoint": pd.Series(dtype=int)})
-variant_list = []
+# keep only data rows from samples list
+meta_df = meta_df[meta_df["sample"].isin(args.samples)]
 
-for file in args.abundances_files:
-    df = pd.read_csv(file, sep='\t', header=None, names=["lineage", "abundance"])
+## read out data file
+data_df = pd.read_csv(args.data_file, sep=",")
+data_df["sample_date"] = pd.to_datetime(data_df["sample_date"], format='%Y-%m-%d')
 
-    # check if abundance is 0-100 or 0-1
-    if df['abundance'].sum() == 100.0: 
-        df['abundance'] = df['abundance'] / 100
-        
-    df['lineage'] = df['lineage'].str.replace('-cons','')
-    variant_list.extend(list(df['lineage']))
-    df = df.T
-    df.columns = df.iloc[0]
-    df = df[1:]
+# keep only data that corresponds with metadata rows. remove unnamed columns
+data_df = data_df[data_df["sample_date"].isin(meta_df["sample_date"].to_list())]
+data_df = data_df.loc[:, ~data_df.columns.str.contains(r"^Unnamed")]
 
-    df["timepoint"] = file[file.rfind("-")+1:file.rfind(".")]
-    df["timepoint"] = df["timepoint"].astype(int)
-    
-    sim_df = pd.concat([sim_df, df], ignore_index=True).sort_values(by=["timepoint"])
+# create merge dataframe
+seq_df = pd.merge(meta_df, data_df, on = "sample_date", how = "outer").sort_values(by=["timepoint"])
 
-# change all columns to float except timepoint
-for col in sim_df.columns:
-    if col != "timepoint":
-        sim_df[col] = sim_df[col].astype(float)
+# change all lineage columns to float
+for col in seq_df.columns:
+    if col not in ["sample", "sample_date", "timepoint"]:
+        seq_df[col] = seq_df[col].astype(float)
 
-sim_df.replace(0.00, np.nan, inplace=True)
-sim_df = sim_df.merge(meta_df, on ="timepoint")
+seq_df.replace(0.00, np.nan, inplace=True)
 
 # filter dataframe
-sim_df= func.filter_dataframe(sim_df, args.lineage_min_threshold, "simulation")
+seq_df= func.filter_dataframe(seq_df, args.lineage_min_threshold, "simulation")
 
 # # get sequencing quality parameter
-sim_df["coverage_avg"] = np.nan
-sim_df["coverage_sd"] = np.nan
-sim_df["uniformity_wg_per"] = np.nan
-sim_df["MAPQ_avg"] = np.nan
+seq_df["coverage_avg"] = np.nan
+seq_df["coverage_sd"] = np.nan
+seq_df["uniformity_wg_per"] = np.nan
+seq_df["MAPQ_avg"] = np.nan
 
-for index, row in sim_df.iterrows():
+for index, row in seq_df.iterrows():
     sample_name = row["sample"]
     i_file = ""
 
@@ -94,8 +86,8 @@ for index, row in sim_df.iterrows():
             df = pd.read_csv(cov_file, sep="\t")
 
             # overall coverage
-            sim_df.loc[index, "coverage_avg"] = df[sample_name].mean()
-            sim_df.loc[index, "coverage_sd"] = df[sample_name].std()
+            seq_df.loc[index, "coverage_avg"] = df[sample_name].mean()
+            seq_df.loc[index, "coverage_sd"] = df[sample_name].std()
 
             # uniformity overall - percentage of bases in all targeted regions (or whole‑genome) 
             # that is covered by at least X%.
@@ -105,7 +97,7 @@ for index, row in sim_df.iterrows():
                 if int(r[sample_name]) >= int(args.min_read_count):
                     qc_passed += 1
             
-            sim_df.loc[index, "uniformity_wg_per"] = (qc_passed / len(df)) * 100
+            seq_df.loc[index, "uniformity_wg_per"] = (qc_passed / len(df)) * 100
 
             # get average quality score of mapped reads
             for stat_file in args.stat_files:
@@ -113,9 +105,9 @@ for index, row in sim_df.iterrows():
                     with open(stat_file) as f:
                         first_line = f.readline()
                         
-                    sim_df.loc[index, "MAPQ_avg"] = first_line.split("=")[1].strip()
+                    seq_df.loc[index, "MAPQ_avg"] = first_line.split("=")[1].strip()
                     break
             break
 
 # write output file
-sim_df.to_csv(args.output_file, index=False)
+seq_df.to_csv(args.output_file, index=False)

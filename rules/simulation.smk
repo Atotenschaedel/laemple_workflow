@@ -32,13 +32,14 @@ def get_sequences_file_names(wildcards):
 rule all:
     input:
         expand("experiments/{exp}/simulation/QualityControl/{exp}_multiqc_report.html", exp=EXPERIMENT_NAME),
-        expand("experiments/{exp}/simulation/{exp}_metadata.tsv", exp=EXPERIMENT_NAME)
+        expand("experiments/{exp}/data/{exp}_metadata.tsv", exp=EXPERIMENT_NAME),
+        expand("experiments/{exp}/data/{exp}_data.csv", exp=EXPERIMENT_NAME)
 
 checkpoint generateAbundances:
     output: 
         dir=directory("experiments/{exp}/simulation/abundances/"),
-        metafile="experiments/{exp}/simulation/{exp}_metadata.tsv",
-        data="experiments/{exp}/simulation/{exp}_data.csv"
+        metafile="experiments/{exp}/data/{exp}_metadata.tsv",
+        datafile="experiments/{exp}/data/{exp}_data.csv"
     conda:
         "../envs/python3.yaml"
     params:
@@ -55,13 +56,15 @@ checkpoint generateAbundances:
     log:
         "logs/{exp}/simulation/genSamples.out.log"
     shell: 
-        "python3 bin/custom_scripts/generateSamples.py --experiment_name {wildcards.exp} "
+        "python3 bin/custom_scripts/generate_samples.py --experiment_name {wildcards.exp} "
         "--seed {params.seed} --sample_mode {params.sample_mode} "
         "--sample_number {params.sample_number} --real_timecourse {params.real_timecourse} "
         "--real_timecourse_data '{params.real_timecourse_data}' "
-        '--max_timepoints {params.max_timepoints} -v "{params.variants}" '
+        '--max_timepoints {params.max_timepoints} --variants "{params.variants}" '
         '--form "{params.form}" '
         "--constant_abundance {params.constant_abundance} --start_date {params.start_date} "
+        "--output_metafile {output.metafile} "
+        "--output_datafile {output.datafile} "
         "--output_dir {output.dir} &>{log}"
 
 rule generate_cons_genome:

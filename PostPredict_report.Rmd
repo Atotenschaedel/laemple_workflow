@@ -58,7 +58,7 @@ library(rjson)
 
 currWorkingDir = getwd()
 if(interactive()){
-  params$config_file <- paste0(currWorkingDir, "config/workflow_config.yaml")
+  params$config_file <- paste0(currWorkingDir, "/config/workflow_config.yaml")
 }
 ```
 
@@ -157,7 +157,7 @@ experiment_list <- experiment_list[!grepl("^##", experiment_list)]
 ```{r read-sim-data, warning=FALSE, message=FALSE, echo=FALSE}
 # get simulation data 
 for(i in 1:length(experiment_list)) {
-  f = paste(currWorkingDir, "/experiments/", experiment_list[i], "/results/postPrediction/simulation_summary.csv", sep="")
+  f = paste(currWorkingDir, "/experiments/", experiment_list[i], "/results/postPrediction/input_summary.csv", sep="")
   data.temp <- read.csv(f)
   data.temp$experiment <- experiment_list[i]
   if (i == 1) { 

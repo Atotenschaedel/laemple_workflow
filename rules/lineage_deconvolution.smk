@@ -20,7 +20,7 @@ EXPERIMENT_NAME = config["EXPERIMENT_NAME"]
 SET_NAME=config["CURRENT_SET"]
 
 p = Path.cwd() / "experiments" / EXPERIMENT_NAME / "data"
-SAMPLES = list(set([x.stem[:-3] for x in p.glob("*") if x.is_file()]))
+SAMPLES = list(set([x.stem[:-3] for x in p.glob("*.fastq") if x.is_file()]))
 config["SAMPLES"] = SAMPLES
  
 MODULE_NAMES = []
@@ -28,7 +28,7 @@ for tool in config["TOOLS"]:
     if config["TOOLS"][tool]["INCLUDE_IN_ANALYSIS"]:
         MODULE_NAMES.append(config["TOOLS"][tool]["TOOL_NAME"])
 
-submodule_all_outputs = [f"experiments/{EXPERIMENT_NAME}/results/postPrediction/simulation_summary.csv"]
+submodule_all_outputs = [f"experiments/{EXPERIMENT_NAME}/results/postPrediction/input_summary.csv"]
 
 for module_name in MODULE_NAMES:
     module:
@@ -55,23 +55,25 @@ rule pango_sequences_refSet:
     shell:
         "cd references && git clone {params.git_repo} && cd .. "
 
-rule simulation_summary:
-    input: 
-        abundances=expand("experiments/{exp}/simulation/abundances/{sample}.tsv", exp=EXPERIMENT_NAME, sample=SAMPLES),
+rule sequencing_summary:
+    input:
         coverage=expand("experiments/{exp}/results/variantCall/00_stats/{sample}/{sample}_cov.tsv", exp=EXPERIMENT_NAME, sample=SAMPLES),
         stats=expand("experiments/{exp}/results/variantCall/00_stats/{sample}/{sample}_virus.stats", exp=EXPERIMENT_NAME, sample=SAMPLES),
-        meta="experiments/{exp}/simulation/{exp}_metadata.tsv"
+        data_file="experiments/{exp}/data/{exp}_data.csv",
+        meta="experiments/{exp}/data/{exp}_metadata.tsv"
     output: 
-        "experiments/{exp}/results/postPrediction/simulation_summary.csv"
+        "experiments/{exp}/results/postPrediction/input_summary.csv"
     conda: 
         "../envs/python3.yaml"
     params:
+        samples = SAMPLES,
         use_real_timecourse=config["SIMULATION"]["DATASET"][SET_NAME]["USE_REAL_TIMECOURSE"],
         min_read_count=config["POSTPRED"]["MIN_READ_COUNT"],
         lineage_min_threshold = config["POSTPRED"]["LINEAGE_MIN_THRESHOLD"]
     shell:
-        "python bin/custom_scripts/SequencingSummary.py "
-        "--abundances_files {input.abundances} "
+        "python bin/custom_scripts/generate_input_summary.py "
+        "--samples {params.samples} "
+        "--data_file {input.data_file} "
         "--coverage_files {input.coverage} "
         "--stat_files {input.stats} "
         "--meta_file {input.meta} "
