@@ -95,6 +95,7 @@ cd Laemple_workflow/
 ```
 conda env create -f envs/snakemake.yaml
 ```
+    
 
 #### Configuration
 All pipeline parameters are defined in `config/worfklow_config.yaml`. 
