@@ -59,7 +59,7 @@ def generate_growth_line(max_timepoints: int, start_timepoint: int, para: dict):
 
     return pad_list+growth_list
 
-def draw_samples(df: pd.DataFrame, mode: str, s_number: int):
+def draw_samples(df: pd.DataFrame, mode: str, s_number: int, meta_file: str, data_file: str):
     """
     Function draws s_number of samples from dataframe
 
@@ -68,6 +68,8 @@ def draw_samples(df: pd.DataFrame, mode: str, s_number: int):
     df          :   pandas dataframe to be drawn from
     mode        :   can be "all", "even" or "random" for interval of drawn samples
     s_number    :   number of samples to be drawn from dataframe
+    meta_file   :   path to output metadata file
+    data_file   :   path to output data file
 
     Returns
     -------
@@ -90,7 +92,7 @@ def draw_samples(df: pd.DataFrame, mode: str, s_number: int):
     # create tsv file if timepoint is part of sampling list
     for index, row in df.iterrows():
         if index in t_s:
-            sample_name = exp_name + "_simul-" + str(index+1) 
+            sample_name = args.experiment_name + "_simul-" + str(index+1) 
             data = []
             for column in df:
                 if column != "sample_date":
@@ -99,12 +101,12 @@ def draw_samples(df: pd.DataFrame, mode: str, s_number: int):
             sample_summary.append(sample_name+"\t"+str(row["sample_date"])+"\t"+str(index+1)) 
             np.savetxt(fname=w_dir+"/abundances/" + sample_name +".tsv", X=data, delimiter="\t", fmt ='% s')
 
-    with open(w_dir+"/" + exp_name + "_metadata.tsv", "w") as f:
+    with open(meta_file, "w") as f:
         for line in sample_summary:
             f.write(line+"\n")
 
     # save dataframe
-    df.to_csv(w_dir + "/" + exp_name + "_data.csv")
+    df.to_csv(data_file)
 
     print(df)
     return t_s
@@ -142,29 +144,29 @@ def plotAbundance(df: pd.DataFrame, mode: str, max_timepoints: int, timepoints_s
     if real_timecourse: plt.legend(frameon=False, bbox_to_anchor=(1, 1), loc='upper left')
     else: plt.legend()
 
-    plt.savefig(w_dir + "/" + exp_name + "_plot.png")
+    plt.savefig(w_dir + "/" + args.experiment_name + "_plot.png")
     plt.close()
 
 # add arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("-o","--output_dir", type=str, default="")
-parser.add_argument("-e","--experiment_name", type=str, default="")
-parser.add_argument("-s","--seed", type=int, default="")
-parser.add_argument("-m","--sample_mode", type=str, default="")
-parser.add_argument("-n","--sample_number", type=int, default="")
-parser.add_argument("-r","--real_timecourse", type=func.str2bool, default=False)
+parser.add_argument("--output_dir", type=str, default="")
+parser.add_argument("--output_metafile", type=str, default="")
+parser.add_argument("--output_datafile", type=str, default="")
+parser.add_argument("--experiment_name", type=str, default="")
+parser.add_argument("--seed", type=int, default="")
+parser.add_argument("--sample_mode", type=str, default="")
+parser.add_argument("--sample_number", type=int, default="")
+parser.add_argument("--real_timecourse", type=func.str2bool, default=False)
 parser.add_argument("--real_timecourse_data", type=str, default="")
-parser.add_argument("-t","--max_timepoints", type=int, default=365)
-parser.add_argument("-v","--variants", type=ast.literal_eval, default={})
-parser.add_argument("-f","--form", type=ast.literal_eval, default={})
-parser.add_argument("-a","--constant_abundance", type=float, default=0.0)
-parser.add_argument("-d","--start_date", type=str, default="")
+parser.add_argument("--max_timepoints", type=int, default=365)
+parser.add_argument("--variants", type=ast.literal_eval, default={})
+parser.add_argument("--form", type=ast.literal_eval, default={})
+parser.add_argument("--constant_abundance", type=float, default=0.0)
+parser.add_argument("--start_date", type=str, default="")
 args=parser.parse_args()
 
-exp_name = args.experiment_name
-
 if args.output_dir == "":
-    output_dir = f"experiments/{exp_name}/simulation/abundances/"
+    output_dir = f"experiments/{args.experiment_name}/simulation/abundances/"
 else:
     output_dir = args.output_dir
 
@@ -176,17 +178,10 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
 
 w_dir = output_dir[:output_dir.rfind("/")]
 
-logging.info("Starting simulation for {sample}.".format(sample=exp_name))
+logging.info("Starting simulation for {sample}.".format(sample=args.experiment_name))
 logging.info("Parameter settings are:")
 logging.info("Seed: {s}".format(s=args.seed))
 logging.info(yaml.dump(args))
-
-# get experiment name
-exp_name = args.experiment_name
-
-# get sampling mode and number of samples
-mode = args.sample_mode
-s_number = args.sample_number
 
 # create output directory and clean up from previous run
 for folder in ["", "/abundances"]:
@@ -201,10 +196,9 @@ if args.real_timecourse:
     f = Path.cwd() / Path(args.real_timecourse_data)
     df = pd.read_csv(f, sep="\t")
 
-    df = df[["kw", "Pango_lineage", "r"]]
-    df.rename(columns={"kw": "sample_date"}, inplace=True)
+    df = df[["sample_date", "lineage", "relAbun"]]
 
-    df = df.pivot(index='sample_date', columns='Pango_lineage', values='r')
+    df = df.pivot(index='sample_date', columns='lineage', values='relAbun')
     df = df.fillna(0).round(decimals=2).reset_index()
     print(df.head())
 
@@ -278,7 +272,7 @@ else:
     
     df["sample_date"] = dates
     
-timepoints_sampled = draw_samples(df, mode, s_number)
-plotAbundance(df, mode, max_timepoints, timepoints_sampled, args.real_timecourse)
+timepoints_sampled = draw_samples(df, args.sample_mode, args.sample_number, args.output_metafile, args.output_datafile)
+plotAbundance(df, args.sample_mode, max_timepoints, timepoints_sampled, args.real_timecourse)
 
 logging.info('\nSimulation done.')
