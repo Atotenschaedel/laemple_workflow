@@ -57,6 +57,7 @@ library(rjson)
 
 
 currWorkingDir = getwd()
+
 if(interactive()){
   params$config_file <- paste0(currWorkingDir, "/config/workflow_config.yaml")
 }
@@ -151,6 +152,7 @@ knitr::kable(data.frame(Tools = names(tool_list)) %>% rowwise() %>% mutate(`Tool
 
 ```{r sample-list-all, echo=TRUE}
 experiment_list <- list.dirs(path=paste0(currWorkingDir, "/experiments"), full.names=FALSE, recursive=FALSE)
+experiment_list <- experiment_list[grepl("Ex", experiment_list)]
 experiment_list <- experiment_list[!grepl("^##", experiment_list)]
 ```
 
@@ -185,6 +187,11 @@ data.sim.long <- data.sim %>%
   gather(key="lineage", value="rel_abun", -c("timecourse", "timepoint", "experiment", "replicate", "coverage_avg", "coverage_sd", "uniformity_wg_per", "MAPQ_avg")) %>%
   filter(!is.na(rel_abun)) 
 
+# fix issue if rel_abun is not in the range [0,1] but [0,100]
+if(max(range(data.sim.long$rel_abun)) > 1 & max(range(data.sim.long$rel_abun)) <= 100){
+  data.sim.long <- data.sim.long %>% mutate(rel_abun = rel_abun/100)
+}
+
 #clean up
 rm(f, i, data.temp, common_cols)
 ```
@@ -194,23 +201,24 @@ rm(f, i, data.temp, common_cols)
 data.tool <- NULL
 for(i in 1:length(experiment_list)) {
   for (j in 1:length(tool_list)) {
-    if(names(tool_list)[j] == "simulation") {next}
-    else {
+    if(names(tool_list)[j] == "simulation") {
+      next
+    }  else {
       f = paste(currWorkingDir, "/experiments/", experiment_list[i], "/results/postPrediction/", names(tool_list)[j], "_summary.csv", sep="")
       data.temp <- tryCatch(read.csv(f), error=function(e) NULL)
       if (is.null(data.temp)) {
         data.temp <- data.frame(timepoint = unique(data.sim$timepoint))
-        }
-      else {
+      } else {
         data.temp <-  data.temp %>% dplyr::select(-c("sample_name"))
-        }
+      }
     
       data.temp <- data.temp %>%
         mutate(experiment = experiment_list[i], tool_name = names(tool_list)[j]) %>%
         filter(!if_all(everything(), is.na))
       
-      if (i == 1 & j == 1) {data.tool <- data.temp} 
-      else { 
+      if (is.null(data.tool)) {
+        data.tool <- data.temp
+      } else { 
       data.tool <- merge(x=data.tool, y=data.temp, by = intersect(colnames(data.tool), colnames(data.temp)), all=TRUE)
       }
     }
@@ -244,13 +252,18 @@ data.tool.long <- left_join(data.tool.long,
                             dplyr::select(data.sim, c("experiment", "replicate","timepoint", "uniformity_wg_per")), 
                             by = c("experiment", "replicate", "timepoint"))
 
+# fix issue if rel_abun is not in the range [0,100] but [0,1]
+# data.tool.long %>% group_by(tool_name) %>% summarize(max = max(rel_abun))
+if(data.tool.long %>% filter(tool_name != "simulation") %>% pull(rel_abun) %>% max() <= 1 & data.tool.long %>% filter(tool_name == "simulation") %>% pull(rel_abun) %>% max() > 1){
+  data.tool.long <- data.tool.long %>% mutate(rel_abun = ifelse(tool_name == "simulation", rel_abun/100, rel_abun))
+}
+
 #clean up
 rm(f, i, j, data.temp)
 ```
 
 
 **Analysis in numbers:** 
-
 
 * Number of time courses considered: `r length(table(data.tool$timecourse))`
 
@@ -469,6 +482,9 @@ for(tc in tabs){
     tabs.dict[[tc]] <- tc
   } else{
     tabs.dict[[tc]] <- as.character(unlist(config$POSTPRED$LABELS)[which(grepl(tc, unlist(config$POSTPRED$LABELS)))+1])
+    if(identical(tabs.dict[[tc]], character(0))){
+      tabs.dict[[tc]] <- gsub("_", " ", tc)
+    }
   }
 }
 
@@ -607,16 +623,14 @@ vennDiagramReplicates <- function(data.long) {
 
 
 ```{r replicate-comparision-Venn, results='asis', fig.width=10, fig.height=5}
-for (timecourse_name in tabs){
+if( length(unique(data.tool.long$replicate)) > 1){
+  for (timecourse_name in tabs){
   
   #cat("#### ", timecourse_name, "\n")
   cat("\n#### ", tabs.dict[[timecourse_name]], "\n")
-
   if (timecourse_name == "Overall"){
     d.long <- data.tool.long %>% dplyr::select(-c("timecourse"))
-  }
-  
-  else {
+  } else {
     d.long <- filter(data.tool.long, timecourse==timecourse_name) %>% dplyr::select(-c("timecourse"))
   }
   
@@ -628,15 +642,12 @@ for (timecourse_name in tabs){
       # store plot in list
       plots[[i]] <- vennDiagramReplicates(d.long) + 
         labs(title="All tools", title.position = "center")
-    }
-    
-    else{
+    } else{
       # store plot in list
       plots[[i]] <- vennDiagramReplicates(filter(d.long, tool_name == names(tool_list)[i])) + 
         labs(title=names(tool_list[i]), title.position = "center")
       }
   }
-
   print(annotate_figure(
     ggarrange(plotlist = plots), 
     top = text_grob(paste0("Number of identified lineages between replicates - ",timecourse_name),
@@ -645,11 +656,10 @@ for (timecourse_name in tabs){
   )
   cat("\n\n")
 }
-
-#clean up
-rm(timecourse_name, i, d.long, plots)
+  #clean up
+  rm(timecourse_name, i, d.long, plots)
+}
 ```
-
 
 
 ### Density Plots {.tabset}
@@ -892,7 +902,6 @@ for (timecourse_name in tabs){
 rm(p)
 ```
 
-##
 
 ----
 
@@ -1077,6 +1086,11 @@ tool_metricsPer <- function(data.metrics, x_var) {
       aes(x = !!x_var_sym, y = value, color = tool_name),
       size = 1
     ) +
+    geom_point(
+      data = variable_df,
+      aes(x = !!x_var_sym, y = value, color = tool_name),
+      size = 1
+    ) +
     geom_smooth(
       data = variable_df,
       aes(x = !!x_var_sym, y = value, color = tool_name),
@@ -1200,7 +1214,7 @@ abundanceEstimationPlot <- function(data.error, data.long, title){
     geom_abline(intercept = 0, slope = 1, linetype="longdash", alpha=0.2) +
     #scale_color_gradient2(name = "[%] genomic\ncoverage", low = "red", mid = "grey", high = "blue") +
     scale_color_viridis_c(name = "[%] genomic\ncoverage", direction = -1) +
-    facet_grid(tool_name ~ timecourse, labeller = safe_labeller) +
+    facet_grid(tool_name ~ timecourse) +
     labs(title = "tool") +
     theme(legend.position = "none") +
     labs(
@@ -1231,10 +1245,11 @@ errorEstimationPlot <- function(data.error, title){
   data.plot <- data.error %>%
     filter(rel_abun != 0.00 & rel_abun_sim != 0.00) %>%
     mutate("Error" = rel_abun - rel_abun_sim) %>%
-    dplyr::select(c("timepoint", "experiment", "replicate", "lineage", "rel_abun_sim", "tool_name", "rel_abun", "Error"))
+    dplyr::select(c("timepoint", "experiment", "replicate", "lineage", "rel_abun_sim", "tool_name", "rel_abun", "Error")) %>%
+    filter(tool_name != "simulation")
   
   
-    ggplot(data.plot, aes(x=rel_abun_sim, y=Error, fill=tool_name, color=tool_name)) +
+    p <- ggplot(data.plot, aes(x=rel_abun_sim, y=Error, fill=tool_name, color=tool_name)) +
       geom_hline(yintercept=0, linetype="dashed") +
       geom_point(shape=21, size=3, stroke=0.1, alpha=0.4) +
       geom_line(stat="smooth", method="lm", se=TRUE, color = "darkgrey") +
@@ -1247,13 +1262,14 @@ errorEstimationPlot <- function(data.error, title){
       x="True Abundance [1/1]",
       y="Error",
       title = title,
-      
     ) +
     theme_bw() +
     theme(
       legend.position = "none",
       text = element_text(size=12)
     )
+    
+    return(p)
 }
 ```
 
@@ -1601,8 +1617,8 @@ tool_twoDimensionPlot <- function(data.metrics, colScale, title) {
               relAb_RMSE = mean(RMSE, na.rm = TRUE), .groups="drop")
   
   ggplot(data.filter, aes(x=jaccard_index, y=relAb_RMSE)) +
-    #geom_point(aes(colour=tool_name), size = 3, shape=4, stroke=2) +
-    geom_jitter(aes(color=tool_name), size = 3, shape=4, stroke=2) +
+    geom_point(aes(colour=tool_name), size = 3, shape=4, stroke=2) +
+    #geom_jitter(aes(color=tool_name), size = 3, shape=4, stroke=2) +
     #facet_grid(~timecourse, labeller = safe_labeller) + 
     labs(
       title=title,
