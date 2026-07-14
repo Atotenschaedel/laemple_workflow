@@ -5,7 +5,7 @@ CURRENT_SET: <> # does not need to be set, will be constructed during the analys
 EXPERIMENT_NAME: <> # does not need to be set, will be constructed during the analysis
 INCLUDE_SIMULATION_PIPELINE: true # toggle to false if simulation should be skipped and user provided (real) data should be used
 POSTPRED:
-  LABELS: # key value pairs, matching names to the unique ID of each simulated, independent DATASET; IDs are used in the subsequent instruction how the time course should be simulated (see SIMULATION -> DATASET -> NAME)
+  LABELS: # optional; key value pairs. Replaces key with value in Postpred Analysis report.
   - key: <CHARACTER>
     value: <CHARACTER>
   LINEAGE_MIN_THRESHOLD: <FLOAT> # minimal relative abundance in [0,1] for a lineage to be considered
@@ -19,7 +19,7 @@ SIMULATION:
   AMPLICON_PSEUDOCOUNTS: <INT> # method passed on to SWAMPy's *amplicon_pseudocounts* option. Currently only <dirichlet_1> is a valid value. See SWAMPy documentation for details.
   DATASET: # description of difference DATASETS and how they are simulated
     SET_01: # generic name, stick to nomenclature SET_{01,02,03,..}
-      CONSTANT_VARIANT_ABUNDANCE: <FLOAT> # relative abundance of a constantly simulated background variant, e.g. the WT strain. Need to be in [0,1[
+      CONSTANT_VARIANT_ABUNDANCE: <FLOAT> # relative abundance of a constantly simulated background variant, e.g. the WT strain. Need to be in [0,1]
       EXPERIMENT_NO_START: <INTEGER> # start index of different experiments within the DATASET, typically <1>
       FORM_PARA: 
         growth_rate: <FLOAT> # growth rate used to simulate the underlying case dynamic, typical value is <0.02>
@@ -35,13 +35,13 @@ SIMULATION:
         - <INTEGER>        # start of exponential growth, e.g. 1
         - <CHARACTER>  # name of the variant, should corespond to REFERENCES_SEQUENCES fasta file, e.g. B.1.1.7
   N_READS: <INTEGER> # number of simulated reads
-  N_SEED: <INTEGER> # seed used for the read simulation
+  N_SEED: <INTEGER> # number of seed used for the read simulation, corresponds to technical replicates
   PRIMER_SET: <CHARACTER> # name of the primer set used
   QUALITY_SCORES:
   - <INTEGER> # list of values of different quality score, passed on to SWAMPy's . typical value [1,400] with higher values producing better genome coverage
   - <INTEGER> # continue list from above if needed
   READ_LENGTH: <INTEGER> # read length, typical value <250>
-  REFERENCES_SEQUENCES:  # reference sequence in fasta file format for different lineages used in the simulation.
+  REFERENCES_SEQUENCES:  # reference sequence in fasta file format for different lineages used in the simulation. Multiple sequences per fasta file possible
   - <CHARACTER> # path to fasta file
   - <CHARACTER> # path to fasta file
   SAMPLE_COLLECTION:
@@ -54,7 +54,7 @@ TOOLS: # list of tools to be applied
     DESCRIPTION: <CHARACTER> # free text to describe tool or version, passed on to the report
     INCLUDE_IN_ANALYSIS: <BOOLEAN> # toggle to false if tool should be omitted
     TOOL_LABEL: <CHARACTER> # name of the tool used in the report
-    TOOL_NAME: <CHARACTER> # ID of the tool, should be unique
+    TOOL_NAME: <CHARACTER> # ID of the tool, should be unique and corresponding to installation name
   TOOL_N:
     COLOUR_IN_REPORT: '#5D8CA8FF'
     DESCRIPTION: current github version
