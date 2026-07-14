@@ -4,8 +4,13 @@
 
 #### A Benchmarking Framework for Virus Lineage Deconvolution Tools for SARS-CoV-2 from Wastewater
 
-This repository contains a reproducible benchmarking pipeline for evaluating SARS-CoV-2 lineage deconvolution tools from wastewater sequencing data. It is designed to simulate sequencing data, perform variant calling, apply lineage deconvolution methods, and assess their performance against known ground truth. The pipeline is implemented using **Snakemake** (version ≥9.5.1) and **conda** (version ≥24.7.1), with configuration-driven execution and downstream analysis in **R**.
+This repository contains a reproducible benchmarking pipeline for evaluating SARS-CoV-2 lineage deconvolution tools from wastewater sequencing data. The pipeline is implemented using **Snakemake** (version ≥9.5.1) and **conda** (version ≥24.7.1), with configuration-driven execution and downstream analysis in **R**. 
 
+It is designed to simulate dynamic lineage abundance timecourse, simulate sequencing data accordingly, perform lineage calling, apply different lineage deconvolution methods, and finally assess their performance against known ground truth, and render a telling report. The pipeline can be run entirely, or only partially. In this sense, simulated time courses can also be provided externally from true time courses, simulated reads can be substituted with real wastewater sequencing reads, accompanied by corresponding ground truth from clinical surveillance.
+
+The purpose of the workflow is to select the most suitable tool for tasks at hand, evaluate the tools in various scenarios (e.g. poor sequencing data due to low virus abundance), and assess the effect of updated reference sets, methodology, or parametrization. To this end, users can adapt the configuration to their needs, and conveniently repeat the task with little hands-on effort.
+
+In the following manual, installation and tailor-made configuration is described in detail.
 
 # Table of Contents
 
@@ -13,25 +18,27 @@ This repository contains a reproducible benchmarking pipeline for evaluating SAR
 2. [Supported Analysis Modes](#supported-analysis-modes)
 3. [Installation](#installation)
 4. [Running the Minimal Example](#running-the-minimal-example)
-5. [Step-by-step Guide](#step-by-step-guide)
-6. [Advanced Customization](#advanced-customization)
-7. [Developer Guide: Adding New Deconvolution Tools](#developer-guide-adding-new-deconvolution-tools)
-8. [Project Structure](#project-structure)
-9. [Troubleshooting](#troubleshooting)
-10. [Credits and Third-Party Software](#credits-and-third-party-software)
+5. [Workflow Output - Report](#workflow-output)
+6. [Step-by-step Guide](#step-by-step-guide)
+7. [Advanced Customization](#advanced-customization)
+8. [Developer Guide: Adding New Deconvolution Tools](#developer-guide-adding-new-deconvolution-tools)
+9. [Project Structure](#project-structure)
+10. [Troubleshooting](#troubleshooting)
+11. [Credits and Third-Party Software](#credits-and-third-party-software)
 
 
 ## Overview
 
 Wastewater sequencing is increasingly used to monitor viral diversity in populations. Estimating the relative abundance of viral lineages from mixed samples requires specialized deconvolution methods. This project provides a standardized framework to:
 
+- Simulate time courses of simple lineage dynamics
 - Simulate sequencing data with known lineage compositions
 - Perform variant calling on simulated or real sequencing reads
 - Run and benchmark lineage deconvolution tools
 - Compare predicted lineage abundances to ground truth
 - Visualize and summarize benchmarking results
 
-The modular design allows individual components of the pipeline to be adapted or extended as new tools and methods become available.
+The modular design allows individual components of the pipeline to be adapted or extended as new tools and methods become available. Furthermore, initial steps can also be skipped, by providing own, arbitrarily complex timecourse or providing own sequence data.
 
 ## Key Features
 
@@ -47,13 +54,10 @@ New lineage deconvolution tools can be added without modifying the core framewor
 
 Benchmarking can be performed using:
 
+- Simulated or real lineage dynamics
 - Simulated sequencing datasets
 - Real wastewater sequencing data
 - Hybrid analyses combining both
-
-### - Flexible Pathogen Support
-
-Although originally developed for SARS-CoV-2, users can provide alternative reference genomes and lineage definitions to benchmark deconvolution workflows for other viral pathogens.
 
 # Supported Analysis Modes
 
@@ -62,20 +66,24 @@ Although originally developed for SARS-CoV-2, users can provide alternative refe
 Generate synthetic wastewater sequencing datasets with known lineage abundances.
 
 ```text
-Simulation
+Simulate Lineage Timecourses
+    ↓
+Read Simulation 
     ↓
 Variant Calling
     ↓
 Lineage Deconvolution
     ↓
 Benchmarking
+    ↓
+Report Generation
 ```
 
 Synthetic sequencing reads are generated using SWAMPy (see [credits](credits.md)), which is integrated into the Læmple simulation pipeline. Simulation parameters such as sequencing platform, primer scheme and quality score profiles can be configured through `config/workflow_config.yaml`. The minimal example included with this repository provides reference sequences and primer definitions for the ARTIC v4 amplicon scheme, but alternative primer sets and reference resources can also be used. For detailed information on available simulation options and supported sequencing configurations, please refer to the SWAMPy documentation. Note that while the simulation workflow is flexible with respect to sequencing settings, the downstream variant-calling pipeline is currently designed for amplicon-based sequencing data.
 
 ## 2. Real Sequencing Data Analysis
 
-Skip the simulation stage and begin directly from sequencing reads.
+Skip the simulation stage and begin directly from raw sequencing reads.
 
 ```text
 FASTQ files
@@ -125,9 +133,43 @@ python main.py
 Rscript -e "rmarkdown::render('PostPredict_report.Rmd')"
 ```
 
-It should end with 6 new simulated experiments with each having two result files in the respective result folders: `freyja_v2.0.0_summary.csv`, and `vaquero_v24d9211_summary.csv`. Final Report can be rendered using `PostPredict_report.Rmd`
+It should end with six new simulated experiments with each having two result files in the respective result folders: `freyja_v2.0.0_summary.csv`, and `vaquero_v24d9211_summary.csv`. Final Report can be rendered using `PostPredict_report.Rmd`
 
 Initial expected run time, including generation of required `conda` environments for the minimal example is <2 hours.
+
+# Workflow Output
+
+After post-prediction analysis, with the included R markdown script PostPredict_report.Rmd, and html report in html format is being generated. The report includes the following sections
+
+### Simulation
+
+**Settings & Sample Overview:** A summary of the included tools, their version and any comments, as defined in the config file
+
+**Simulated Lineage Abundance:** A overview of the underlying lineage timecourse, as simulated by the workflow, or as provided by the user in the first place.
+
+**Simulated Coverage:** Distribution of the genomic read coverage for each experiment as controlled by the quality control parameter in the config file. 
+
+### Results
+
+**Comparing replicates:** Foreach simulated experiment and for each assessed tool the consitency between replicas is visualised for each timecourse. For classification results, Venn diagrams are used, for quantiative parameters, density plots are provided. Depicted variables are 
+
+- RMSE, PP, TP, FP, FN, whole genome coverage
+- Nr. of detected lineages
+
+**Compare experiments:** Foreach simulated timecourse and for each assessed tool the consitency between experiments is visualised as density plot for the quantiative parameters, namely RMSE, PP, TP, FP, FN, whole genome coverage.
+
+**Predicted timecoures:** Foreach simulated timecourse and for each assessed tool the the detected lineages and there relative deduced abundance are presented. Additionally, the simulated abundance is add for direct comparision on a per lineage basis.
+
+**Lineage identifcation:** Foreach simulated timecourse and for each assessed tool the detected lineages are compared to the ground truth of simulated lineages. Here different ambiguity levels, meaning, how much tolerance for the detection of closely related lineages is given. The classification accuracy is measured with the following metrics: false negative, false positive, predicted positive, true positive, false negative rate, true positive rate, positive predictive value, Jaccard index, F1 score, false discovery rate.
+
+**Library complexity and Sequencing quality"** Foreach simulated timecourse and for each assessed tool the classification accuracy metrics are visualised as a function of library complexity, i.e., number of simualted lineages in the library, and sequencing quality, i.e. observed genome read coverage.
+
+**False Positive - Phylogenetic Relationship:** Foreach simulated timecourse and for each assessed tool the observed false positives are contextualised by plotting the distribution of the closes lineage simulated in the ground truth and its phylogenetic relationship, i.e., ancestor, descendant, or sibling lineage.
+
+### Summary plot
+
+Finally a Summary plot, depciting the **Jaccard index** vs **RMSE**, as a measure for qualitative and quantitative accuracy, respectively, is provided.
+
 
 # Step-by-step guide
 
@@ -136,7 +178,7 @@ The minimal example provides a quick way to verify that the framework is install
 ## Configure Workflow Parameter
 
 Edit `config/workflow_config.yaml` to define:
-- Datasets - *each dataset corresponce to one expermintal design*
+- Datasets - *each dataset corresponce to one experimental design*
 - Quality score settings  - *defines sequencing quality if simulation pipeline is used*
 - Number of random seeds - *defines number of technical replicates*
 - Reference files
@@ -147,11 +189,13 @@ Experiments are automatically named using the format:  Ex<*experiment_number*>\_
 All pipeline parameters are defined in `config/worfklow_config.yaml`. 
 This file controls datasets, simulation parameters, seeds, enabled tools and reporting behavior. 
 No code changes are required to modify experimental setups.
-The base version of Læmple comes with two configuration files: 
+The base version of Læmple comes with three configuration files: 
 
 a. **workflow_config.yaml:** a minimal example running out of the box (see below)
 
 b. **workflow_config_manuscript.yaml:** the config files for the analysis as presented in the manuscript. For this analysis to run, individual tools which are considered in the analysis need to be installed in `./bin`.
+
+c. **workflow_config_commented.yaml:** a generic version of the config files with extensive comments about the scope and functionality of each parameter to set.
 
 Additionally each subworkflow for any tool also contains tool-specific configuration if required in `rules/subworkflow_TOOLNAME/common.smk`. For more details for tool installation see [Developer Guide: Adding New Deconvolution Tools](#developer-guide-adding-new-deconvolution-tools)
 
@@ -340,8 +384,8 @@ Place the corresponding metadata file into the same `data/` directory.
 Abundance data needs to be provided as **comma-separated (,)** csv file named `experimentName_data.csv`, containing following columns:
 
 - unnamed index column (optional)
-- "*variantName*" (for example "B.1.1.7") - abundance information 0-100 as float
-- "*variantName*" (for example "B.1.1.7") - abundance information 0-100 as float
+- "*lineageName*" (for example "B.1.1.7") - abundance information 0-100 as float
+- "*lineageName*" (for example "BA.2") - abundance information 0-100 as float
 ...
 - "sample_date" - sample date in YYYY-MM-DD
 
@@ -370,9 +414,8 @@ Edit `config/workflow_config.yaml` to define:
 - Tool settings
 
 ### Experiment Naming Scheme
+
 Experiments are automatically named using the format:  Ex<*experiment_number*>\_<*seed_index*>\_<*dataset_name*>
-
-
 
 # Developer Guide: Adding New Deconvolution Tools
 
@@ -476,8 +519,6 @@ TOOLS:
 - `INCLUDE_IN_ANALYSIS` Whether the tool is included in benchmarking
 - `TOOL_NAME` Internal identifier (used by the pipeline)
 - `TOOL_LABEL` Human-readable name for plots and tables
-
-
 
 ## Project Structure
 
