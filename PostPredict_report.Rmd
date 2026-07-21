@@ -40,7 +40,6 @@ knitr::knit_hooks$set(inline = function(x) {
 
 library(yaml)
 library(DT)
-#library(rjson)
 library(jsonlite)
 library(ggplot2)
 library(dplyr)
@@ -142,7 +141,7 @@ In the following report, the results of these tools --with each other, and to th
 List included Tools: 
 
 ```{r tool-list-all, echo=TRUE}
-knitr::kable(data.frame(Tools = names(tool_list)) %>% rowwise() %>% mutate(`Tool name` = unlist(str_split(Tools, "_"))[1], Version = unlist(str_split(Tools, "_"))[2], Additional_Information = unlist(str_split(Tools, "_"))[3]) %>% dplyr::select(-Tools)  )
+knitr::kable(data.frame(Tools = names(tool_list)) %>% rowwise() %>% mutate(`Tool name` = unlist(str_split(Tools, "_"))[1], Version = unlist(str_split(Tools, "_"))[2], Reference = unlist(str_split(Tools, "_"))[3]) %>% dplyr::select(-Tools) %>% mutate(Reference = ifelse(is.na(Reference), "default", Reference)))
 ```
 
 
@@ -431,7 +430,7 @@ calculateMetrics <- function(data.metrics){
 **Calculate metrics for different ambiguity level modes**
 
 ```{r set_levels}
-levels <- c(0)
+levels <- c(0,1,2)
 ```
 
 For the calculation of true classification different levels of ambiguity are allowed --`r writeLines(paste("ambiguity level(s):", paste(levels, collapse = ", ")))` -- The ambiguity level defines how many sub-levels of a truely simulated lineage is still considered a true hit. E.g., at level 1 a detection of "B.1.1" would still be a true classification if "B.1" was in the set of simulated lineages. But lineage "B", or lineage "B.1.1.1" would not. The latter would still be a true hit at the ambiguity level 2.
@@ -439,8 +438,6 @@ For the calculation of true classification different levels of ambiguity are all
 
 ```{r calc-calculateMetrics-loop, results='asis'}
 # loop over unique ID
-
-
 for (i in levels){
   if (i == 0) {
     data.metrics <- calculateMetrics(data.metrics) %>%
@@ -472,7 +469,7 @@ rm(i)
 ```
 
 
-```{r}
+```{r def-tabs}
 # define number of tabs
 tabs <- c(unique(data.sim.long$timecourse), "Overall")
 
@@ -607,7 +604,7 @@ for (timecourse_name in tabs){
 
 Comparing the proportion of shared true classifications between the replicas of the same time course.
 
-```{r}
+```{r def-Venn-Diagram-func}
 vennDiagramReplicates <- function(data.long) {
   names <- NULL
   for (i in (1:length(unique(data.long$replicate)))) {
@@ -667,7 +664,7 @@ if( length(unique(data.tool.long$replicate)) > 1){
 Comparing the distribution of performance metrics between the replicas of the same time course.
 
 
-```{r, results='asis', fig.width=10, fig.height=5}
+```{r def-density-Plot-func, results='asis', fig.width=10, fig.height=5}
 densityPlot <- function(data, x.value, group, Colors) {
   ggplot(data, aes({{ x.value }}, color = {{ group }})) +
     geom_density() +
@@ -711,8 +708,8 @@ for (timecourse_name in tabs){
         densityPlot(data.metrics.noSim.tool, TP, replicate, Colors=col),
         densityPlot(data.metrics.noSim.tool, FP, replicate, Colors=col),
         densityPlot(data.metrics.noSim.tool, FN, replicate, Colors=col),
-        densityPlot(data.metrics.noSim.tool, uniformity_wg_per, replicate, Colors=col)
-    ), top = text_grob("Metrics comparision between replicates", face = "bold", size = 14))
+        densityPlot(data.metrics.noSim, uniformity_wg_per, replicate, Colors=col)
+        ), top = text_grob("Metrics comparison between replicates", face = "bold", size = 14))
   
     print(p)
     cat("\n\n")
@@ -722,6 +719,7 @@ for (timecourse_name in tabs){
 
 #clean up
 rm(p, col)
+rm(data.metrics.noSim.tool)
 ```
 
 ----
@@ -731,7 +729,7 @@ rm(p, col)
 Comparing the distribution of performance metrics between experiments w/ different quality settings.
 
 
-```{r experiments-comparision-densityPlots, echo=FALSE, results='asis', fig.width=10, fig.height=5}
+```{r experiments-comparison-densityPlots, echo=FALSE, results='asis', fig.width=10, fig.height=5}
 col <- brewer.pal(n = length(unique(data.tool.long$experiment))+2, name = 'PuRd')[-(1:2)]
 
 for (timecourse_name in tabs){
@@ -763,7 +761,7 @@ for (timecourse_name in tabs){
         densityPlot(data.metrics.noSim, FN, experiment, Colors=col),
         densityPlot(data.metrics.noSim, uniformity_wg_per, experiment, Colors=col)
         ), 
-      top = text_grob(paste0("Metrics comparision between experiments -",timecourse_name), face = "bold", size = 14))
+      top = text_grob(paste0("Metrics comparison between experiments -",timecourse_name), face = "bold", size = 14))
   
   print(p)
   
@@ -909,7 +907,7 @@ rm(p)
 
 Qualiative performance metrics for different time courses and different ambiguity levels.
 
-```{r}
+```{r def-lineage-identification-metrics-func}
 lineageIdentificationMetrics <- function(data.metrics){
   data.temp <- data.metrics %>% 
     dplyr::select(tool_name, PP, TP, FP, FN, TPR, FNR, PPV, FDR, jaccard_index, F1_score) %>% 
@@ -1061,7 +1059,7 @@ rm(p, i)
 
 Key quality measures as a function of the number of simulated lineages.
 
-```{r}
+```{r def-metrics-per-sample-func}
 tool_metricsPer <- function(data.metrics, x_var) {
   
   # Convert quoted x_var to symbol
@@ -1166,7 +1164,7 @@ print(p)
 
 Estimated lineage abundance as a function of simulated sequencing quality and simulated lineage abundance.
 
-```{r}
+```{r abundance-estimation-error-calc}
 data.error <- NULL
 
 for (exp in unique(data.tool.long$experiment)) {
@@ -1198,7 +1196,7 @@ rm(data.temp)
 ```
 
 
-```{r fig.height=8}
+```{r abundance-estimation-plot-loop, fig.height=8}
 abundanceEstimationPlot <- function(data.error, data.long, title){
   
   data.plot <- data.error %>%
@@ -1238,7 +1236,7 @@ abundanceEstimationPlot(data.error, data.tool.long, paste0("Relative abundance e
 Residual of estimated lineage abundance as a function of simulated lineage abundance.
 
 
-```{r} 
+```{r def-error-estimation-func} 
 # only plots error for true positives
 errorEstimationPlot <- function(data.error, title){
   
@@ -1284,7 +1282,7 @@ errorEstimationPlot(data.error, paste0("Relative abundance estimation - Residual
 
 A characterisaton of all detected false positive lineages and their phylogenic relation and similiarity (based on shared mutations) to the closest true positive. Vertical line indicate the mean similarity for each tool and group.
 
-```{r}
+```{r def-getDistance-func}
 getDistance <- function(var1, var2, json.data){
   
   var1_nuc <- c(json.data[[var1]]$nucSubstitutions, json.data[[var1]]$nucDeletions)
@@ -1427,7 +1425,7 @@ rm(l,j)
 ```
 
 
-```{r}
+```{r def-getminDistance-func}
 getminDistance <- function(lin, tp, sim.data.long) {
   
   df <- sim.data.long %>% 
@@ -1527,7 +1525,7 @@ check_relationship <- function(json.data, sim.data.long, var1, var2) {
 ```
 
 
-```{r}
+```{r calculateConfusionMatrix}
 fp <- calculateConfusionMatrix(data.tool.long, data.sim.long, grouping = FALSE)
 #fp <- calculateConfusionMatrix(data.tool.long, data.sim.long, grouping = TRUE)
 ```
@@ -1609,7 +1607,7 @@ for (timecourse_name in tabs){
 
 Aggregation plot summarizing the qualitative classification performance (Jaccard Index) and the quantitative inferrence performance (RMSE: root mean squared error) for each tool.
 
-```{r}
+```{r def-twoDimension-plot-func}
 tool_twoDimensionPlot <- function(data.metrics, colScale, title) {
   data.filter <- data.metrics %>%
     group_by(tool_name) %>%
