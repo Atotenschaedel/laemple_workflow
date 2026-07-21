@@ -201,6 +201,50 @@ Knit the comparative report using `PostPredict_report.Rmd` for result visualizat
 Rscript -e "rmarkdown::render('PostPredict_report.Rmd')"
 ```
 
+The produced report gives an oversight for both qualitative and quantitative perfomance of lineage deconvolution tools, such as lineage detection and relative abundance estimation. 
+
+Additionally reproducibility across technical replicates and impact of sequencing quality of input sequencing data is assessed. 
+
+**Variant detection**
+
+Variant detection performance is evaluated by comparing predicted lineages against known ground truth. The following metrics are reported for each tool with **median values** used for summary:
+
+- **True Positive Rate (TPR / Recall / Sensitivity):** fraction of true lineages that are correctly detected
+- **False Negative Rate (FNR / Miss Rate):** Fraction of true lineages that are missed.
+- **Positive Predictive Value (PPV / Precision):** Fraction of predicted lineages that are in the ground truth set.
+- **Jaccard Index (JI):** Measures the overlap between prediced and true lineage sets.
+
+These metrics are independent of true negatives, which depend heavily on size of reference lineage database.
+
+**Misclassification Analysis**
+
+Binary performance metrics do not caputre how similar incorrect lineage calls are to closest related true lineage. To provide additional context, false positives are further analyzed by:
+
+- **Mutation similarity:** Quantified using the Jaccard distance between the defining mutions of the false positive and its closest true lineage.
+- **Phylogenetic relationship:** Classifying false positives as either: **Ancestor/descencdant** (linear relationship), including wheter false positive is a parent or child of the true lineage or as **sibling clade**, indicating false positive belongs to different branch of lineage tree.
+
+This analysis distinguishes minor errors (e.g. confusing closely related lineages) from more substantial misclassifications. 
+
+**Variant abundance estimations**
+
+Predicted lineage abundances are compared against known ground truth on a per sample basis.
+
+- **Root Mean Squared Error (RMSE):** measures deviation between predicted and true linegae abundances.
+
+> **Note:** undetected true lineages (false negatives) are assigned predicted abundance of 0%. False postives are excluded in analysis to ensure comparisions across methods.
+
+**Ambiguity Levels**
+
+Lineage matches can be evaluated with different ambiguity levels, which determines how strictly predicted lineages must match the simulated true lineage.
+
+Specifically, the ambiguity level defines how far below the simulated (ground-truth) lineage in the lineage hierarchy a reported assignment may fall while still being counted as correct.
+
+At ambuigity level 0 ("strict mode"), only an exact lineage match is considered correct. At higher ambiguity levels, predictions of descendant (sub-lineage) are also considered correct, up to a specified number of levels below the true lineage in the lineage hierachy (default: 2). 
+
+This accounts for differences in lieage resolution between reference databases used by differnet tools. Some tools may report more specific sub-lineages than others (e.g. pangolin-lineages vs WHO lineages).
+
+> **Note:** Because closely related lineages can differ by inly small number of mutations, ambiguity levels should be interpreted with care. While allowing descendant matches can improve comparability across tools, it may hide biologically important differences between variants. To provide additional context, please see further characterisation of false-positives by their mutational distance and phylogenetic relationship. 
+
 # Advanced Customization
 
 Læmple is designed to support custom benchmarking setups.
@@ -355,7 +399,7 @@ In `config/workflow_config.yaml`:
 
 When this option is disabled, the pipeline skips the simulation stage and starts directly with variant calling and lineage deconvolution.
 
-Note: The current variant-calling workflow is designed for amplicon-based sequencing data.
+> **Note:** The current variant-calling workflow is designed for amplicon-based sequencing data.
 
 # Performing an Analysis
 
