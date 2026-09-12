@@ -1,12 +1,13 @@
 .snakemake/
-bin/SWAMPy
 logs
-experiments
+experiments/
 bin/custom_scripts/__pycache__/
-bin/SWAMPy/
 reference/indices_for_BWA/
 reference/RefSeq_sequence_Wuhan-Hu1.fa.fai
 reference/SequenceDictionaries/
 PostPredict_report.html
 PostPredict_report_cache/
 PostPredict_report_files/
+.Rproj.user/
+bin/SWAMPy/src/__pycache__/
+
