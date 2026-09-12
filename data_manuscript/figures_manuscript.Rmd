@@ -12,12 +12,208 @@ knitr::opts_chunk$set(
 
 ```
 
-This report describes the relationship between the figures presented in the paper and the raw data used to generate them. All CSV summary files represent the standardized output of the tools described in the paper.
+This report allows to reproduce from the provided raw data the figures displayed in the paper. All CSV summary files represent the standardized output of the tools described in the paper and were produced with L{ae}mple.
 
 1.  The raw results are read into data.tool.long, which contains the results from all experiments, and data.sim.long, which contains the ground-truth data as well as the corresponding sequencing quality scores.
+
+```{r}
+library(yaml)
+library(DT)
+library(jsonlite)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(reshape2)
+library(ggpubr)
+library(ggVennDiagram)
+library(lsa)
+library(ggridges)
+library(stringi)
+library(RColorBrewer)
+library(rjson)
+
+# Read config file from params
+config <- yaml::read_yaml(paste0("workflow_config_manuscript.yaml"))
+
+# color for simulation data
+tool_list <- c("simulation"="#D5695DFF")
+
+# additional labels
+label.legend <- c("simulation" = "simulation",
+                  "P"="Real Positive", "N"="Real Negative",
+                  "PP"="Predicted Positive", "TP"="True Positive", "FP"="False Positive", "FN" = "False Negative",
+                  "RMSE"="Root Mean Square Error",
+                  "TPR"="True Positive Rate",
+                  "FNR"="False Negative Rate", "PPV"="Positive Predictive Value", "FDR"="False Discovery Rate",
+                  "jaccard_index"="Jaccard Index", "F1_score"="F1 score", "count_lineage"="Number of lineages",
+                  "uniformity_wg_per"="Percent, genome min coverage",
+                  "different branch" = "different branch", "parent"="parent", "child"="child",
+                  "Overall" = "Overall"
+                  )
+
+for (label in config$POSTPRED$LABELS){
+  label.legend[label$key] <- label$value
+}
+rm(label)
+
+for (tool in config$TOOLS){
+  if (tool$INCLUDE_IN_ANALYSIS){
+    tool_list[tool$TOOL_NAME] <- tool$COLOUR_IN_REPORT
+    label.legend[tool$TOOL_NAME] <- tool$TOOL_LABEL
+  }
+}
+rm(tool)
+
+# safe_labeller function, returns original value if not found in label.legends
+safe_labeller <- function(x) {
+  if (is.data.frame(x)) {
+    out <- lapply(x, function(col) {
+      mapped <- label.legend[as.character(col)]
+      mapped[is.na(mapped)] <- as.character(col)[is.na(mapped)]
+      mapped
+    })
+    return(as.data.frame(out, stringsAsFactors = FALSE))
+  }
+
+  mapped <- label.legend[as.character(x)]
+  mapped[is.na(mapped)] <- as.character(x)[is.na(mapped)]
+  mapped
+}
+
+#set colors
+colScale <- scale_colour_manual(values = tool_list)
+fillScale <- scale_fill_manual(values=tool_list)
+
+#set up json data
+# original file from "https://raw.githubusercontent.com/corneliusroemer/pango-sequences/refs/heads/main/data/pango-consensus-sequences_summary.json"
+# downloaded on 17. July 2024
+json.data <- jsonlite::fromJSON("pango-consensus-sequences_summary.json")
+
+#read sample-list-all
+experiment_list <- list.dirs(path=paste0("./experiments_manuscript"), full.names=FALSE, recursive=FALSE)
+experiment_list <- experiment_list[grepl("Ex", experiment_list)]
+experiment_list <- experiment_list[!grepl("^##", experiment_list)]
+
+
+#read-sim-data
+for(i in 1:length(experiment_list)) {
+  f = paste("./experiments_manuscript/", experiment_list[i], "/results/postPrediction/input_summary.csv", sep="")
+  data.temp <- read.csv(f)
+  data.temp$experiment <- experiment_list[i]
+  if (i == 1) { 
+    data.sim <- data.temp
+  } else { 
+    common_cols <- intersect(colnames(data.sim), colnames(data.temp))
+    data.sim <- merge(x=data.sim, y=data.temp, by = common_cols, all=TRUE)
+  }
+}
+
+data.sim <- data.sim %>% 
+  rowwise() %>% 
+  mutate(
+    replicate = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[2], 
+    timecourse = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[3], 
+    experiment = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[1]
+  )
+
+# get all lineages that are part of simulation
+sim.lineages <- colnames(data.sim %>% dplyr::select(-c("timepoint", "sample_name", "tool_name", "sample", "sample_date", "experiment", "coverage_avg", "coverage_sd", "uniformity_wg_per", "MAPQ_avg", "replicate", "timecourse")))
+
+# fix issue if rel_abun is not in the range [0,1] but [0,100] in real sequencing data set
+data.sim[sim.lineages] <- data.sim[sim.lineages] / 100
+
+# create long format of simulation data
+data.sim.long <- data.sim %>%
+  dplyr::select(c(sim.lineages, "timepoint", "experiment", "replicate", "timecourse","coverage_avg","coverage_sd","uniformity_wg_per", "MAPQ_avg")) %>%
+  gather(key="lineage", value="rel_abun", -c("timecourse", "timepoint", "experiment", "replicate", "coverage_avg", "coverage_sd", "uniformity_wg_per", "MAPQ_avg")) %>%
+  filter(!is.na(rel_abun))
+
+# fix issue if rel_abun is not in the range [0,1] but [0,100]
+if(max(range(data.sim.long$rel_abun)) > 1 & max(range(data.sim.long$rel_abun)) <= 100){
+  data.sim.long <- data.sim.long %>% mutate(rel_abun = rel_abun/100)
+}
+
+#clean up
+rm(f, i, data.temp, common_cols)
+```
+
+```{r}
+#read-tool-data
+# experiment "realdata" using real sequencing data was not run with complete tool list, therefore some input files do not exist.
+tools_skipped <- NULL
+
+data.tool <- NULL
+for(i in 1:length(experiment_list)) {
+  if(experiment_list[i]=="Ex01_01_realdata_example"){
+    tools_skipped <- c("simulation", "freyja_v1.4.3", "freyja_v1.5.3", "LCS_vcfc2f02", "QuaID_vaec47270", "vaquero_v24d9211_oldREF", "vaquero_v93e7db3")
+  } else {
+    tools_skipped <- c("simulation")
+  }
+  
+  for (j in 1:length(tool_list)) {
+    if(names(tool_list)[j] %in% tools_skipped) {
+      next
+    }  else {
+      f = paste("./experiments_manuscript/", experiment_list[i], "/results/postPrediction/", names(tool_list)[j], "_summary.csv", sep="")
+      data.temp <- tryCatch(read.csv(f), error=function(e) NULL)
+      if (is.null(data.temp)) {
+        data.temp <- data.frame(timepoint = unique(data.sim$timepoint))
+      } else {
+        data.temp <-  data.temp %>% dplyr::select(-c("sample_name"))
+      }
+    
+      data.temp <- data.temp %>%
+        mutate(experiment = experiment_list[i], tool_name = names(tool_list)[j]) %>%
+        filter(!if_all(everything(), is.na))
+      
+      if (is.null(data.tool)) {
+        data.tool <- data.temp
+      } else { 
+      data.tool <- merge(x=data.tool, y=data.temp, by = intersect(colnames(data.tool), colnames(data.temp)), all=TRUE)
+      }
+    }
+  }
+}
+
+data.tool <-  data.tool %>%
+  rowwise() %>%
+  mutate(
+    replicate = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[2],
+    timecourse = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[3],
+    experiment = unlist(str_split(experiment, pattern = "_", n = 3, simplify = FALSE))[1]
+  )
+
+
+# add simulation data to tool data as theoretical perfect tool
+data.tool <-  merge(x=data.tool, y=data.sim %>%
+  dplyr::select(c(sim.lineages, "timepoint", "experiment", "replicate", "timecourse", "tool_name")),
+  by = intersect(colnames(data.tool), c(sim.lineages, "timepoint", "experiment", "replicate", "timecourse", "tool_name")), all=TRUE
+  )
+
+
+# create long format of tools data
+data.tool.long <- data.tool %>%
+  gather(key="lineage", value="rel_abun", -c("timecourse", "timepoint", "experiment", "replicate", "tool_name")) %>%
+  filter(!is.na(rel_abun)) %>%
+  mutate(rel_abun = as.numeric(rel_abun)) %>%
+  unique()
+
+
+# add "uniformity_wg_per" column from simulation data
+data.tool.long <- left_join(data.tool.long,
+                            dplyr::select(data.sim, c("experiment", "replicate","timepoint", "uniformity_wg_per")),
+                            by = c("experiment", "replicate", "timepoint"))
+
+
+# clean up
+rm(f, i, j, tools_skipped)
+```
+
 2.  Performance metrics are calculated by comparing the tool results in data.tool.long with the ground-truth data in data.sim.long. The resulting values are stored in data.metrics.
 
 ```{r}
+# calculate Confusion Matrix function definition
 calculateConfusionMatrix <- function(data.long, sim.data.long, grouping = TRUE) {
   data.metrics <- list()
   
@@ -85,6 +281,9 @@ calculateConfusionMatrix <- function(data.long, sim.data.long, grouping = TRUE) 
   }
   return(bind_rows(data.metrics))
 }
+
+# data.metrics <- calculateConfusionMatrix(data.tool.long, data.sim.long)
+# Note: above line is commented out to speed out script run time for demonstration. Pre-calculated RDS object is read instead in next code block.
 ```
 
 3.  The following metrics are calculated and added to data.metrics: True Positive Rate (TPR), False Negative Rate (FNR), Positive Predictive Value (PPV), False Discovery Rate (FDR), Jaccard Index, and Root Mean Square Error (RMSE), using the function described below.
@@ -99,21 +298,167 @@ calculateMetrics <- function(data.metrics){
   data.metrics$F1_score <- (data.metrics$TP*2) / (data.metrics$TP*2 + data.metrics$FP + data.metrics$FN)
   return(data.metrics)
 }
+
+#data.metrics <- calculateMetrics(data.metrics)
+# Note: above line is commented out to speed out script run time for demonstration. Pre-calculated RDS object is read instead.
+data.metrics <- readRDS("data.metrics.rds")
+
+# add "uniformity_wg_per" column from simulation data
+data.metrics <- left_join(data.metrics,
+               dplyr::select(data.sim, c("experiment", "replicate","timepoint", "uniformity_wg_per")),
+               by = c("experiment", "replicate", "timepoint"))
+
 ```
 
 ## Figure 1
 
 Aggregation plot summarizing the qualitative classification performance (Jaccard Index) and the quantitative inference performance Root Mean Square Error (RMSE) for each tool using data.metrics data frame.
 
-![](temp/TRR-202602-02R01_Figure1_final.jpeg)
+```{r}
+tool_twoDimensionPlot <- function(data.metrics, colScale, title) {
+  data.filter <- data.metrics %>%
+    group_by(tool_name) %>%
+    summarise(jaccard_index = mean(jaccard_index, na.rm = TRUE),
+              relAb_RMSE = mean(RMSE, na.rm = TRUE), .groups="drop")
+
+  ggplot(data.filter, aes(x=jaccard_index, y=relAb_RMSE)) +
+    geom_point(aes(colour=tool_name), size = 3, shape=4, stroke=2) +
+    #geom_jitter(aes(color=tool_name), size = 3, shape=4, stroke=2) +
+    #facet_grid(~timecourse, labeller = safe_labeller) +
+    labs(
+      title=title,
+      y="Root Mean Squared Error - relative Abundance",
+      x="Jaccard Index") +
+    colScale +
+    theme_bw()
+}
+tool_twoDimensionPlot(filter(data.metrics, timecourse!="realdata_example"), colScale, paste("Quantitative & Qualitative performance:", "Overall"))
+```
 
 ## Figure 2
 
-This plot characterizes all detected false-positive lineages, including their phylogenetic relationships and similarity, based on shared mutations, to the closest true-positive lineage. Vertical lines indicate the mean similarity for each tool and group.
+This plot characterizes all detected false-positive lineages, including their phylogenetic relationships and similarity, based on shared mutations, to the closest true-positive lineage. Vertical lines indicate the mean similarity for each tool and group. The reference dataset was obtained from the curated public repository by Römer (2023) and parsed into the json.data dataframe. Phylogenetic distance was calculated as Jaccard distance and stored in the distanceMatrix dataframe. Additional data were incorporated to account for lineages missing from the reference dataset. To facilitate reproducibility, the resulting dataframes are included with the raw data files as RDS objects.
 
-![](temp/TRR-202602-02R01_Figure2_final.jpeg)
+```{r}
+getDistance <- function(var1, var2, json.data){
 
-The reference dataset was obtained from the curated public repository by Römer (2023) and parsed into the json.data dataframe. Phylogenetic distance was calculated as Jaccard distance and stored in the distanceMatrix dataframe. Additional data were incorporated to account for lineages missing from the reference dataset. To facilitate reproducibility, the resulting dataframes are included with the raw data files as RDS objects.
+  var1_nuc <- c(json.data[[var1]]$nucSubstitutions, json.data[[var1]]$nucDeletions)
+  var2_nuc <- c(json.data[[var2]]$nucSubstitutions, json.data[[var2]]$nucDeletions)
+
+  if (length(var1_nuc) == 0 || length(var2_nuc) == 0){
+    return(Inf)
+  }
+
+  else {
+
+    if (var1 == "B" || var2 == "B"){
+      var1_nuc <- c(var1_nuc, "SARS_COV_2")
+      var2_nuc <- c(var2_nuc, "SARS_COV_2")
+    }
+
+    var1_nuc <- gsub("-", "del", var1_nuc)
+    var2_nuc <- gsub("-", "del", var2_nuc)
+
+    var1_nuc <- as.character(stri_remove_empty(var1_nuc, na_empty = FALSE))
+    var2_nuc <- as.character(stri_remove_empty(var2_nuc, na_empty = FALSE))
+
+    percent_similarityPerIndex <- length(intersect(var1_nuc, var2_nuc)) / (length(union(var1_nuc, var2_nuc)))
+    return (percent_similarityPerIndex)
+  }
+}
+
+CheckDistanceMatrix <- function(lineages, update=FALSE) {
+  if (!(file.exists(paste0("./reference/distanceMatrix.csv"))) | update) {
+    distanceMatrix <- matrix()
+  }  else {
+    distanceMatrix <- read.csv(paste0(currWorkingDir, "reference/distanceMatrix.csv"))
+  }
+
+  for (i in 1:length(lineages)){
+    lineage <- lineages[i]
+    if(lineage != "others"){
+      if (lineage %in% colnames(distanceMatrix)) {
+        next
+      }
+      else {
+        if (length(colnames(distanceMatrix)) == 0){
+
+          colnames(distanceMatrix) <- lineage
+          rownames(distanceMatrix) <- lineage
+        }
+        else {
+          distanceData <- NULL
+
+          for (j in 1:length(colnames(distanceMatrix))){
+            distanceData <- append(distanceData, getDistance(lineage, colnames(distanceMatrix)[j], json.data))
+          }
+
+          distanceMatrix <- cbind(distanceMatrix, matrix(data=distanceData,
+                                                         ncol=1, nrow=nrow(distanceMatrix),
+                                                         dimnames=list(rownames(distanceData),
+                                                                       lineage)
+                                                         )
+                                  )
+
+
+          distanceMatrix <- rbind(distanceMatrix, matrix(data=NA,
+                                                         ncol=ncol(distanceMatrix), nrow=1,
+                                                         dimnames = list(lineage,
+                                                                         colnames(distanceMatrix))
+                                                         )
+                                  )
+
+        }
+        index <- match(lineage, rownames(distanceMatrix))
+        distanceMatrix[index, index]  <- getDistance(lineage, lineage, json.data)
+        distanceMatrix <- round(distanceMatrix, 4)
+      }
+    }
+  }
+  distanceMatrix[lower.tri(distanceMatrix)] <- t(distanceMatrix)[lower.tri(distanceMatrix)]
+  distanceMatrix <- as.data.frame(distanceMatrix)
+  return(distanceMatrix)
+}
+
+
+# distanceMatrix <- CheckDistanceMatrix(unique(data.tool.long$lineage), update=update)
+# Note: above line is commented out to speed out script run time for demonstration. Pre-calculated RDS object is read instead.
+
+# manual update for missing lineages
+update = FALSE
+# Note: above line is turned to FALSE to speed out script run time for demonstration. Pre-calculated RDS object is read instead.
+
+if (update) {
+  json.data[["B.1.1.529"]] <- "B.1.1.529"
+  json.data[["B.1.1.529"]]$children <-  c("BA.1", "BA.2", "BA.3", "BA.4", "BA.5")
+  json.data[["B.1.1.529"]]$parent <- c("B.1.1")
+  json.data[["B.1.1.529"]]$nucDeletions <- c("6513-6516", "11283-11292")
+  json.data[["B.1.1.529"]]$nucSubstitutions <- c("C241T","C3037T","T5386G","T13195C","C15240T","C25000T","A27259C","C27807T")
+
+  B.1.1.529_nuc <- c(json.data[["B.1.1.529"]]$nucDeletions, json.data[["B.1.1.529"]]$nucSubstitutions)
+
+  for (i in (1:length(colnames(distanceMatrix)))) {
+
+    var2 <- colnames(distanceMatrix)[i]
+
+    var2_nuc <- c(json.data[[var2]]$nucSubstitutions, json.data[[var2]]$nucDeletions)
+    var2_nuc <- gsub("-", "del", var2_nuc)
+
+    distance <- length(setdiff(B.1.1.529_nuc, var2_nuc)) / (length(B.1.1.529_nuc) + length(var2_nuc))
+
+    distanceMatrix["B.1.1.529",colnames(distanceMatrix)[i]] <- distance
+    distanceMatrix[colnames(distanceMatrix)[i], "B.1.1.529"] <- distance
+  }
+  distanceMatrix <- as.data.frame(distanceMatrix)
+}
+
+# clean up
+rm(update)
+
+# Pre-calculated RDS object
+distanceMatrix <- readRDS("distanceMatrix.rds")
+```
+
 
 
 ```{r}
@@ -173,118 +518,57 @@ CheckDistanceMatrix <- function(lineages, update=FALSE) {
   distanceMatrix <- as.data.frame(distanceMatrix)
   return(distanceMatrix)
 }
-```
 
-```{r, eval = FALSE}
-# manual update for missing lineages
-json.data[["B.1.1.529"]] <- "B.1.1.529"
-json.data[["B.1.1.529"]]$children <-  c("BA.1", "BA.2", "BA.3", "BA.4", "BA.5")
-json.data[["B.1.1.529"]]$parent <- c("B.1.1")
-json.data[["B.1.1.529"]]$nucDeletions <- c("6513-6516", "11283-11292")
-json.data[["B.1.1.529"]]$nucSubstitutions <- c("C241T","C3037T","T5386G","T13195C","C15240T","C25000T","A27259C","C27807T")
-
-B.1.1.529_nuc <- c(json.data[["B.1.1.529"]]$nucDeletions, json.data[["B.1.1.529"]]$nucSubstitutions)
-
-for (i in (1:length(colnames(distanceMatrix)))) {
-  
-  var2 <- colnames(distanceMatrix)[i]
-  
-  var2_nuc <- c(json.data[[var2]]$nucSubstitutions, json.data[[var2]]$nucDeletions)
-  var2_nuc <- gsub("-", "del", var2_nuc)
-  
-  distance <- length(setdiff(B.1.1.529_nuc, var2_nuc)) / (length(B.1.1.529_nuc) + length(var2_nuc))
-  
-  distanceMatrix["B.1.1.529",colnames(distanceMatrix)[i]] <- distance
-  distanceMatrix[colnames(distanceMatrix)[i], "B.1.1.529"] <- distance
-}
-distanceMatrix <- as.data.frame(distanceMatrix)
-
-```
-
-Relationship and directionality is assessed using jaccard distance and parent/child information from json.data using following functions:
-
-```{r}
-getDistance <- function(var1, var2, json.data){
-  
-  var1_nuc <- c(json.data[[var1]]$nucSubstitutions, json.data[[var1]]$nucDeletions)
-  var2_nuc <- c(json.data[[var2]]$nucSubstitutions, json.data[[var2]]$nucDeletions)
-  
-  if (length(var1_nuc) == 0 || length(var2_nuc) == 0){
-    return(Inf)
-  }
-  
-  else {
-    
-    if (var1 == "B" || var2 == "B"){
-      var1_nuc <- c(var1_nuc, "SARS_COV_2")
-      var2_nuc <- c(var2_nuc, "SARS_COV_2")
-    }
-    
-    var1_nuc <- gsub("-", "del", var1_nuc)
-    var2_nuc <- gsub("-", "del", var2_nuc)
-    
-    var1_nuc <- as.character(stri_remove_empty(var1_nuc, na_empty = FALSE))
-    var2_nuc <- as.character(stri_remove_empty(var2_nuc, na_empty = FALSE))
-    
-    percent_similarityPerIndex <- length(intersect(var1_nuc, var2_nuc)) / (length(union(var1_nuc, var2_nuc)))
-    return (percent_similarityPerIndex)
-  }
-}
-```
-
-```{r}
 getminDistance <- function(lin, tp, sim.data.long) {
-  
-  df <- sim.data.long %>% 
-    filter(timepoint == tp) %>% dplyr::select("lineage") %>% filter(lineage !="others") %>% 
+
+  df <- sim.data.long %>%
+    filter(timepoint == tp) %>% dplyr::select("lineage") %>% filter(lineage !="others") %>%
     unique() %>% rowwise() %>%
     mutate(similarity= distanceMatrix[lin, lineage])
-  
+
   minDistance <- max(df$similarity)
   closestRelative <- df$lineage[df$similarity==max(df$similarity)]
-  
+
   return(c(minDistance, closestRelative))
 }
-```
 
-```{r}
 check_direction <- function(json.data, var1, var2, direction, n){
   # check json.data for parent or child lineage information
-  
+
   # check upstream
-  if (direction=="up"){ 
+  if (direction=="up"){
     var_parent = json.data[[var1]]$parent
-    
+
     # end of search, found parent
-    if (var_parent==var2){ 
+    if (var_parent==var2){
       return = list(TRUE, n)
     }
-    
+
     # end of search, not a parent
-    else if(var_parent == ""){ 
+    else if(var_parent == ""){
       return = list(FALSE, 0)
     }
-    
+
     else{
       n <- n +1
       check_direction(json.data, var_parent, var2, direction, n)
     }
   }
-  
+
   # check downstream
-  else if (direction=="down"){ 
+  else if (direction=="down"){
     var_parent = json.data[[var2]]$parent
-    
+
     # end of search, found child
-    if (var_parent==var1){ 
+    if (var_parent==var1){
       return = list(TRUE, n)
     }
-    
+
     # end of search, not a child
-    else if(var_parent == ""){ 
+    else if(var_parent == ""){
       return = list(FALSE, 0)
     }
-    
+
     else{
       n <- n +1
       check_direction(json.data, var1, var_parent, direction, n)
@@ -292,21 +576,19 @@ check_direction <- function(json.data, var1, var2, direction, n){
   }
   else {print("direction needs to be either 'up' or 'down'")}
 }
-```
 
-```{r}
 check_relationship <- function(json.data, sim.data.long, var1, var2) {
   # check if variables are part of ref dataset
-  #stopifnot("One or more of the variables are not part of dataset"=!is.null(json.data[[var1]]), 
+  #stopifnot("One or more of the variables are not part of dataset"=!is.null(json.data[[var1]]),
   #          "One or more of the variables are not part of dataset"=!is.null(json.data[[var2]]))
-  
+
   if (is.null(json.data[[var1]]) | is.null(json.data[[var2]])) {
     return("not in dataset")
   }
-  
+
   # check upstream
   res <- check_direction(json.data, var1, var2, "up", 1)
-  
+
   if (res[[1]]){
     # found lineage is child of simulated lineage
     #print(paste("is child Number of levels:", res[[2]]))
@@ -318,54 +600,182 @@ check_relationship <- function(json.data, sim.data.long, var1, var2) {
     res <- check_direction(json.data, var1, var2, "down", 1)
     if(res[[1]]){
       # found lineage is parent of simulated lineage
-      
+
       #print(paste("is parent Number of levels:", res[[2]]))
       #print(-res[[2]])
       return = "parent"
     }
-    
+
     # different branch
     else{
       #print("is on different branch")
       #print(Inf)
-      retun ="different branch"
+      return ="different branch"
     }
   }
 }
+
+#fp_distance <- calculateConfusionMatrix(data.tool.long, data.sim.long, grouping = FALSE) %>%
+#      filter(FP == 1, lineage != "others") %>%
+#      group_by(tool_name, lineage, timepoint) %>%
+#      dplyr::select(c("tool_name", "lineage", "timepoint")) %>%
+#      unique() %>% arrange(tool_name) %>% ungroup() %>%
+#      rowwise() %>% mutate(min_distance = as.numeric(getminDistance(lineage, timepoint, data.sim.long)[1]),
+#                       closest_relative = getminDistance(lineage, timepoint, data.sim.long)[2],
+#                       relationship = check_relationship(json.data, data.sim.long, lineage, closest_relative)
+#                       ) %>%
+#      filter(!is.infinite(min_distance))
+
+# Note: above line is commented out to speed out script run time for demonstration. Pre-calculated RDS object is read instead.
+fp_distance <- readRDS("FP_distances.rds")
+
+fp_distance_toi <- fp_distance %>% filter(tool_name %in% c("freyja_v1.4.3", "lollipop_v0.3.0", "vaquero_v93e7db3"))
+
+ggplot(filter(fp_distance_toi, relationship != "not in dataset"), aes(x=min_distance, color=tool_name, fill=tool_name)) +
+    geom_histogram(position = 'identity', alpha=0.9, boundary=0) +
+    geom_vline(data=. %>% group_by(relationship, tool_name) %>% summarize(x=mean(min_distance)), aes(xintercept=x), color="grey50") +
+    facet_grid(tool_name~relationship, scales = "free_y", labeller = safe_labeller) +
+    colScale +
+    fillScale +
+    scale_y_continuous(expand=expansion(mult = c(0,0.05))) +
+    theme_bw() +
+    theme(
+     legend.position = "none",
+     text = element_text(size=12),
+     strip.background = element_blank()
+    ) +
+    labs(x = "Similarity") +
+    NULL
+
+# clean up
+rm(fp_distance_toi)
 ```
 
-The final dataset was generated using the following code:
-
-```{r, eval = FALSE}
-calculateConfusionMatrix(data.tool.long, data.sim.long, grouping = FALSE)
-      filter(FP == 1, lineage != "others") %>% 
-      group_by(tool_name, lineage, timepoint) %>% 
-      dplyr::select(c("tool_name", "lineage", "timepoint")) %>%
-      unique() %>% arrange(tool_name) %>% ungroup() %>% 
-      rowwise() %>% mutate(min_distance = as.numeric(getminDistance(lineage, timepoint, data.sim.long)[1]),
-                       closest_relative = getminDistance(lineage, timepoint, data.sim.long)[2],
-                       relationship = check_relationship(json.data, data.sim.long, lineage, closest_relative)
-                       ) %>% 
-      filter(!is.infinite(min_distance))
-```
 
 ## Figure 3
 
 Figure 3 uses the data.metrics dataset to compare SARS-CoV-2 lineage deconvolution performance between Freyja (v1.4.3) and VaQuERo (v93e7db3) across three simulated datasets (Omicron time-course, VOC time-course, and Vienna time-course), as well as an overall aggregated analysis. For each tool and dataset, two performance metrics are shown: positive predictive value (PPV; circles) and true positive rate (TPR; triangles).
 
-![](temp/TRR-202602-02R01_Figure3_final.jpeg)
+```{r}
+t <- bind_rows(
+    data.metrics %>% filter(timecourse!="realdata_example") %>% filter(tool_name %in% c("freyja_v1.4.3", "vaquero_v93e7db3")) %>%
+  select(tool_name, timecourse, PPV, TPR) %>%
+  group_by(tool_name, timecourse) %>%
+  summarise(PPV = median(PPV, na.rm = TRUE),
+            TPR = median(TPR, na.rm = TRUE),
+            .groups = "drop") %>%
+    gather(key="metric", value="value", -c("tool_name", "timecourse")),
+  
+  data.metrics %>% filter(timecourse!="realdata_example") %>% filter(tool_name %in% c("freyja_v1.4.3", "vaquero_v93e7db3")) %>%
+  select(tool_name, PPV, TPR) %>%
+  group_by(tool_name) %>%
+  summarise(PPV = median(PPV, na.rm = TRUE),
+            TPR = median(TPR, na.rm = TRUE)) %>%
+    gather(key="metric", value="value", -c("tool_name")) %>%
+  mutate(timecourse="Overall")
+  ) %>%
+  mutate(
+    timecourse = factor(
+      timecourse,
+      levels = c("WideQual", "nearQual", "realTimecourse", "Overall")
+    ))
+
+ggplot(t, aes(x=tool_name, y=value, color=tool_name)) +
+  geom_point(aes(shape=metric, color=tool_name), size=4, stroke=1) +
+  theme_minimal() + ylab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  coord_cartesian(ylim = c(0, 1)) +
+  facet_wrap(~timecourse, labeller = safe_labeller) +
+  theme(
+        panel.grid.major.y = element_line(linewidth = 1),
+        ) +
+      labs(x = "") +
+      colScale
+
+# clean up
+rm(t)
+```
+
 
 ## Figure 4
 
 Figure 4 uses the data.metrics dataset to compare lineage identification performance of the SARS-CoV-2 lineage deconvolution tool VaQuERo (v24d921) using either the default or an older reference dataset (oldREF). Positive predictive value (PPV) and true positive rate (TPR) are shown as individual data points for each reference configuration, representing the median values aggregated across all simulated datasets.
 
-![](temp/TRR-202602-02R01_Figure4_final.jpeg)
+```{r}
+t <- data.metrics %>% filter(timecourse!="realdata_example") %>% filter(tool_name %in% c("vaquero_v24d9211", "vaquero_v24d9211_oldREF")) %>%
+    select(tool_name, PPV, TPR) %>%
+    group_by(tool_name) %>%
+    summarise(PPV = median(PPV, na.rm = TRUE),
+              TPR = median(TPR, na.rm = TRUE)) %>%
+      gather(key="metric", value="value", -c("tool_name"))
+
+ggplot(t, aes(x=tool_name, y=value, color=tool_name)) +
+  geom_point(aes(color=tool_name), size=4, stroke=1) +
+  theme_minimal() + ylab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  coord_cartesian(ylim = c(0, 1)) +
+  facet_wrap(~metric, labeller = safe_labeller) +
+  theme(
+        panel.grid.major.y = element_line(linewidth = 1),
+        legend.position="none"
+        ) +
+      labs(x = "") +
+      colScale
+
+# clean up
+rm(t)
+```
+
 
 ## Figure 5
 
 Figure 5 uses a subset of the data.metrics dataset to show the relationship between positive predictive value (PPV) and genome coverage (uniformity_wg_per) across all tested datasets and lineage deconvolution tools. The data are plotted together with a generalized additive model (GAM) to visualize the smoothed relationship between PPV and genome coverage.
 
-![](temp/TRR-202602-02R01_Figure5_final.jpeg)
+```{r}
+tools_to_use <- c("freyja_v1.4.3", "LCS_vcfc2f02", "lollipop_v0.3.0", "QuaID_vaec47270", "simulation", "vaquero_v93e7db3", "virpool_v763c212", "VLQ_vd04ad36")
+
+t <- data.metrics %>% 
+  filter(tool_name %in% tools_to_use) %>%
+  group_by(tool_name, uniformity_wg_per) %>%
+      summarise("P" = sum(P,  na.rm = TRUE),
+                "PP" = sum(PP,  na.rm = TRUE),
+                "TP" = sum(TP,  na.rm = TRUE),
+                "FP" = sum(FP,  na.rm = TRUE),
+                "FN" = sum(FN,  na.rm = TRUE),
+                "RMSE" = mean(RMSE,  na.rm = TRUE), .groups = "drop")
+
+t <- calculateMetrics(t)
+t$PPV[is.nan(t$PPV)]<-0
+t <- t %>% select(tool_name, uniformity_wg_per, PPV) %>% gather(key = "metric", value = "value", -tool_name, -!!sym("uniformity_wg_per"))
+
+# Detect constant-value tool groups (y is identical)
+const_groups <- t %>%
+  group_by(tool_name, metric) %>%
+  summarise(is_const = n_distinct(value) == 1, .groups = "drop")
+
+constant_df <- semi_join(t, const_groups %>% filter(is_const), 
+                                  by = c("tool_name", "metric"))
+variable_df <- anti_join(t, const_groups %>% filter(is_const), 
+                                  by = c("tool_name", "metric"))
+
+# create plot  
+ggplot() +
+    geom_line(
+      data = constant_df,
+      aes(x = !!sym("uniformity_wg_per"), y = value, color = tool_name),
+      size = 1
+    ) +
+    geom_smooth(
+      data = variable_df,
+      aes(x = !!sym("uniformity_wg_per"), y = value, color = tool_name),
+      se = FALSE
+    ) + colScale +
+    coord_cartesian(ylim = c(0, 1)) +
+    theme_minimal()
+
+# clean up
+rm(t, tools_to_use, constant_df, variable_df)
+```
 
 ## Figure 6
 
@@ -373,4 +783,60 @@ Figure 6A uses a subset of the data.sim dataset to compare whole-genome coverage
 
 Figure 6A therefore compares whole-genome coverage as a proxy for sequencing quality between simulated and real-world datasets. Figure 6B compares qualitative and quantitative lineage deconvolution performance between real-world samples and simulated samples with comparable sequencing quality, demonstrating that performance trends observed in the simulated data closely resemble those observed in real-world wastewater samples.
 
-![](temp/TRR-202602-02R01_Figure6_final.jpeg)
+```{r}
+title = "Figure 6"
+
+data.filter <- data.metrics %>%
+    group_by(timecourse, experiment, tool_name) %>%
+    summarise(jaccard_index = mean(jaccard_index, na.rm = TRUE),
+              relAb_RMSE = mean(RMSE, na.rm = TRUE), .groups="drop")
+
+sim_dm.dt <- data.metrics %>% filter(timecourse == "realTimecourse") %>% filter(grepl("Ex", experiment)) ##checked
+real_dm.dt <- data.metrics %>% filter(timecourse == "realdata_example") %>% filter(experiment == "Ex01") %>% filter(replicate == "01") ## checked
+real_dm.dt <- real_dm.dt %>% distinct()
+sim_dm.dt  <- sim_dm.dt %>% distinct()
+dm.dt <- rbind(real_dm.dt, sim_dm.dt)
+
+
+# plot uniformity_wg_per distribution 
+library(data.table)
+qc.dt <- dm.dt %>% select(timecourse, timepoint, experiment, replicate, uniformity_wg_per) %>% distinct()
+ex2qc.dt <- data.table(experiment = paste0("Ex", 16:22), qscore = config$SIMULATION$QUALITY_SCORES)
+qc.dt <- left_join(x = qc.dt, y = ex2qc.dt, by = "experiment")
+qc.dt <- qc.dt %>% mutate(timecourse = ifelse(timecourse == "realTimecourse", "simulated", "real"))
+qc.dt$timecourse <- factor(qc.dt$timecourse, levels = c("simulated", "real"))
+pqc <-  ggplot(qc.dt, aes(x = uniformity_wg_per, y = paste(timecourse, experiment))) + ggridges::geom_density_ridges(aes(fill = qscore)) + ggridges::theme_ridges() + facet_grid(timecourse~., scale = "free_y", space = "free") + xlab("Whole genome coverage [%]") + ylab("Experiments") + theme(axis.text.y = element_blank()) + scale_fill_binned(name="SWAMPy\nquality\nparameter", trans = "log2") + theme(legend.position = "left")
+pqc
+
+# make qualitative vs quantitative results plot for sim (Ex16, since the most similar w.r.t genome coverage) vs real(Ex01)
+tools_to_use <- c("freyja_v2.0.0", "lollipop_v0.3.0", "simulation", "vaquero_v24d9211", "virpool_v763c212", "VLQ_vd04ad36")
+tool_list <- tool_list[names(tool_list) %in% tools_to_use]
+dm.dt <- dm.dt %>% filter(tool_name %in% names(tool_list))
+
+recall.dt <- dm.dt %>% mutate(timecourse = ifelse(timecourse == "realTimecourse", "simulated", "real")) %>% filter(experiment %in% c("Ex16", "Ex01")) %>% group_by(timecourse, tool_name) %>%
+  summarise(jaccard_index = mean(jaccard_index, na.rm = TRUE),
+            relAb_RMSE = mean(RMSE, na.rm = TRUE), .groups="drop") # %>% filter(tool_name != "simulation")
+
+pdm <- ggplot(recall.dt, aes(x=jaccard_index, y=relAb_RMSE, color = tool_name, fill = tool_name)) +
+  #geom_path(aes(group = tool_name, color = tool_name), linewidth = 1.0, arrow = arrow(angle = 45, length = unit(0.08, "inches"), ends = "last", type = "open")) +
+  geom_point(aes(shape = timecourse), size = 3, stroke=2, alpha = .80) +
+  labs(
+    title="Comparison: real vs simulated data",
+    y="Root Mean Squared Error - relative Abundance",
+    x="Jaccard Index") +
+  scale_colour_manual(values = tool_list, name = "Tool names") +
+  scale_fill_manual(values = tool_list, name = "Tool names") +
+  #paletteer::scale_color_paletteer_d("ggsci::default_nejm", name = "Tool names")  +
+  #paletteer::scale_fill_paletteer_d("ggsci::default_nejm", name = "Tool names")  +
+  scale_shape_manual(name = "Data source", values = c(22,23)) +
+  theme_bw() +
+  NULL
+
+pdm
+
+library(patchwork)
+pqc + pdm
+
+# clean up
+rm(dm.dt, ex2qc.dt, qc.dt, real_dm.dt, recall.dt, sim_dm.dt, pdm, pqc, title)
+```
