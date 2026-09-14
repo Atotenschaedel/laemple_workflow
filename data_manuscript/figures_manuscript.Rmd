@@ -2,12 +2,16 @@
 title: "Manuscript_figures"
 author: "Anna Schedl"
 date: "2026-08-30"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo=TRUE
+  echo=TRUE,
+  warning=FALSE,
+  message=FALSE
 )
 
 ```
@@ -16,7 +20,7 @@ This report allows to reproduce from the provided raw data the figures displayed
 
 1.  The raw results are read into data.tool.long, which contains the results from all experiments, and data.sim.long, which contains the ground-truth data as well as the corresponding sequencing quality scores.
 
-```{r}
+```{r }
 library(yaml)
 library(DT)
 library(jsonlite)
@@ -138,7 +142,7 @@ if(max(range(data.sim.long$rel_abun)) > 1 & max(range(data.sim.long$rel_abun)) <
 rm(f, i, data.temp, common_cols)
 ```
 
-```{r}
+```{r }
 #read-tool-data
 # experiment "realdata" using real sequencing data was not run with complete tool list, therefore some input files do not exist.
 tools_skipped <- NULL
@@ -212,7 +216,7 @@ rm(f, i, j, tools_skipped)
 
 2.  Performance metrics are calculated by comparing the tool results in data.tool.long with the ground-truth data in data.sim.long. The resulting values are stored in data.metrics.
 
-```{r}
+```{r }
 # calculate Confusion Matrix function definition
 calculateConfusionMatrix <- function(data.long, sim.data.long, grouping = TRUE) {
   data.metrics <- list()
@@ -283,12 +287,12 @@ calculateConfusionMatrix <- function(data.long, sim.data.long, grouping = TRUE) 
 }
 
 # data.metrics <- calculateConfusionMatrix(data.tool.long, data.sim.long)
-# Note: above line is commented out to speed out script run time for demonstration. Pre-calculated RDS object is read instead in next code block.
+# Note: above line is commented out to speed up script run time for demonstration. Pre-calculated RDS object is read instead in next code block.
 ```
 
 3.  The following metrics are calculated and added to data.metrics: True Positive Rate (TPR), False Negative Rate (FNR), Positive Predictive Value (PPV), False Discovery Rate (FDR), Jaccard Index, and Root Mean Square Error (RMSE), using the function described below.
 
-```{r}
+```{r }
 calculateMetrics <- function(data.metrics){
   data.metrics$TPR <- data.metrics$TP / (data.metrics$TP + data.metrics$FN)
   data.metrics$FNR <- data.metrics$FN / data.metrics$P
@@ -300,7 +304,7 @@ calculateMetrics <- function(data.metrics){
 }
 
 #data.metrics <- calculateMetrics(data.metrics)
-# Note: above line is commented out to speed out script run time for demonstration. Pre-calculated RDS object is read instead.
+# Note: above line is commented out to speed-up script run time for demonstration. Pre-calculated RDS object is read instead.
 data.metrics <- readRDS("data.metrics.rds")
 
 # add "uniformity_wg_per" column from simulation data
@@ -314,7 +318,7 @@ data.metrics <- left_join(data.metrics,
 
 Aggregation plot summarizing the qualitative classification performance (Jaccard Index) and the quantitative inference performance Root Mean Square Error (RMSE) for each tool using data.metrics data frame.
 
-```{r}
+```{r }
 tool_twoDimensionPlot <- function(data.metrics, colScale, title) {
   data.filter <- data.metrics %>%
     group_by(tool_name) %>%
@@ -339,7 +343,7 @@ tool_twoDimensionPlot(filter(data.metrics, timecourse!="realdata_example"), colS
 
 This plot characterizes all detected false-positive lineages, including their phylogenetic relationships and similarity, based on shared mutations, to the closest true-positive lineage. Vertical lines indicate the mean similarity for each tool and group. The reference dataset was obtained from the curated public repository by Römer (2023) and parsed into the json.data dataframe. Phylogenetic distance was calculated as Jaccard distance and stored in the distanceMatrix dataframe. Additional data were incorporated to account for lineages missing from the reference dataset. To facilitate reproducibility, the resulting dataframes are included with the raw data files as RDS objects.
 
-```{r}
+```{r }
 getDistance <- function(var1, var2, json.data){
 
   var1_nuc <- c(json.data[[var1]]$nucSubstitutions, json.data[[var1]]$nucDeletions)
@@ -422,11 +426,11 @@ CheckDistanceMatrix <- function(lineages, update=FALSE) {
 
 
 # distanceMatrix <- CheckDistanceMatrix(unique(data.tool.long$lineage), update=update)
-# Note: above line is commented out to speed out script run time for demonstration. Pre-calculated RDS object is read instead.
+# Note: above line is commented out to speed-up script run time for demonstration. Pre-calculated RDS object is read instead.
 
 # manual update for missing lineages
 update = FALSE
-# Note: above line is turned to FALSE to speed out script run time for demonstration. Pre-calculated RDS object is read instead.
+# Note: above line is turned to FALSE to speed-up script run time for demonstration. Pre-calculated RDS object is read instead.
 
 if (update) {
   json.data[["B.1.1.529"]] <- "B.1.1.529"
@@ -461,7 +465,7 @@ distanceMatrix <- readRDS("distanceMatrix.rds")
 
 
 
-```{r}
+```{r }
 CheckDistanceMatrix <- function(lineages, update=FALSE) {
   if (!(file.exists(paste0(currWorkingDir, "reference/distanceMatrix.csv"))) | update) {
     distanceMatrix <- matrix()
@@ -626,7 +630,7 @@ check_relationship <- function(json.data, sim.data.long, var1, var2) {
 #                       ) %>%
 #      filter(!is.infinite(min_distance))
 
-# Note: above line is commented out to speed out script run time for demonstration. Pre-calculated RDS object is read instead.
+# Note: above line is commented out to speed-up script run time for demonstration. Pre-calculated RDS object is read instead.
 fp_distance <- readRDS("FP_distances.rds")
 
 fp_distance_toi <- fp_distance %>% filter(tool_name %in% c("freyja_v1.4.3", "lollipop_v0.3.0", "vaquero_v93e7db3"))
@@ -656,7 +660,7 @@ rm(fp_distance_toi)
 
 Figure 3 uses the data.metrics dataset to compare SARS-CoV-2 lineage deconvolution performance between Freyja (v1.4.3) and VaQuERo (v93e7db3) across three simulated datasets (Omicron time-course, VOC time-course, and Vienna time-course), as well as an overall aggregated analysis. For each tool and dataset, two performance metrics are shown: positive predictive value (PPV; circles) and true positive rate (TPR; triangles).
 
-```{r}
+```{r }
 t <- bind_rows(
     data.metrics %>% filter(timecourse!="realdata_example") %>% filter(tool_name %in% c("freyja_v1.4.3", "vaquero_v93e7db3")) %>%
   select(tool_name, timecourse, PPV, TPR) %>%
@@ -701,7 +705,7 @@ rm(t)
 
 Figure 4 uses the data.metrics dataset to compare lineage identification performance of the SARS-CoV-2 lineage deconvolution tool VaQuERo (v24d921) using either the default or an older reference dataset (oldREF). Positive predictive value (PPV) and true positive rate (TPR) are shown as individual data points for each reference configuration, representing the median values aggregated across all simulated datasets.
 
-```{r}
+```{r }
 t <- data.metrics %>% filter(timecourse!="realdata_example") %>% filter(tool_name %in% c("vaquero_v24d9211", "vaquero_v24d9211_oldREF")) %>%
     select(tool_name, PPV, TPR) %>%
     group_by(tool_name) %>%
@@ -731,7 +735,7 @@ rm(t)
 
 Figure 5 uses a subset of the data.metrics dataset to show the relationship between positive predictive value (PPV) and genome coverage (uniformity_wg_per) across all tested datasets and lineage deconvolution tools. The data are plotted together with a generalized additive model (GAM) to visualize the smoothed relationship between PPV and genome coverage.
 
-```{r}
+```{r }
 tools_to_use <- c("freyja_v1.4.3", "LCS_vcfc2f02", "lollipop_v0.3.0", "QuaID_vaec47270", "simulation", "vaquero_v93e7db3", "virpool_v763c212", "VLQ_vd04ad36")
 
 t <- data.metrics %>% 
@@ -783,7 +787,7 @@ Figure 6A uses a subset of the data.sim dataset to compare whole-genome coverage
 
 Figure 6A therefore compares whole-genome coverage as a proxy for sequencing quality between simulated and real-world datasets. Figure 6B compares qualitative and quantitative lineage deconvolution performance between real-world samples and simulated samples with comparable sequencing quality, demonstrating that performance trends observed in the simulated data closely resemble those observed in real-world wastewater samples.
 
-```{r}
+```{r fig.width=12}
 title = "Figure 6"
 
 data.filter <- data.metrics %>%
@@ -806,7 +810,7 @@ qc.dt <- left_join(x = qc.dt, y = ex2qc.dt, by = "experiment")
 qc.dt <- qc.dt %>% mutate(timecourse = ifelse(timecourse == "realTimecourse", "simulated", "real"))
 qc.dt$timecourse <- factor(qc.dt$timecourse, levels = c("simulated", "real"))
 pqc <-  ggplot(qc.dt, aes(x = uniformity_wg_per, y = paste(timecourse, experiment))) + ggridges::geom_density_ridges(aes(fill = qscore)) + ggridges::theme_ridges() + facet_grid(timecourse~., scale = "free_y", space = "free") + xlab("Whole genome coverage [%]") + ylab("Experiments") + theme(axis.text.y = element_blank()) + scale_fill_binned(name="SWAMPy\nquality\nparameter", trans = "log2") + theme(legend.position = "left")
-pqc
+#pqc
 
 # make qualitative vs quantitative results plot for sim (Ex16, since the most similar w.r.t genome coverage) vs real(Ex01)
 tools_to_use <- c("freyja_v2.0.0", "lollipop_v0.3.0", "simulation", "vaquero_v24d9211", "virpool_v763c212", "VLQ_vd04ad36")
@@ -832,7 +836,7 @@ pdm <- ggplot(recall.dt, aes(x=jaccard_index, y=relAb_RMSE, color = tool_name, f
   theme_bw() +
   NULL
 
-pdm
+#pdm
 
 library(patchwork)
 pqc + pdm
