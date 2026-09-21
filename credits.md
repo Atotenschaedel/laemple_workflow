@@ -33,6 +33,15 @@ Amman, F., Markt, R., Endler, L. et al. Viral variant-resolved wastewater survei
 
 The contents of bin/vaquero_v24d9211 are reproduced from the original VaQuERo repository at the commit specified above. **No modifications have been made** to the original source code. This material is the work of the original authors and is included to ensure interoperability and reproducibility. The authors of this repository do not claim original authorship of this software.
 
+## Consensus sequences for SARS CoV-2
+**Local path:** `data_manuscript/pango-consensus-sequences_summary.json`
+
+**Original repository:** https://github.com/corneliusroemer/pango-sequences
+
+**Version used:** commit `9e3588d`
+
+The included json file is as a reference set to extract list of mutation as well as a reference for phylogenetic ancestry of each pangolin lineage. This file is maintained in its original repository. The authors of this repository do not claim authorship. 
+
 ## Licensing statement
 
 This repository is distributed under the GNU General Public License v3.0 (GPL-3.0) due to the inclusion of GPL-licensed software (SWAMPy).
